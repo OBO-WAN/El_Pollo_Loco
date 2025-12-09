@@ -1,7 +1,15 @@
 class movableObjekt {
-    x = 120;
-    y = 140;
-    img = '../img/2_character_pepe/2_walk/W-21.png';
+    x = 150;
+    y = 250;
+    img ;
+    height = 250;
+    width = 250;
+
+
+    loadImage(path){
+        this.img = new Image(); // im Grunde das gleiche wie document.getElementById("");
+        this.img.src = path;
+    }
 
     moveRight() {
         console.log("move right");
