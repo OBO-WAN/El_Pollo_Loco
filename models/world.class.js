@@ -9,8 +9,10 @@ class World {
 
     canvas;
     ctx;
+    
 
     constructor(canvas) {
+        this.canvas = canvas;
         this.ctx = canvas.getContext('2d'); // ctx = canvas.getContext('2d');
         this.draw();
     }
