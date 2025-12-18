@@ -12,7 +12,7 @@ class World {
     ]
 
     backgroundObjects = [
-        new BackgroundObject('img/5_background/layers/3_third_layer/full.png',0, 340)
+        new BackgroundObject('img/5_background/layers/3_third_layer/1.png',0)
     ];
 
     ctx;
@@ -30,10 +30,10 @@ class World {
 
         this.ctx.clearRect(0,0, this.canvas.width, this.canvas.height);
 
+        this.addObjectsToMap(this.backgroundObjects);     
         this.addToMap(this.character);
         this.addObjectsToMap(this.clouds);
         this.addObjectsToMap(this.enemies);
-        this.addObjectsToMap(this.backgroundObjects);     
 
         //this is being called all the time
         let self = this;
