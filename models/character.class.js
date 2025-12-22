@@ -31,7 +31,7 @@ class Character extends movableObject {
             // this.currentImage++; // false (infinite)
             this.currentImage = (this.currentImage + 1) % this.animatedCharachter.length; // let i = 0+1 % 6
 
-        }, 1000);
+        }, 200);
     }
 
     jump() {
