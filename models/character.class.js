@@ -4,6 +4,7 @@ class Character extends movableObject {
     width = 140;
     x = 120;
     y = 200;
+    speed = 2;
 
     animatedCharachter = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -14,6 +15,8 @@ class Character extends movableObject {
         'img/2_character_pepe/2_walk/W-26.png'
 
     ];
+
+    world;
 
     // currentImage = 0;
 
@@ -26,12 +29,15 @@ class Character extends movableObject {
 
     animate() {
         setInterval(() => {
+
+
+
             let path = this.animatedCharachter[this.currentImage];
             this.img = this.imageCache[path];
             // this.currentImage++; // false (infinite)
             this.currentImage = (this.currentImage + 1) % this.animatedCharachter.length; // let i = 0+1 % 6
 
-        }, 200);
+        }, 100);
     }
 
     jump() {
