@@ -15,7 +15,7 @@ class Character extends movableObject {
 
     ];
 
-    currentImage = 0;
+    // currentImage = 0;
 
 
     constructor() {
