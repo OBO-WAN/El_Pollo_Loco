@@ -31,8 +31,8 @@ class World {
         this.setWorld();
     }
 
-    setWorld(){
-        this.character.world = this;                  
+    setWorld() {
+        this.character.world = this;
 
     }
 
@@ -42,8 +42,16 @@ class World {
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        if (this.keyboard.RIGHT) this.character.moveRight();
-        if (this.keyboard.LEFT) this.character.moveLeft();
+        if (this.keyboard.RIGHT) {
+            this.character.moveRight();
+            this.character.otherDirection = false;
+        }
+
+        else if (this.keyboard.LEFT) {
+            this.character.moveLeft();
+            this.character.otherDirection = true;
+        }
+
 
         this.enemies.forEach(chicken => chicken.moveLeft());
 
@@ -66,8 +74,21 @@ class World {
     }
 
     addToMap(mo) {
-        // console.log(mo.img, mo);
-        this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        if (mo.otherDirection) {
+            this.ctx.save();
+            this.ctx.translate(mo.x + mo.width, 0);
+            this.ctx.scale(-1, 1);
+            this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
+            this.ctx.restore();
+        } else {
+            this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+        }
     }
 
+
 }
+
+// const t0 = performance.now();
+// // ... draw code ...
+// const t1 = performance.now();
+// if (t1 - t0 > 20) console.log("draw took", (t1 - t0).toFixed(1), "ms");

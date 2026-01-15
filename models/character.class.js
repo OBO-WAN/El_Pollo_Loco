@@ -30,8 +30,6 @@ class Character extends movableObject {
     animate() {
         setInterval(() => {
 
-
-
             let path = this.animatedCharachter[this.currentImage];
             this.img = this.imageCache[path];
             // this.currentImage++; // false (infinite)
