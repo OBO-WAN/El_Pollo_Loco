@@ -22,6 +22,7 @@ class World {
     ctx;
     canvas;
     keyboard;
+    camera_x = 0;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -38,34 +39,41 @@ class World {
 
 
     // Call draw over and over again
+    
     draw() {
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    // 1. clear canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        if (this.keyboard.RIGHT) {
-            this.character.moveRight();
-            this.character.otherDirection = false;
-        }
-
-        else if (this.keyboard.LEFT) {
-            this.character.moveLeft();
-            this.character.otherDirection = true;
-        }
-
-
-        this.enemies.forEach(chicken => chicken.moveLeft());
-
-        this.addObjectsToMap(this.backgroundObjects);
-        this.addToMap(this.character);
-        this.addObjectsToMap(this.clouds);
-        this.addObjectsToMap(this.enemies);
-
-        //this is being called all the time
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
-        });
+    // 2. movement + input
+    if (this.keyboard.RIGHT) {
+        this.character.moveRight();
+        this.character.otherDirection = false;
+    } else if (this.keyboard.LEFT) {
+        this.character.moveLeft();
+        this.character.otherDirection = true;
     }
+
+    // 3. update camera AFTER movement
+    this.camera_x = -this.character.x + 100;
+
+    this.enemies.forEach(chicken => chicken.moveLeft());
+
+    // 4. apply camera transform safely
+    this.ctx.save();
+    this.ctx.translate(this.camera_x, 0);
+
+    // 5. draw world
+    this.addObjectsToMap(this.backgroundObjects);
+    this.addToMap(this.character);
+    this.addObjectsToMap(this.clouds);
+    this.addObjectsToMap(this.enemies);
+
+    // 6. reset transform
+    this.ctx.restore();
+
+    requestAnimationFrame(() => this.draw());
+}
 
     addObjectsToMap(objects) {
         objects.forEach(o => {
