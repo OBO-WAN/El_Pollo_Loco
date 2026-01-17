@@ -1,87 +1,124 @@
 class World {
-
     character = new Character();
-    enemies = [
-        new Chicken(),
-        new Chicken(),
-        new Chicken(),
-    ];
+    level = level1;
 
-    clouds = [
-        new Cloud()
-    ]
+    // Loop for Background
+    tileWidth = 720;        // one screen width
+    tilesCount = 3;         // instead -720, 0, 720
 
-    backgroundObjects = [
-        new BackgroundObject('img/5_background/layers/air.png', 0),
-        new BackgroundObject('img/5_background/layers/3_third_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/2_second_layer/1.png', 0),
-        new BackgroundObject('img/5_background/layers/1_first_layer/2.png', 0),
-
-    ];
-
-    ctx;
     canvas;
+    ctx;
     keyboard;
+
     camera_x = 0;
 
-    constructor(canvas) {
+    constructor(canvas, keyboard) {
         this.canvas = canvas;
-        this.ctx = canvas.getContext('2d'); // ctx = canvas.getContext('2d');
+        this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
-        this.draw();
+
         this.setWorld();
+        this.draw();
     }
 
     setWorld() {
         this.character.world = this;
-
     }
 
-
-    // Call draw over and over again
-    
+    // Main loop
     draw() {
+        this.clearCanvas();
+        this.update();
+        this.render();
 
-    // 1. clear canvas
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    // 2. movement + input
-    if (this.keyboard.RIGHT) {
-        this.character.moveRight();
-        this.character.otherDirection = false;
-    } else if (this.keyboard.LEFT) {
-        this.character.moveLeft();
-        this.character.otherDirection = true;
+        requestAnimationFrame(() => this.draw());
     }
 
-    // 3. update camera AFTER movement
-    this.camera_x = -this.character.x + 100;
+    // ----- UPDATE (logic) -----
 
-    this.enemies.forEach(chicken => chicken.moveLeft());
+    update() {
+        this.handleCharacterMovement(); // input -> move
+        this.updateCamera();            // follow player
+        this.loopBackground();
+        this.moveEnemies();             // enemy motion
+    }
 
-    // 4. apply camera transform safely
-    this.ctx.save();
-    this.ctx.translate(this.camera_x, 0);
+    handleCharacterMovement() {
+        if (this.keyboard.RIGHT && this.character.x < this.level.level_end_x) {
+            this.character.moveRight();
+            this.character.otherDirection = false;
+        } else if (this.keyboard.LEFT && this.character.x > 0) {
+            this.character.moveLeft();
+            this.character.otherDirection = true;
+        }
+    }
 
-    // 5. draw world
-    this.addObjectsToMap(this.backgroundObjects);
-    this.addToMap(this.character);
-    this.addObjectsToMap(this.clouds);
-    this.addObjectsToMap(this.enemies);
+    updateCamera() {
+        this.camera_x = -this.character.x + 100;
+    }
 
-    // 6. reset transform
-    this.ctx.restore();
+    moveEnemies() {
+        this.level.enemies.forEach(enemy => enemy.moveLeft());
+    }
 
-    requestAnimationFrame(() => this.draw());
+    // ----- RENDER (drawing) -----
+
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    render() {
+        this.ctx.save();                    // camera on
+        this.ctx.translate(this.camera_x, 0);
+
+        this.drawBackground();
+        this.drawCharacter();
+        this.drawClouds();
+        this.drawEnemies();
+
+        this.ctx.restore();                 // camera off
+    }
+
+    drawBackground() {
+        this.addObjectsToMap(this.level.backgroundObjects);
+    }
+
+    drawCharacter() {
+        this.addToMap(this.character);
+    }
+
+    drawClouds() {
+        this.addObjectsToMap(this.level.clouds);
+    }
+
+    drawEnemies() {
+        this.addObjectsToMap(this.level.enemies);
+    }
+
+    loopBackground() {
+    const leftEdge = -this.camera_x;
+    const buffer = 200;
+    const jump = this.tileWidth * this.tilesCount;
+
+    this.level.backgroundObjects.forEach(bg => {
+        if (bg.x + bg.width < leftEdge - buffer) {
+            bg.x += jump;
+        }
+
+        if (bg.x > leftEdge + this.tileWidth + buffer) {
+            bg.x -= jump;
+        }
+    });
 }
 
+    // ----- helpers -----
+
     addObjectsToMap(objects) {
-        objects.forEach(o => {
-            this.addToMap(o);
-        })
+        objects.forEach(o => this.addToMap(o));
     }
 
     addToMap(mo) {
+        // flip sprite if facing left
         if (mo.otherDirection) {
             this.ctx.save();
             this.ctx.translate(mo.x + mo.width, 0);
@@ -92,11 +129,4 @@ class World {
             this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         }
     }
-
-
 }
-
-// const t0 = performance.now();
-// // ... draw code ...
-// const t1 = performance.now();
-// if (t1 - t0 > 20) console.log("draw took", (t1 - t0).toFixed(1), "ms");

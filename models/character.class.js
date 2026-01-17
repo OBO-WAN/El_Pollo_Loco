@@ -4,7 +4,7 @@ class Character extends movableObject {
     width = 140;
     x = 120;
     y = 200;
-    speed = 2;
+    speed = 6;
 
     animatedCharachter = [
         'img/2_character_pepe/2_walk/W-21.png',
