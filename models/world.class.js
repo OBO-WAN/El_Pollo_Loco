@@ -5,6 +5,7 @@ class World {
     // Loop for Background
     tileWidth = 720;        // one screen width
     tilesCount = 3;         // instead -720, 0, 720
+    jump = 2160;
 
     canvas;
     ctx;
@@ -47,7 +48,7 @@ class World {
         if (this.keyboard.RIGHT && this.character.x < this.level.level_end_x) {
             this.character.moveRight();
             this.character.otherDirection = false;
-        } else if (this.keyboard.LEFT && this.character.x > 0) {
+        } else if (this.keyboard.LEFT) {
             this.character.moveLeft();
             this.character.otherDirection = true;
         }
@@ -118,6 +119,8 @@ class World {
     }
 
     addToMap(mo) {
+        // this.ctx.strokeRect(mo.x, mo.y, mo.width, mo.height);
+
         // flip sprite if facing left
         if (mo.otherDirection) {
             this.ctx.save();
