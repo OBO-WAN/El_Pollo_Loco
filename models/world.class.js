@@ -3,9 +3,9 @@ class World {
     level = level1;
 
     // Loop for Background
-    tileWidth = 720;        // one screen width
-    tilesCount = 3;         // instead -720, 0, 720
-    jump = 2160;
+    // tileWidth = 720;        // one screen width
+    // tilesCount = 6;         // instead -720, 0, 720, *2*3*4
+    // jump = this.tileWidth * this.tilesCount;
 
     canvas;
     ctx;
@@ -40,7 +40,7 @@ class World {
     update() {
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
-        this.loopBackground();
+        // this.loopBackground();
         this.moveEnemies();             // enemy motion
     }
 
@@ -48,7 +48,7 @@ class World {
         if (this.keyboard.RIGHT && this.character.x < this.level.level_end_x) {
             this.character.moveRight();
             this.character.otherDirection = false;
-        } else if (this.keyboard.LEFT) {
+        } else if (this.keyboard.LEFT && this.character.x > 0) {
             this.character.moveLeft();
             this.character.otherDirection = true;
         }
@@ -96,6 +96,7 @@ class World {
         this.addObjectsToMap(this.level.enemies);
     }
 
+    //Commented out
     loopBackground() {
     const leftEdge = -this.camera_x;
     const buffer = 200;
