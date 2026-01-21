@@ -54,8 +54,6 @@ class World {
         }
     }
 
-    
-
     updateCamera() {
         this.camera_x = -this.character.x + 100;
     }
