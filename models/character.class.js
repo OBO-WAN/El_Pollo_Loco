@@ -3,7 +3,7 @@ class Character extends movableObject {
     height = 240;
     width = 140;
     x = 120;
-    y = 200;
+    y = 40; // 40-200
     speed = 6;
 
     animatedCharachter = [
@@ -25,6 +25,7 @@ class Character extends movableObject {
         super();
         this.loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.animatedCharachter);
+        this.applyGravity();
         this.animate();
     }
 

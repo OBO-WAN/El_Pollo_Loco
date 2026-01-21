@@ -8,7 +8,23 @@ class movableObject {
     currentImage = 0;
     speed = 0.15;
     otherDirection = false;
+    //Gravitation
+    speedY = 0;
+    acceleration = 2.5;
 
+
+    applyGravity() {
+        setInterval(() => {
+            if(this.isAboveGround ()){
+            this.y -= this.speedY;
+            this.speedY -= this.acceleration;
+            }
+        }, 1000 / 25);
+    }
+
+    isAboveGround(){
+        return this.y < 180;
+    }
 
     loadImage(path) {
         this.img = new Image(); // im Grunde das gleiche wie document.getElementById("");
@@ -23,13 +39,13 @@ class movableObject {
 
     }
 
-   loadImages(arr) {
-    arr.forEach(path => {
-        const img = new Image();
-        img.src = path;
-        this.imageCache[path] = img;
-    });
-}
+    loadImages(arr) {
+        arr.forEach(path => {
+            const img = new Image();
+            img.src = path;
+            this.imageCache[path] = img;
+        });
+    }
 
     moveRight() {
         // console.log("moveRight");
