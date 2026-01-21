@@ -15,17 +15,21 @@ class movableObject {
         this.img.src = path;
     }
 
-    /**
-     * 
-     * @param {Array} arr -[images from imageCache] 
-     */
-    loadMainCharacter(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
+    playAnimation(images) {
+        let i = this.currentImage % images.length;
+        let path = images[i];
+        this.img = this.imageCache[images[i]];
+        this.currentImage++;
+
     }
+
+   loadImages(arr) {
+    arr.forEach(path => {
+        const img = new Image();
+        img.src = path;
+        this.imageCache[path] = img;
+    });
+}
 
     moveRight() {
         // console.log("moveRight");

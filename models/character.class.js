@@ -22,21 +22,17 @@ class Character extends movableObject {
 
 
     constructor() {
-        super().loadImage('img/2_character_pepe/2_walk/W-21.png');
-        this.loadMainCharacter(this.animatedCharachter);
+        super();
+        this.loadImage('img/2_character_pepe/2_walk/W-21.png');
+        this.loadImages(this.animatedCharachter);
         this.animate();
     }
 
     animate() {
-        setInterval(() => {
-
-            let path = this.animatedCharachter[this.currentImage];
-            this.img = this.imageCache[path];
-            // this.currentImage++; // false (infinite)
-            this.currentImage = (this.currentImage + 1) % this.animatedCharachter.length; // let i = 0+1 % 6
-
-        }, 100);
-    }
+    setInterval(() => {
+        this.playAnimation(this.animatedCharachter);
+    }, 100);
+}
 
     jump() {
 
