@@ -98,20 +98,20 @@ class World {
 
     //Commented out
     loopBackground() {
-    const leftEdge = -this.camera_x;
-    const buffer = 200;
-    const jump = this.tileWidth * this.tilesCount;
+        const leftEdge = -this.camera_x;
+        const buffer = 200;
+        const jump = this.tileWidth * this.tilesCount;
 
-    this.level.backgroundObjects.forEach(bg => {
-        if (bg.x + bg.width < leftEdge - buffer) {
-            bg.x += jump;
-        }
+        this.level.backgroundObjects.forEach(bg => {
+            if (bg.x + bg.width < leftEdge - buffer) {
+                bg.x += jump;
+            }
 
-        if (bg.x > leftEdge + this.tileWidth + buffer) {
-            bg.x -= jump;
-        }
-    });
-}
+            if (bg.x > leftEdge + this.tileWidth + buffer) {
+                bg.x -= jump;
+            }
+        });
+    }
 
     // ----- helpers -----
 
@@ -132,5 +132,11 @@ class World {
         } else {
             this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
         }
+        // Blue rectangle
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = "blue";
+        this.ctx.rect(mo.x, mo.y, mo.width, mo.height); //mo.x + mo.width | mo.y + height
+        this.ctx.stroke();
     }
 }
