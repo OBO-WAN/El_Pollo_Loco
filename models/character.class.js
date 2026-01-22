@@ -46,7 +46,7 @@ class Character extends movableObject {
     animate() {
         setInterval(() => {
 
-            if (this.isAboveGround) {
+            if (this.isInAir()) {
                 this.playAnimation(this.imagesJumping);
 
             } else {
