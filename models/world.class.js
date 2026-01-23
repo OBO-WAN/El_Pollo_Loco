@@ -119,24 +119,23 @@ class World {
         objects.forEach(o => this.addToMap(o));
     }
 
-    addToMap(mo) {
-        // this.ctx.strokeRect(mo.x, mo.y, mo.width, mo.height);
+   addToMap(mo) {
+    if (mo.otherDirection) {
+        this.flipImage(mo);
+    } else {
+        mo.draw(this.ctx);
+    }
+    mo.drawFrame(this.ctx);
+}
 
-        // flip sprite if facing left
-        if (mo.otherDirection) {
-            this.ctx.save();
-            this.ctx.translate(mo.x + mo.width, 0);
-            this.ctx.scale(-1, 1);
-            this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
-            this.ctx.restore();
-        } else {
-            this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-        }
-        // Blue rectangle
-        this.ctx.beginPath();
-        this.ctx.lineWidth = 2;
-        this.ctx.strokeStyle = "blue";
-        this.ctx.rect(mo.x, mo.y, mo.width, mo.height); //mo.x + mo.width | mo.y + height
-        this.ctx.stroke();
+
+    flipImage(mo) {
+        this.ctx.save();
+        this.ctx.translate(mo.x + mo.width, 0);
+        this.ctx.scale(-1, 1);
+        this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
+        this.ctx.restore();
     }
 }
+
+
