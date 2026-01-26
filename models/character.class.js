@@ -3,7 +3,7 @@ class Character extends movableObject {
     height = 240;
     width = 140;
     x = 120;
-    y = 40; // 40-200
+    y = 50; // 40-200
     speed = 10;
     isJumping = false;
 
@@ -65,6 +65,7 @@ class Character extends movableObject {
         }, 100);
 
     }
+
 
     jump() {
         this.speedY = 20;

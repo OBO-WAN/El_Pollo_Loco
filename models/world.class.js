@@ -26,13 +26,15 @@ class World {
         this.character.world = this;
     }
 
-    checkCollisions(){
-        setInterval(() => {
-            this.level.enemies.forEach( (enemy) => {
-                this.character.isColliding(enemy);
-            });
-        }, 1000 / 25);
-    }
+    checkCollisions() {
+    setInterval(() => {
+        this.level.enemies.forEach(enemy => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+            }
+        });
+    }, 200);
+}
 
     // Main loop
     draw() {

@@ -11,6 +11,7 @@ class movableObject {
     //Gravitation
     speedY = 0;
     acceleration = 2.5;
+    energy = 100;
 
 
     applyGravity() {
@@ -48,14 +49,23 @@ class movableObject {
 
     //character.isColliding.chicken
     isColliding(mo) {
-        return this.x < mo.x + mo.width &&
+        const collide =
+            this.x < mo.x + mo.width &&
             this.x + this.width > mo.x &&
             this.y < mo.y + mo.height &&
             this.y + this.height > mo.y;
-        // return this.x + this.width > mo.x &&
-        // this.y + this.height > mo.y &&
-        // this.x < mo.x &&
-        // this.y < mo.y ;
+
+        if (collide) {
+            console.log('COLLISION', this, mo);
+        }
+        return collide;
+    }
+
+    hit(){
+        this.energy -= 5;
+        if(this.energy < 0){
+            this.energy = 0;
+        }
     }
 
     playAnimation(images) {
