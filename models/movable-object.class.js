@@ -35,13 +35,27 @@ class movableObject {
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
-    drawFrame(ctx){
-          // Blue rectangle
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "blue";
-        ctx.rect(this.x, this.y, this.width, this.height); //mo.x + mo.width | mo.y + height
-        ctx.stroke();
+    drawFrame(ctx) {
+        // Blue rectangle
+        if (this instanceof Character || this instanceof Chicken) {
+            ctx.beginPath();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "blue";
+            ctx.rect(this.x, this.y, this.width, this.height); //mo.x + mo.width | mo.y + height
+            ctx.stroke();
+        }
+    }
+
+    //character.isColliding.chicken
+    isColliding(mo) {
+        return this.x < mo.x + mo.width &&
+            this.x + this.width > mo.x &&
+            this.y < mo.y + mo.height &&
+            this.y + this.height > mo.y;
+        // return this.x + this.width > mo.x &&
+        // this.y + this.height > mo.y &&
+        // this.x < mo.x &&
+        // this.y < mo.y ;
     }
 
     playAnimation(images) {

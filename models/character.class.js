@@ -5,6 +5,8 @@ class Character extends movableObject {
     x = 120;
     y = 40; // 40-200
     speed = 10;
+    isJumping = false;
+
 
     animatedCharachter = [
         'img/2_character_pepe/2_walk/W-21.png',
@@ -56,7 +58,7 @@ class Character extends movableObject {
             }
 
             // console.log("This Speed Y: ", this.speedY);
-            if (this.world.keyboard.UP && !this.isInAir()){
+            if (this.world.keyboard.UP && !this.isInAir()) {
                 this.speedY = 20;
             }
 
@@ -65,6 +67,9 @@ class Character extends movableObject {
     }
 
     jump() {
-
+        this.speedY = 20;
+        this.currentImage = 0;     // start jump animation at J-31
+        this.isJumping = true;
     }
+
 }

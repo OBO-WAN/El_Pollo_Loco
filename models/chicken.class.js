@@ -3,7 +3,7 @@ class Chicken extends movableObject {
     height = 80;
     width = 80;
     x = 120;
-    y = 360;
+    y = 340;
 
 
     animatedChickens = [

@@ -17,13 +17,21 @@ class World {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
-
         this.setWorld();
         this.draw();
+        this.checkCollisions();
     }
 
     setWorld() {
         this.character.world = this;
+    }
+
+    checkCollisions(){
+        setInterval(() => {
+            this.level.enemies.forEach( (enemy) => {
+                this.character.isColliding(enemy);
+            });
+        }, 1000 / 25);
     }
 
     // Main loop
@@ -127,7 +135,6 @@ class World {
     }
     mo.drawFrame(this.ctx);
 }
-
 
     flipImage(mo) {
         this.ctx.save();
