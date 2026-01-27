@@ -31,6 +31,22 @@ class Character extends movableObject {
         'img/2_character_pepe/3_jump/J-39.png',
     ]
 
+    imagesDead = [
+        'img/2_character_pepe/5_dead/D-51.png',
+        'img/2_character_pepe/5_dead/D-52.png',
+        'img/2_character_pepe/5_dead/D-53.png',
+        'img/2_character_pepe/5_dead/D-54.png',
+        'img/2_character_pepe/5_dead/D-55.png',
+        'img/2_character_pepe/5_dead/D-56.png',
+        'img/2_character_pepe/5_dead/D-57.png',
+    ]
+
+    imagesHurt = [
+        'img/2_character_pepe/4_hurt/H-41.png',
+        'img/2_character_pepe/4_hurt/H-42.png',
+        'img/2_character_pepe/4_hurt/H-43.png',
+    ]
+
     world;
 
     // currentImage = 0;
@@ -41,6 +57,8 @@ class Character extends movableObject {
         this.loadImage('img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.animatedCharachter);
         this.loadImages(this.imagesJumping);
+        this.loadImages(this.imagesDead);
+        this.loadImages(this.imagesHurt);
         this.applyGravity();
         this.animate();
     }
@@ -48,15 +66,17 @@ class Character extends movableObject {
     animate() {
         setInterval(() => {
 
-            if (this.isInAir()) {
+            if (this.isDead()) {
+                this.playAnimation(this.imagesDead);
+            } else if (this.isHurt()) {
+                this.playAnimation(this.imagesHurt);
+            } else if (this.isInAir()) {
                 this.playAnimation(this.imagesJumping);
-
             } else {
                 if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
                     this.playAnimation(this.animatedCharachter);
                 }
             }
-
             // console.log("This Speed Y: ", this.speedY);
             if (this.world.keyboard.UP && !this.isInAir()) {
                 this.speedY = 20;

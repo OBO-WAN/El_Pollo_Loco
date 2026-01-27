@@ -12,6 +12,7 @@ class movableObject {
     speedY = 0;
     acceleration = 2.5;
     energy = 100;
+    lastHit = 0;
 
 
     applyGravity() {
@@ -61,11 +62,23 @@ class movableObject {
         return collide;
     }
 
-    hit(){
+    hit() {
         this.energy -= 5;
-        if(this.energy < 0){
+        if (this.energy < 0) {
             this.energy = 0;
+        } else {
+            this.lastHit = Date.now();
         }
+    }
+
+    isDead() {
+        return this.energy == 0;
+    }
+
+
+    isHurt() {
+        const timePassed = (Date.now() - this.lastHit) / 1000; //seconds
+        return timePassed < 1;
     }
 
     playAnimation(images) {
