@@ -1,11 +1,5 @@
-class movableObject {
-    x = 120;
-    y = 360;
-    img;
-    height = 100;
-    width = 50;
-    imageCache = {};
-    currentImage = 0;
+class movableObject extends DrawableObject{
+
     speed = 0.15;
     otherDirection = false;
     //Gravitation
@@ -26,15 +20,6 @@ class movableObject {
 
     isInAir() {
         return this.y < 180;
-    }
-
-    loadImage(path) {
-        this.img = new Image(); // im Grunde das gleiche wie document.getElementById("");
-        this.img.src = path;
-    }
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
     drawFrame(ctx) {
@@ -87,14 +72,6 @@ class movableObject {
         this.img = this.imageCache[images[i]];
         this.currentImage++;
 
-    }
-
-    loadImages(arr) {
-        arr.forEach(path => {
-            const img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
     }
 
     moveRight() {
