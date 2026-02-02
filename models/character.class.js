@@ -79,7 +79,7 @@ class Character extends movableObject {
             }
             // console.log("This Speed Y: ", this.speedY);
             if (this.world.keyboard.UP && !this.isInAir()) {
-                this.speedY = 20;
+                this.speedY = 28;
             }
 
         }, 100);
