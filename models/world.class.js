@@ -1,17 +1,11 @@
 class World {
     character = new Character();
     level = level1;
-
-    // Loop for Background
-    // tileWidth = 720;        // one screen width
-    // tilesCount = 6;         // instead -720, 0, 720, *2*3*4
-    // jump = this.tileWidth * this.tilesCount;
-
     canvas;
     ctx;
     keyboard;
-
     camera_x = 0;
+    statusBar = new StatusBar();
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -27,22 +21,23 @@ class World {
     }
 
     checkCollisions() {
-    setInterval(() => {
-        this.level.enemies.forEach(enemy => {
-            if (this.character.isColliding(enemy)) {
-                this.character.hit();
-            }
-        });
-    }, 200);
-}
+        setInterval(() => {
+            this.level.enemies.forEach(enemy => {
+                if (this.character.isColliding(enemy)) {
+                    this.character.hit();
+                }
+            });
+        }, 200);
+    }
 
     // Main loop
     draw() {
         this.clearCanvas();
         this.update();
         this.render();
-
+        this.addToMap(this.statusBar);
         requestAnimationFrame(() => this.draw());
+
     }
 
     // ----- UPDATE (logic) -----
@@ -50,7 +45,6 @@ class World {
     update() {
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
-        // this.loopBackground();
         this.moveEnemies();             // enemy motion
     }
 
@@ -106,37 +100,20 @@ class World {
         this.addObjectsToMap(this.level.enemies);
     }
 
-    //Commented out
-    loopBackground() {
-        const leftEdge = -this.camera_x;
-        const buffer = 200;
-        const jump = this.tileWidth * this.tilesCount;
-
-        this.level.backgroundObjects.forEach(bg => {
-            if (bg.x + bg.width < leftEdge - buffer) {
-                bg.x += jump;
-            }
-
-            if (bg.x > leftEdge + this.tileWidth + buffer) {
-                bg.x -= jump;
-            }
-        });
-    }
-
     // ----- helpers -----
 
     addObjectsToMap(objects) {
         objects.forEach(o => this.addToMap(o));
     }
 
-   addToMap(mo) {
-    if (mo.otherDirection) {
-        this.flipImage(mo);
-    } else {
-        mo.draw(this.ctx);
+    addToMap(mo) {
+        if (mo.otherDirection) {
+            this.flipImage(mo);
+        } else {
+            mo.draw(this.ctx);
+        }
+        if (mo.drawFrame) mo.drawFrame(this.ctx);
     }
-    mo.drawFrame(this.ctx);
-}
 
     flipImage(mo) {
         this.ctx.save();
