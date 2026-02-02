@@ -1,4 +1,4 @@
-class movableObject extends DrawableObject{
+class movableObject extends DrawableObject {
 
     speed = 0.15;
     otherDirection = false;
@@ -19,7 +19,11 @@ class movableObject extends DrawableObject{
     }
 
     isInAir() {
-        return this.y < 180;
+        if (this instanceof ThrowableObject) {
+            return true;
+        } else {
+            return this.y < 180;
+        }
     }
 
 

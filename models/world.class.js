@@ -6,6 +6,7 @@ class World {
     keyboard;
     camera_x = 0;
     statusBar = new StatusBar();
+    throwableObjects = [];
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -13,22 +14,38 @@ class World {
         this.keyboard = keyboard;
         this.setWorld();
         this.draw();
-        this.checkCollisions();
+        this.run();
     }
 
     setWorld() {
         this.character.world = this;
     }
 
-    checkCollisions() {
+    run() {
         setInterval(() => {
-            this.level.enemies.forEach(enemy => {
-                if (this.character.isColliding(enemy)) {
-                    this.character.hit();
-                    this.statusBar.setPercentage(this.character.energy);
-                }
-            });
+            this.checkCollisions();
+            this.checkThrowObjects();
         }, 200);
+    }
+
+    checkThrowObjects() {
+        if (this.keyboard.SPACE) {
+            let bottle = new ThrowableObject(
+                this.character.x + 100,
+                this.character.y + 100
+            );
+            this.throwableObjects.push(bottle);
+            this.keyboard.SPACE = false;
+        }
+    }
+
+    checkCollisions() {
+        this.level.enemies.forEach(enemy => {
+            if (this.character.isColliding(enemy)) {
+                this.character.hit();
+                this.statusBar.setPercentage(this.character.energy);
+            }
+        });
     }
 
     // Main loop
@@ -36,7 +53,6 @@ class World {
         this.clearCanvas();
         this.update();
         this.render();
-        this.addToMap(this.statusBar);
         requestAnimationFrame(() => this.draw());
 
     }
@@ -76,13 +92,16 @@ class World {
     render() {
         this.ctx.save();                    // camera on
         this.ctx.translate(this.camera_x, 0);
-
         this.drawBackground();
         this.drawCharacter();
         this.drawClouds();
         this.drawEnemies();
-
+        this.drawBottles();
         this.ctx.restore();                 // camera off
+        //Sticky StatusBars
+        this.drawStatusBar();
+
+
     }
 
     drawBackground() {
@@ -99,6 +118,12 @@ class World {
 
     drawEnemies() {
         this.addObjectsToMap(this.level.enemies);
+    }
+    drawStatusBar() {
+        this.addToMap(this.statusBar);
+    }
+    drawBottles() {
+        this.addObjectsToMap(this.throwableObjects);
     }
 
     // ----- helpers -----
