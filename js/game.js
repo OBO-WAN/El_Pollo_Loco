@@ -9,13 +9,40 @@ function init() {
   window.addEventListener('keydown', (e) => {
     if (e.code === 'Enter') startGame();
   });
+  //fullscreen
+  document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+  document.addEventListener('fullscreenchange', updateFullscreenBtn);
+  updateFullscreenBtn();
 }
+
 
 function startGame() {
   if (world) return; // already started
   document.getElementById('startScreen').style.display = 'none';
   world = new World(canvas, keyboard);
 }
+
+function toggleFullscreen() {
+  const container = document.getElementById('fullscreen');
+
+  // if not in fullscreen -> enter
+  if (!document.fullscreenElement) {
+    container.requestFullscreen().catch((err) => {
+      console.warn('Fullscreen failed:', err);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+function updateFullscreenBtn() {
+  const btn = document.getElementById('fullscreenBtn');
+  const isFs = !!document.fullscreenElement;
+
+  btn.textContent = isFs ? '⤫' : '⛶';
+  btn.title = isFs ? 'Exit fullscreen' : 'Enter fullscreen';
+}
+
 
 
 window.addEventListener('keydown', (e) => {

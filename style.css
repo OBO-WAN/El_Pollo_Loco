@@ -21,15 +21,16 @@ h1{
 }
 
 canvas {
-  display: block;          /* removes inline gaps */
+  display: block;          
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 2;
   background: black;
 }
+
 #startScreen {
   position: absolute;
-  inset: 0;                /* cover ONLY the canvas */
+  inset: 0;       
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,3 +53,26 @@ canvas {
   border-radius: 10px;
   border: none;
 }
+
+.fullscreen-btn{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 20;           /* above overlay */
+  padding: 8px 12px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: rgba(0,0,0,0.55);
+  color: white;
+}
+
+.fullscreen-btn:hover{
+  background: rgba(0,0,0,0.75);
+}
+
+:fullscreen #fullscreen canvas {
+  width: min(100vw, calc(100vh * 1.5));  /* keep 3:2 ratio    */
+  height: auto;
+} 
