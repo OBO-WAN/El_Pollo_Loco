@@ -5,7 +5,11 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
-    statusBar = new StatusBar();
+    statusBarHealth = new StatusBar();
+    statusBarCoins = new StatusBar();
+    statusBarBottles = new StatusBar();
+
+
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
@@ -13,6 +17,7 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.setWorld();
+        this.initStatusBars();
         this.draw();
         this.run();
     }
@@ -43,7 +48,9 @@ class World {
         this.level.enemies.forEach(enemy => {
             if (this.character.isColliding(enemy)) {
                 this.character.hit();
-                this.statusBar.setPercentage(this.character.energy);
+                this.statusBarHealth.setPercentage(this.character.energy);
+                // this.statusBarCoins.setPercentage(this.coins);
+                // this.statusBarBottles.setPercentage(this.bottle);
             }
         });
     }
@@ -120,7 +127,9 @@ class World {
         this.addObjectsToMap(this.level.enemies);
     }
     drawStatusBar() {
-        this.addToMap(this.statusBar);
+        this.addToMap(this.statusBarHealth);
+        this.addToMap(this.statusBarCoins);
+        this.addToMap(this.statusBarBottles);
     }
     drawBottles() {
         this.addObjectsToMap(this.throwableObjects);
@@ -148,6 +157,27 @@ class World {
         this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
         this.ctx.restore();
     }
+
+    initStatusBars() {
+        // Health
+        this.statusBarHealth.setImages(this.statusBarHealth.HEALTH_BAR_IMAGES);
+        this.statusBarHealth.setPercentage(this.character.energy);
+        this.statusBarHealth.x = 20;
+        this.statusBarHealth.y = 10;
+
+        // Coins
+        this.statusBarCoins.setImages(this.statusBarCoins.COIN_BAR_IMAGES);
+        this.statusBarCoins.setPercentage(0);
+        this.statusBarCoins.x = 20;
+        this.statusBarCoins.y = 60;
+
+        // Bottles
+        this.statusBarBottles.setImages(this.statusBarBottles.BOTTLE_BAR_IMAGES);
+        this.statusBarBottles.setPercentage(0);
+        this.statusBarBottles.x = 20;
+        this.statusBarBottles.y = 110;
+    }
+
 }
 
 
