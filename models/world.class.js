@@ -5,6 +5,8 @@ class World {
     ctx;
     keyboard;
     camera_x = 0;
+    coins = 0;
+    coinSound = new Audio('audio/coin.mp3');
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
     statusBarBottles = new StatusBar();
@@ -30,6 +32,7 @@ class World {
         setInterval(() => {
             this.checkCollisions();
             this.checkThrowObjects();
+            this.checkCoinCollisions();
         }, 200);
     }
 
@@ -53,6 +56,24 @@ class World {
                 // this.statusBarBottles.setPercentage(this.bottle);
             }
         });
+    }
+    checkCoinCollisions() { // loop backwards
+        for (let i = this.level.coins.length - 1; i >= 0; i--) {
+            const coin = this.level.coins[i];
+
+            if (this.character.isColliding(coin)) {
+                this.level.coins.splice(i, 1);   // remove the collected coin
+                this.coins++;
+
+                // for example: 5 coins => 100%
+                const coinPercent = Math.min(100, this.coins * 20);
+                this.statusBarCoins.setPercentage(coinPercent);
+
+
+                this.coinSound.currentTime = 0; // allow rapid pickups
+                this.coinSound.play();
+            }
+        }
     }
 
     // Main loop
@@ -105,7 +126,6 @@ class World {
         this.drawEnemies();
         this.drawBottles();
         this.drawCoins();
-
         this.ctx.restore();                 // camera off
         //Sticky StatusBars
         this.drawStatusBar();

@@ -42,8 +42,10 @@ const level1 = new Level([
     ],
 
     [
-    new Coin(300, 200),
-    new Coin(600, 150),
-    new Coin(900, 180),
+        new Coin(300, 200),
+        new Coin(600, 150),
+        new Coin(900, 180),
+        new Coin(1200, 140),
+        new Coin(1500, 170),
     ],
 );
