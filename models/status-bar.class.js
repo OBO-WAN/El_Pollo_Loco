@@ -40,10 +40,6 @@ class StatusBar extends DrawableObject {
         this.y = 10;
         this.width = 200;
         this.height = 60;
-
-        this.setImages(this.HEALTH_BAR_IMAGES);
-        // this.setImages(this.COIN_BAR_IMAGES);
-        // this.setImages(this.BOTTLE_BAR_IMAGES);
         this.setPercentage(100);
     }
 

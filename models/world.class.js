@@ -104,6 +104,8 @@ class World {
         this.drawClouds();
         this.drawEnemies();
         this.drawBottles();
+        this.drawCoins();
+
         this.ctx.restore();                 // camera off
         //Sticky StatusBars
         this.drawStatusBar();
@@ -134,6 +136,11 @@ class World {
     drawBottles() {
         this.addObjectsToMap(this.throwableObjects);
     }
+
+    drawCoins() {
+        this.addObjectsToMap(this.level.coins);
+    }
+
 
     // ----- helpers -----
 
