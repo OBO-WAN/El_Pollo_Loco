@@ -1,26 +1,54 @@
 let canvas;
 let world;
+let bgMusic;
+let isMuted = false;
+const MUTE_STORAGE_KEY = 'game_muted';
 let keyboard = new Keyboard();
 
 
 function init() {
+  // cache DOM
   canvas = document.getElementById('canvas');
-  document.getElementById('startBtn').addEventListener('click', startGame);
-  window.addEventListener('keydown', (e) => {
-    if (e.code === 'Enter') startGame();
-  });
-  //fullscreen
-  document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+
+  const startBtn = document.getElementById('startBtn');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+  const muteBtn = document.getElementById('muteBtn');
+
+    // load mute state from localStorage
+  isMuted = localStorage.getItem(MUTE_STORAGE_KEY) === 'true';
+
+  // start game
+  startBtn.addEventListener('click', startGame);
+  window.addEventListener('keydown', onStartKeydown);
+
+  // fullscreen
+  fullscreenBtn.addEventListener('click', toggleFullscreen);
   document.addEventListener('fullscreenchange', updateFullscreenBtn);
   updateFullscreenBtn();
+
+  // music
+  setupBackgroundMusic();
+  muteBtn.addEventListener('click', toggleMute);
+  updateMuteBtn();
 }
 
+function onStartKeydown(e) {
+  if (e.code === 'Enter') startGame();
+}
+
+function setupBackgroundMusic() {
+  bgMusic = new Audio('audio/background_music.mp3');
+  bgMusic.loop = true;
+  bgMusic.volume = 0.35;
+}
 
 function startGame() {
-  if (world) return; // already started
+  if (world) return;
   document.getElementById('startScreen').style.display = 'none';
+  startBackgroundMusic();
   world = new World(canvas, keyboard);
 }
+
 
 function toggleFullscreen() {
   const container = document.getElementById('fullscreen');
@@ -43,6 +71,25 @@ function updateFullscreenBtn() {
   btn.title = isFs ? 'Exit fullscreen' : 'Enter fullscreen';
 }
 
+function startBackgroundMusic() {
+  if (!bgMusic) return;
+
+  bgMusic.muted = isMuted;
+  bgMusic.play().catch(() => {});
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  if (bgMusic) bgMusic.muted = isMuted;
+  localStorage.setItem(MUTE_STORAGE_KEY, isMuted);
+  updateMuteBtn();
+}
+
+function updateMuteBtn() {
+  const btn = document.getElementById('muteBtn');
+  btn.textContent = isMuted ? '🔇' : '🔊';
+  btn.title = isMuted ? 'Unmute' : 'Mute';
+}
 
 
 window.addEventListener('keydown', (e) => {

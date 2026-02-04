@@ -79,6 +79,22 @@ canvas {
   background: rgba(0, 0, 0, 0.75);
 }
 
+.mute-btn{
+  position: absolute;
+  top: 12px;
+  right: 60px;   /* leave space for fullscreen button */
+  z-index: 30;
+  padding: 8px 12px;
+  font-size: 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background: rgba(0,0,0,0.55);
+  color: white;
+}
+.mute-btn:hover{ background: rgba(0,0,0,0.75); }
+
+
 /* Make the fullscreen element actually fill the screen */
 #fullscreen:fullscreen {
   width: 100vw;
