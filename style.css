@@ -1,18 +1,20 @@
 body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;   /* horizontal */
-    align-items: center;       /* vertical */
-    background-color: #0a490a;
-    background-image: url('./img/5_background/complete_background.png');
-    background-size: cover;
-    background-position: center;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* horizontal */
+  align-items: center;
+  /* vertical */
+  background-color: #0a490a;
+  background-image: url('./img/5_background/complete_background.png');
+  background-size: cover;
+  background-position: center;
 }
 
-h1{
-    color: #211e1e;
-    text-align: center;
+h1 {
+  color: #211e1e;
+  text-align: center;
 }
 
 #gameContainer {
@@ -21,7 +23,7 @@ h1{
 }
 
 canvas {
-  display: block;          
+  display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 2;
@@ -30,20 +32,24 @@ canvas {
 
 #startScreen {
   position: absolute;
-  inset: 0;       
+  inset: 0;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 12px;
-  background: rgba(0,0,0,0.7);
-  color: white;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
   text-align: center;
-  z-index: 10;
 }
 
 #fullscreen {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 #startScreen button {
@@ -54,25 +60,47 @@ canvas {
   border: none;
 }
 
-.fullscreen-btn{
+.fullscreen-btn {
   position: absolute;
   top: 12px;
   right: 12px;
-  z-index: 20;           /* above overlay */
+  z-index: 20;
+  /* above overlay */
   padding: 8px 12px;
   font-size: 18px;
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
   color: white;
 }
 
-.fullscreen-btn:hover{
-  background: rgba(0,0,0,0.75);
+.fullscreen-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
 }
 
-:fullscreen #fullscreen canvas {
-  width: min(100vw, calc(100vh * 1.5));  /* keep 3:2 ratio    */
-  height: auto;
-} 
+/* Make the fullscreen element actually fill the screen */
+#fullscreen:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  justify-content: center;
+  background: black;
+}
+
+/* In fullscreen, the game container should NOT be limited to 720px */
+#fullscreen:fullscreen #gameContainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Scale canvas to fit the screen while keeping aspect ratio */
+#fullscreen:fullscreen canvas {
+  width: auto;
+  /* width: 100vw; */
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+}
