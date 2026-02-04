@@ -6,6 +6,7 @@ class World {
     keyboard;
     camera_x = 0;
     coins = 0;
+    bottles = 0;
     coinSound = new Audio('audio/coin.mp3');
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
@@ -33,6 +34,7 @@ class World {
             this.checkCollisions();
             this.checkThrowObjects();
             this.checkCoinCollisions();
+            this.checkBottleCollisions();
         }, 200);
     }
 
@@ -62,16 +64,26 @@ class World {
             const coin = this.level.coins[i];
 
             if (this.character.isColliding(coin)) {
-                this.level.coins.splice(i, 1);   // remove the collected coin
+                this.level.coins.splice(i, 1);
                 this.coins++;
-
-                // for example: 5 coins => 100%
                 const coinPercent = Math.min(100, this.coins * 20);
                 this.statusBarCoins.setPercentage(coinPercent);
-
-
-                this.coinSound.currentTime = 0; // allow rapid pickups
+                this.coinSound.currentTime = 0;
                 this.coinSound.play();
+            }
+        }
+    }
+
+    checkBottleCollisions() {
+        for (let i = this.level.bottles.length - 1; i >= 0; i--) {
+            const bottle = this.level.bottles[i];
+
+            if (this.character.isColliding(bottle)) {
+                if (bottle.animationInterval) clearInterval(bottle.animationInterval);
+                this.level.bottles.splice(i, 1);
+                this.bottles++;
+                const bottlePercent = Math.min(100, this.bottles * 20); 
+                this.statusBarBottles.setPercentage(bottlePercent);
             }
         }
     }
@@ -84,9 +96,7 @@ class World {
         requestAnimationFrame(() => this.draw());
 
     }
-
     // ----- UPDATE (logic) -----
-
     update() {
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
@@ -126,6 +136,7 @@ class World {
         this.drawEnemies();
         this.drawBottles();
         this.drawCoins();
+        this.drawBottlesOnGround();
         this.ctx.restore();                 // camera off
         //Sticky StatusBars
         this.drawStatusBar();
@@ -160,6 +171,10 @@ class World {
     drawCoins() {
         this.addObjectsToMap(this.level.coins);
     }
+    drawBottlesOnGround() {
+        this.addObjectsToMap(this.level.bottles);
+    }
+
 
 
     // ----- helpers -----
