@@ -52,6 +52,12 @@ function setupBackgroundMusic() {
 function startGame() {
   if (world) return;
   document.getElementById('startScreen').style.display = 'none';
+
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    const container = document.getElementById('fullscreen');
+    container.requestFullscreen?.().catch(() => { });
+  }
+
   startBackgroundMusic();
   world = new World(canvas, keyboard);
   gameStarted = true;
