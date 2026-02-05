@@ -1,20 +1,36 @@
+/* ============ Base: prevent mobile page scroll ============ */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;      /* no page scrolling */
+  touch-action: none;    /* prevent swipe scrolling */
+}
+
 body {
   margin: 0;
-  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  /* horizontal */
-  align-items: center;
-  /* vertical */
+  justify-content: center; /* horizontal */
+  align-items: center;     /* vertical */
   background-color: #0a490a;
   background-image: url('./img/5_background/complete_background.png');
   background-size: cover;
   background-position: center;
 }
 
+/* Title (desktop only) */
 h1 {
   color: #211e1e;
   text-align: center;
+}
+
+/* ============ Layout (desktop defaults) ============ */
+#fullscreen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 #gameContainer {
@@ -30,6 +46,32 @@ canvas {
   background: black;
 }
 
+/* ============ Mobile/tablet: game fills viewport ============ */
+@media (pointer: coarse) {
+  h1 { display: none; }
+
+  #fullscreen {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  #gameContainer {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  canvas {
+    width: 100vw;
+    height: 100vh;
+    aspect-ratio: auto; /* allow stretch to viewport */
+  }
+}
+
+/* ============ Start Screen ============ */
 #startScreen {
   position: absolute;
   inset: 0;
@@ -44,14 +86,6 @@ canvas {
   text-align: center;
 }
 
-#fullscreen {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-
 #startScreen button {
   padding: 10px 18px;
   font-size: 18px;
@@ -60,12 +94,12 @@ canvas {
   border: none;
 }
 
-.fullscreen-btn {
+/* ============ Top-right UI Buttons ============ */
+.fullscreen-btn,
+.mute-btn,
+.pause-btn {
   position: absolute;
   top: 12px;
-  right: 12px;
-  z-index: 20;
-  /* above overlay */
   padding: 8px 12px;
   font-size: 18px;
   border-radius: 10px;
@@ -75,27 +109,17 @@ canvas {
   color: white;
 }
 
-.fullscreen-btn:hover {
+.fullscreen-btn:hover,
+.mute-btn:hover,
+.pause-btn:hover {
   background: rgba(0, 0, 0, 0.75);
 }
 
-.mute-btn{
-  position: absolute;
-  top: 12px;
-  right: 60px;   /* leave space for fullscreen button */
-  z-index: 30;
-  padding: 8px 12px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  background: rgba(0,0,0,0.55);
-  color: white;
-}
-.mute-btn:hover{ background: rgba(0,0,0,0.75); }
+.fullscreen-btn { right: 12px;  z-index: 20; }
+.mute-btn       { right: 60px;  z-index: 30; }
+.pause-btn      { right: 108px; z-index: 35; }
 
-
-/* Make the fullscreen element actually fill the screen */
+/* ============ Fullscreen API mode ============ */
 #fullscreen:fullscreen {
   width: 100vw;
   height: 100vh;
@@ -103,7 +127,6 @@ canvas {
   background: black;
 }
 
-/* In fullscreen, the game container should NOT be limited to 720px */
 #fullscreen:fullscreen #gameContainer {
   width: 100vw;
   height: 100vh;
@@ -112,21 +135,19 @@ canvas {
   justify-content: center;
 }
 
-/* Scale canvas to fit the screen while keeping aspect ratio */
 #fullscreen:fullscreen canvas {
   width: auto;
-  /* width: 100vw; */
   height: 100vh;
   max-width: 100vw;
   max-height: 100vh;
 }
 
-/* --- Portrait mode blocker (mobile/tablet only via JS) --- */
+/* ============ Portrait mode blocker (toggled by JS) ============ */
 #orientationOverlay {
   position: absolute;
   inset: 0;
-  z-index: 40; /* above start screen + buttons */
-  display: none; /* toggled by JS */
+  z-index: 40;
+  display: none; /* JS toggles */
   align-items: center;
   justify-content: center;
   padding: 16px;
@@ -149,13 +170,13 @@ canvas {
   pointer-events: none;
 }
 
-/* Mobile controls overlay (hidden by default) */
+/* ============ Mobile controls (toggled by JS) ============ */
 #mobileControls {
   position: absolute;
   inset: 0;
-  z-index: 25; /* above canvas, below mute/fullscreen */
-  display: none;
-  pointer-events: none; /* enable only on buttons */
+  z-index: 25;   /* above canvas, below top buttons */
+  display: none; /* JS toggles */
+  pointer-events: none;
 }
 
 #mobileControls .mc-left,
@@ -167,7 +188,7 @@ canvas {
   pointer-events: none;
 }
 
-#mobileControls .mc-left { left: 12px; }
+#mobileControls .mc-left  { left: 12px; }
 #mobileControls .mc-right { right: 12px; }
 
 #mobileControls .mc-btn {
@@ -180,7 +201,7 @@ canvas {
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
   cursor: pointer;
-  touch-action: none; /* prevents browser gestures */
+  touch-action: none;
   user-select: none;
 }
 
@@ -189,43 +210,29 @@ canvas {
   background: rgba(0, 0, 0, 0.75);
 }
 
-.pause-btn{
-  position: absolute;
-  top: 12px;
-  right: 108px; /* left of mute */
-  z-index: 35;
-  padding: 8px 12px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  background: rgba(0,0,0,0.55);
-  color: white;
-}
-.pause-btn:hover{ background: rgba(0,0,0,0.75); }
-
-#pauseOverlay{
+/* ============ Pause overlay (toggled by JS) ============ */
+#pauseOverlay {
   position: absolute;
   inset: 0;
-  z-index: 45; /* above start screen + mobile controls */
-  display: none; /* toggled by JS */
+  z-index: 45;
+  display: none; /* JS toggles to flex */
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.75);
   color: #fff;
   text-align: center;
   pointer-events: auto;
 }
 
-#pauseOverlay .pauseCard{
+#pauseOverlay .pauseCard {
   max-width: 420px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 18px 16px;
 }
 
-#pauseOverlay button{
+#pauseOverlay button {
   margin-top: 12px;
   padding: 10px 18px;
   font-size: 16px;
@@ -233,4 +240,3 @@ canvas {
   border: none;
   cursor: pointer;
 }
-

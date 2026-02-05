@@ -104,12 +104,11 @@ class World {
         this.update();
         this.render();
         requestAnimationFrame(() => this.draw());
-
     }
     // ----- UPDATE (logic) -----
     update() {
         if(this.isPaused)return;
-        
+
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
         this.moveEnemies();             // enemy motion

@@ -49,9 +49,6 @@ class Character extends movableObject {
 
     world;
 
-    // currentImage = 0;
-
-
     constructor() {
         super();
         this.loadImage('img/2_character_pepe/2_walk/W-21.png');
@@ -81,16 +78,13 @@ class Character extends movableObject {
             if (this.world.keyboard.UP && !this.isInAir()) {
                 this.speedY = 28;
             }
-
         }, 100);
 
     }
-
 
     jump() {
         this.speedY = 20;
         this.currentImage = 0;     // start jump animation at J-31
         this.isJumping = true;
     }
-
 }
