@@ -34,8 +34,9 @@
     <div id="fullscreen">
         <h1>El Pollo Loco</h1>
 
-        <button id="fullscreenBtn" class="fullscreen-btn" type="button" title="Toggle fullscreen">⛶</button>
+        <button id="fullscreenBtn" class="fullscreen-btn" type="button" title="Toggle fullscreen">⤢</button>
         <button id="muteBtn" class="mute-btn" type="button" title="Mute/unmute">🔊</button>
+        <button id="pauseBtn" class="pause-btn" type="button" title="Pause / Resume">⏸</button>
 
         <div id="gameContainer">
             <div id="startScreen">
@@ -44,7 +45,37 @@
                 <button id="startBtn">Start Game</button>
             </div>
 
+            <!-- Portrait only mode -->
+            <div id="orientationOverlay" aria-live="polite">
+                <div class="orientationCard">
+                    <h2>Turn your device to play!</h2>
+                    <p>This game works in landscape mode only</p>
+                </div>
+            </div>
+
             <canvas id="canvas" width="720" height="480"></canvas>
+            <!-- Mobile controls -->
+            <div id="mobileControls" aria-label="Mobile controls">
+                <div class="mc-left">
+                    <button class="mc-btn" data-action="LEFT" aria-label="Move left">◀</button>
+                    <button class="mc-btn" data-action="RIGHT" aria-label="Move right">▶</button>
+                </div>
+
+                <div class="mc-right">
+                    <button class="mc-btn" data-action="UP" aria-label="Jump">⤒</button>
+                    <button class="mc-btn" data-action="SPACE" aria-label="Throw">⦿</button>
+                </div>
+            </div>
+            <!-- Pause Overlay div -->
+            <div id="pauseOverlay" aria-live="polite">
+                <div class="pauseCard">
+                    <h2>Paused</h2>
+                    <p>Press <b>Esc</b>/<b>P</b> or tap the pause button to resume.</p>
+                    <button id="resumeBtn" type="button">Resume</button>
+                </div>
+            </div>
+
+
         </div>
     </div>
 
