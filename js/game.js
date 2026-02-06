@@ -33,6 +33,12 @@ function init() {
   setupBackgroundMusic();
   muteBtn.addEventListener('click', toggleMute);
   updateMuteBtn();
+  
+  restartBtn?.addEventListener('click', () => {
+    setPaused(false);
+    window.location.reload();
+  });
+
   //MobileView
   setupOrientationGuard();
   setupMobileControls();

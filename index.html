@@ -36,15 +36,14 @@
     <div id="fullscreen">
         <h1>El Pollo Loco</h1>
 
-        <button id="fullscreenBtn" class="fullscreen-btn" type="button" title="Toggle fullscreen">⤢</button>
-        <button id="muteBtn" class="mute-btn" type="button" title="Mute/unmute">🔊</button>
         <button id="pauseBtn" class="pause-btn" type="button" title="Pause / Resume">⏸</button>
+        <button id="muteBtn" class="mute-btn" type="button" title="Mute/unmute">🔊</button>
+        <button id="restartBtn" class="restart-btn" type="button" title="Restart game">⟳</button>
 
         <div id="gameContainer">
             <div id="startScreen">
                 <h2>El Pollo Loco</h2>
-                <p>Arrow keys to move • UP to jump • SPACE to throw</p>
-                <button id="startBtn">Start Game</button>
+                <button id="startBtn" class="start-btn">Start Game</button>
             </div>
 
             <!-- Portrait only mode -->
@@ -56,6 +55,11 @@
             </div>
 
             <canvas id="canvas" width="720" height="480"></canvas>
+
+            <button id="fullscreenBtn" class="fullscreen-btn fullscreen-btn-canvas" type="button"
+                title="Enter fullscreen">
+                ⤢
+            </button>
             <!-- Mobile controls -->
             <div id="mobileControls" aria-label="Mobile controls">
                 <div class="mc-left">
@@ -76,9 +80,15 @@
                     <button id="resumeBtn" type="button">Resume</button>
                 </div>
             </div>
-
-
         </div>
+        <div id="controlsHint">
+            <p>
+                <span class="key key-move">◀ ▶</span> Move
+                <span class="key key-jump">⤒</span> Jump
+                <span class="key key-throw">⦿</span> Throw
+            </p>
+        </div>
+
     </div>
 
 

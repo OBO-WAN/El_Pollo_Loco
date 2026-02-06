@@ -1,62 +1,68 @@
-/* ============ Base: prevent mobile page scroll ============ */
+:root {
+  --font-title: "Smokum", cursive;
+  --font-ui: "Rye", serif;
+  --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --ui-bg: rgba(0, 0, 0, 0.55);
+  --ui-bg-hover: rgba(0, 0, 0, 0.75);
+  --overlay-bg: rgba(0, 0, 0, 0.75);
+  --overlay-card: rgba(255, 255, 255, 0.08);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 16px;
+
+  --pad-safe-top: env(safe-area-inset-top, 0px);
+  --pad-safe-right: env(safe-area-inset-right, 0px);
+  --pad-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --pad-safe-left: env(safe-area-inset-left, 0px);
+}
+
 html,
 body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  /* no page scrolling */
   touch-action: none;
-  /* prevent swipe scrolling */
 }
 
 body {
   margin: 0;
   display: flex;
   justify-content: center;
-  /* horizontal */
   align-items: center;
-  /* vertical */
   background-color: #0a490a;
-  background-image: url('./img/5_background/complete_background.png');
+  background-image: url("./img/5_background/complete_background.png");
   background-size: cover;
   background-position: center;
   font-family: var(--font-ui);
-
 }
 
-:root {
-  --font-title: 'Smokum', cursive;
-  --font-ui: 'Rye', serif;
-  --font-system: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-/* Title (desktop only) */
-h1 {
-  color: #211e1e;
-  text-align: center;
-  font-family: var(--font-title);
-  letter-spacing: 1px;
-  font-size: xx-large;
-}
-
+h1,
 h2 {
   font-family: var(--font-title);
   letter-spacing: 1px;
-  font-size: xx-large;
+  font-size: 2rem;
+  margin: 0;
 }
 
-p {
-  display: block;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-  unicode-bidi: isolate;
-  color: red;
-  font-size: xx-large;
+h1 {
+  color: #211e1e;
+  text-align: center;
 }
 
-/* ============ Layout (desktop defaults) ============ */
+@media (pointer: coarse) {
+
+  h1,
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h1 {
+    display: none;
+  }
+}
+
 #fullscreen {
   position: relative;
   display: flex;
@@ -75,15 +81,10 @@ canvas {
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 2;
-  background: black;
+  background: #000;
 }
 
-/* ============ Mobile/tablet: game fills viewport ============ */
 @media (pointer: coarse) {
-  h1 {
-    display: none;
-  }
-
   #fullscreen {
     width: 100vw;
     height: 100vh;
@@ -102,11 +103,9 @@ canvas {
     width: 100vw;
     height: 100vh;
     aspect-ratio: auto;
-    /* allow stretch to viewport */
   }
 }
 
-/* ============ Start Screen ============ */
 #startScreen {
   position: absolute;
   inset: 0;
@@ -119,60 +118,188 @@ canvas {
   background: rgba(0, 0, 0, 0.7);
   color: #fff;
   text-align: center;
-  font-family: var(--font-title);
+  padding: 16px;
+}
+
+#startScreen p,
+#orientationOverlay p,
+#pauseOverlay p {
+  font-family: var(--font-ui);
+  color: #fff;
+  font-size: 1rem;
+  margin: 0.75rem 0 0;
+  line-height: 1.25;
+}
+
+.start-btn {
+  font-family: var(--font-ui);
+  font-size: 1.3rem;
   letter-spacing: 1px;
-}
-
-#startScreen button {
-  padding: 10px 18px;
-  font-size: 18px;
+  padding: 14px 32px;
+  border-radius: var(--radius-md);
+  border: 2px solid #3b1f0f;
+  color: #fff;
+  background: linear-gradient(to bottom, #8b4513, #5a2e0f);
   cursor: pointer;
-  border-radius: 10px;
-  border: none;
+  box-shadow: 0 6px 0 #3b1f0f, 0 8px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
 }
 
-/* ============ Top-right UI Buttons ============ */
+.start-btn:hover {
+  background: linear-gradient(to bottom, #a0522d, #6b3a1e);
+}
+
+.start-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #3b1f0f, 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+@media (pointer: coarse) {
+  .start-btn {
+    font-size: 1.5rem;
+    padding: 16px 36px;
+  }
+}
+
+#controlsHint {
+  margin-top: 10px;
+  padding: 8px 18px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: #f2e6c9;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+#controlsHint p {
+  margin: 0;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+#controlsHint .key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-system);
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#controlsHint .key-move {
+  color: #f2c36b;
+  text-shadow: 0 0 4px rgba(242, 195, 107, 0.5);
+}
+
+#controlsHint .key-jump {
+  color: #7fc8ff;
+  text-shadow: 0 0 4px rgba(127, 200, 255, 0.5);
+}
+
+#controlsHint .key-throw {
+  color: #ff6b4a;
+  text-shadow: 0 0 4px rgba(255, 107, 74, 0.5);
+}
+
+@media (pointer: coarse) {
+  #controlsHint {
+    display: none;
+  }
+}
+
 .fullscreen-btn,
 .mute-btn,
-.pause-btn {
+.pause-btn,
+.restart-btn {
   position: absolute;
-  top: 12px;
-  padding: 8px 12px;
-  font-size: 18px;
-  border-radius: 10px;
+  top: calc(12px + var(--pad-safe-top));
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   border: none;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 16px;
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.55);
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
-.fullscreen-btn:hover,
-.mute-btn:hover,
-.pause-btn:hover {
-  background: rgba(0, 0, 0, 0.75);
+.fullscreen-btn-canvas {
+  top: auto;
+  right: auto;
+  left: 50%;
+  bottom: calc(10px + var(--pad-safe-bottom));
+  transform: translateX(-50%);
+  z-index: 30;
+
+  padding: 2px 6px;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 6px;
+
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff;
+  opacity: 0.78;
+
+  backdrop-filter: blur(1px);
+  -webkit-tap-highlight-color: transparent;
 }
 
-.fullscreen-btn {
-  right: 12px;
-  z-index: 20;
+.fullscreen-btn-canvas:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.fullscreen-btn-canvas:active {
+  transform: translateX(-50%) scale(0.96);
 }
 
 .mute-btn {
-  right: 60px;
+  right: calc(60px + var(--pad-safe-right));
   z-index: 30;
 }
 
 .pause-btn {
-  right: 108px;
+  right: calc(108px + var(--pad-safe-right));
   z-index: 35;
 }
 
-/* ============ Fullscreen API mode ============ */
+.restart-btn {
+  right: calc(12px + var(--pad-safe-right));
+  z-index: 30;
+}
+
+.pause-btn:hover,
+.mute-btn:hover,
+.restart-btn:hover {
+  background: var(--ui-bg-hover);
+}
+
+.pause-btn:active,
+.mute-btn:active,
+.restart-btn:active {
+  transform: scale(0.96);
+}
+
 #fullscreen:fullscreen {
   width: 100vw;
   height: 100vh;
   justify-content: center;
-  background: black;
+  background: #000;
 }
 
 #fullscreen:fullscreen #gameContainer {
@@ -190,13 +317,11 @@ canvas {
   max-height: 100vh;
 }
 
-/* ============ Portrait mode blocker (toggled by JS) ============ */
 #orientationOverlay {
   position: absolute;
   inset: 0;
   z-index: 40;
   display: none;
-  /* JS toggles */
   align-items: center;
   justify-content: center;
   padding: 16px;
@@ -207,44 +332,40 @@ canvas {
 
 #orientationOverlay .orientationCard {
   max-width: 420px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: var(--overlay-card);
+  border-radius: var(--radius-lg);
   padding: 18px 16px;
 }
 
-/* When active, block interactions with the game underneath */
 #gameContainer.portrait-blocked canvas,
 #gameContainer.portrait-blocked #startScreen,
 #gameContainer.portrait-blocked button {
   pointer-events: none;
 }
 
-/* ============ Mobile controls (toggled by JS) ============ */
 #mobileControls {
   position: absolute;
   inset: 0;
   z-index: 25;
-  /* above canvas, below top buttons */
   display: none;
-  /* JS toggles */
   pointer-events: none;
 }
 
 #mobileControls .mc-left,
 #mobileControls .mc-right {
   position: absolute;
-  bottom: 12px;
+  bottom: calc(12px + var(--pad-safe-bottom));
   display: flex;
   gap: 12px;
   pointer-events: none;
 }
 
 #mobileControls .mc-left {
-  left: 12px;
+  left: calc(12px + var(--pad-safe-left));
 }
 
 #mobileControls .mc-right {
-  right: 12px;
+  right: calc(12px + var(--pad-safe-right));
 }
 
 #mobileControls .mc-btn {
@@ -254,29 +375,28 @@ canvas {
   border-radius: 18px;
   border: none;
   font-size: 22px;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--ui-bg);
   color: #fff;
   cursor: pointer;
   touch-action: none;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 #mobileControls .mc-btn:active {
   transform: scale(0.96);
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--ui-bg-hover);
 }
 
-/* ============ Pause overlay (toggled by JS) ============ */
 #pauseOverlay {
   position: absolute;
   inset: 0;
   z-index: 45;
   display: none;
-  /* JS toggles to flex */
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--overlay-bg);
   color: #fff;
   text-align: center;
   pointer-events: auto;
@@ -284,8 +404,8 @@ canvas {
 
 #pauseOverlay .pauseCard {
   max-width: 420px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
+  background: var(--overlay-card);
+  border-radius: var(--radius-lg);
   padding: 18px 16px;
 }
 
@@ -293,7 +413,8 @@ canvas {
   margin-top: 12px;
   padding: 10px 18px;
   font-size: 16px;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   border: none;
   cursor: pointer;
+  font-family: var(--font-ui);
 }
