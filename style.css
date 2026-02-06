@@ -241,14 +241,14 @@ canvas {
 .fullscreen-btn-canvas {
   bottom: auto;
   left: 50%;
-  top: calc(12px + var(--pad-safe-top));
+  top: calc(24px + var(--pad-safe-top));
   transform: translateX(-50%);
   z-index: 25;
   padding: 2px 6px;
   font-size: 16px;
   line-height: 1;
   border-radius: 6px;
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(112, 104, 104, 0.597);
   color: #fff;
   opacity: 0.78;
   backdrop-filter: blur(1px);
@@ -257,7 +257,7 @@ canvas {
 
 .fullscreen-btn-canvas:hover {
   opacity: 1;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(114, 105, 105, 0.472);
 }
 
 .fullscreen-btn-canvas:active {
