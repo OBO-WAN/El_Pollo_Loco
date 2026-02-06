@@ -239,12 +239,11 @@ canvas {
 }
 
 .fullscreen-btn-canvas {
-  top: auto;
-  right: auto;
+  bottom: auto;
   left: 50%;
-  bottom: calc(36px + var(--pad-safe-bottom));
+  top: calc(12px + var(--pad-safe-top));
   transform: translateX(-50%);
-  z-index: 30;
+  z-index: 25;
   padding: 2px 6px;
   font-size: 16px;
   line-height: 1;
