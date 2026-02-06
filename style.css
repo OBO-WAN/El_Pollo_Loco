@@ -242,19 +242,16 @@ canvas {
   top: auto;
   right: auto;
   left: 50%;
-  bottom: calc(10px + var(--pad-safe-bottom));
+  bottom: calc(36px + var(--pad-safe-bottom));
   transform: translateX(-50%);
   z-index: 30;
-
   padding: 2px 6px;
   font-size: 16px;
   line-height: 1;
   border-radius: 6px;
-
   background: rgba(0, 0, 0, 0.18);
   color: #fff;
   opacity: 0.78;
-
   backdrop-filter: blur(1px);
   -webkit-tap-highlight-color: transparent;
 }
