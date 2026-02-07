@@ -1,6 +1,6 @@
 class World {
     character = new Character();
-    level = level1;
+    level;
     canvas;
     ctx;
     keyboard;
@@ -22,6 +22,7 @@ class World {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
+        this.level = initLevel1();
         this.setWorld();
         this.initStatusBars();
         this.draw();
@@ -40,6 +41,7 @@ class World {
             this.checkThrowObjects();
             this.checkCoinCollisions();
             this.checkBottleCollisions();
+            this.checkBottleEnemyCollisions();
         }, 200);
     }
 
@@ -98,6 +100,27 @@ class World {
         }
     }
 
+    checkBottleEnemyCollisions() {
+        for (let i = this.throwableObjects.length - 1; i >= 0; i--) {
+            const bottle = this.throwableObjects[i];
+
+            for (let j = this.level.enemies.length - 1; j >= 0; j--) {
+                const enemy = this.level.enemies[j];
+
+                if (bottle.isColliding(enemy)) {
+                    // remove chicken
+                    this.level.enemies.splice(j, 1);
+
+                    // remove bottle
+                    this.throwableObjects.splice(i, 1);
+
+                    break;
+                }
+            }
+        }
+    }
+
+
     // Main loop
     draw() {
         this.clearCanvas();
@@ -107,7 +130,7 @@ class World {
     }
     // ----- UPDATE (logic) -----
     update() {
-        if(this.isPaused)return;
+        if (this.isPaused) return;
 
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
