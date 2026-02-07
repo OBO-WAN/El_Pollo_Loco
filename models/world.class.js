@@ -68,15 +68,23 @@ class World {
     }
 
     checkCollisions() {
-        this.level.enemies.forEach(enemy => {
+        this.level.enemies.forEach((enemy, index) => {
             if (this.character.isColliding(enemy)) {
-                this.character.hit();
-                this.statusBarHealth.setPercentage(this.character.energy);
-                // this.statusBarCoins.setPercentage(this.coins);
-                // this.statusBarBottles.setPercentage(this.bottle);
+
+                //  stomp kill
+                if (enemy instanceof Chicken && this.character.isFalling()) {
+                    this.level.enemies.splice(index, 1);
+                    this.character.speedY = 15;
+                }
+                //  side collision
+                else {
+                    this.character.hit();
+                    this.statusBarHealth.setPercentage(this.character.energy);
+                }
             }
         });
     }
+
     checkCoinCollisions() { // loop backwards
         for (let i = this.level.coins.length - 1; i >= 0; i--) {
             const coin = this.level.coins[i];

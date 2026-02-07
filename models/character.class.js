@@ -74,7 +74,6 @@ class Character extends movableObject {
                     this.playAnimation(this.animatedCharachter);
                 }
             }
-            // console.log("This Speed Y: ", this.speedY);
             if (this.world.keyboard.UP && !this.isInAir()) {
                 this.speedY = 28;
             }
@@ -87,4 +86,9 @@ class Character extends movableObject {
         this.currentImage = 0;     // start jump animation at J-31
         this.isJumping = true;
     }
+
+    isFalling() {
+        return this.speedY < 0;
+    }
+
 }
