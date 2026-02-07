@@ -48,15 +48,21 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.SPACE && this.bottles > 0) {
+
+            const direction = this.character.otherDirection ? -1 : 1;
+
             let bottle = new ThrowableObject(
-                this.character.x + 100,
-                this.character.y + 100
+                this.character.x + (direction === 1 ? 100 : -20),
+                this.character.y + 100,
+                direction
             );
+
             this.throwableObjects.push(bottle);
             this.bottles--;
-            this.bottles = Math.max(0, this.bottles); //guard
+
             const bottlePercent = Math.min(100, this.bottles * 20);
             this.statusBarBottles.setPercentage(bottlePercent);
+
             this.keyboard.SPACE = false;
         }
     }
@@ -108,18 +114,15 @@ class World {
                 const enemy = this.level.enemies[j];
 
                 if (bottle.isColliding(enemy)) {
-                    // remove chicken
+                    bottle.stop();
                     this.level.enemies.splice(j, 1);
-
-                    // remove bottle
                     this.throwableObjects.splice(i, 1);
-
                     break;
                 }
+
             }
         }
     }
-
 
     // Main loop
     draw() {
