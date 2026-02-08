@@ -35,7 +35,7 @@
 <body onload="init()">
 
     <div id="fullscreen">
-        <h1>El Pollo Loco</h1>
+        <h1 class="title-western animated-title">El Pollo Loco</h1>
 
         <button id="pauseBtn" class="pause-btn" type="button" title="Pause / Resume">⏸</button>
         <button id="muteBtn" class="mute-btn" type="button" title="Mute/unmute">🔊</button>
@@ -43,9 +43,14 @@
 
         <div id="gameContainer">
             <div id="startScreen">
-                <h2>El Pollo Loco</h2>
-                <button id="startBtn" class="start-btn">Start Game</button>
+                <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Start Game"
+                    class="start-screen-image" />
+
+                <button id="startBtn" class="start-screen-btn">
+                    Start Game
+                </button>
             </div>
+
 
             <!-- Portrait only mode -->
             <div id="orientationOverlay" aria-live="polite">
@@ -85,8 +90,7 @@
         <!-- Game Over Overlay -->
         <div id="gameOverOverlay" style="display:none;">
             <img src="img/9_intro_outro_screens/game_over/game over!.png" alt="Game Over" class="game-over-image" />
-
-            <button id="gameOverRestartBtn" class="game-over-restart">
+            <button id="gameOverRestartBtn" class="start-screen-btn">
                 Restart
             </button>
         </div>
