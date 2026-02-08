@@ -14,8 +14,6 @@ class World {
     isPaused = false;
     collisionInterval = null;
 
-
-
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
@@ -68,24 +66,25 @@ class World {
     }
 
     checkCollisions() {
-        this.level.enemies.forEach((enemy, index) => {
+        this.level.enemies.forEach((enemy) => {
             if (this.character.isColliding(enemy)) {
-
-                //  stomp kill
-                if (enemy instanceof Chicken && this.character.isFalling()) {
-                    this.level.enemies.splice(index, 1);
-                    this.character.speedY = 15;
+                if (enemy instanceof Chicken && this.character.isFalling() && !enemy.dead) {
+                    enemy.die();
+                    this.character.speedY = 15;  // bounce
+                    setTimeout(() => {
+                        const idx = this.level.enemies.indexOf(enemy);
+                        if (idx > -1) this.level.enemies.splice(idx, 1);
+                    }, 500);
+                    return;
                 }
-                //  side collision
-                else {
-                    this.character.hit();
-                    this.statusBarHealth.setPercentage(this.character.energy);
-                }
+                this.character.hit();
+                this.statusBarHealth.setPercentage(this.character.energy);
             }
         });
     }
 
-    checkCoinCollisions() { // loop backwards
+
+    checkCoinCollisions() { 
         for (let i = this.level.coins.length - 1; i >= 0; i--) {
             const coin = this.level.coins[i];
 

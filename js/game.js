@@ -1,53 +1,97 @@
 let canvas;
 let world;
 let bgMusic;
+
 let isMuted = false;
 let isPaused = false;
 const MUTE_STORAGE_KEY = 'game_muted';
-let isPortraitBlocked = false; //for mobile
-let gameStarted = false; // buttons on mobile
+
+let isPortraitBlocked = false; // for mobile
+let gameStarted = false;       // buttons on mobile
+
 let keyboard = new Keyboard();
 
+// Cache DOM refs 
+const dom = {
+  canvas: null,
+  startBtn: null,
+  fullscreenBtn: null,
+  muteBtn: null,
+  restartBtn: null,
+  fullscreenContainer: null,
+  startScreen: null,
+};
 
 function init() {
-  // cache DOM
-  canvas = document.getElementById('canvas');
+  cacheDom();
+  loadSettings();
 
-  const startBtn = document.getElementById('startBtn');
-  const fullscreenBtn = document.getElementById('fullscreenBtn');
-  const muteBtn = document.getElementById('muteBtn');
+  bindStartControls();
+  bindUiControls();
+  bindRestart();
 
-  // load mute state from localStorage
+  initAudio();
+  initMobile();
+  bindKeyboard(); // keydown/keyup (movement + pause)
+}
+
+function cacheDom() {
+  dom.canvas = document.getElementById('canvas');
+  dom.startBtn = document.getElementById('startBtn');
+  dom.fullscreenBtn = document.getElementById('fullscreenBtn');
+  dom.muteBtn = document.getElementById('muteBtn');
+  dom.restartBtn = document.getElementById('restartBtn');
+  dom.fullscreenContainer = document.getElementById('fullscreen');
+  dom.startScreen = document.getElementById('startScreen');
+
+  canvas = dom.canvas;
+}
+
+function loadSettings() {
   isMuted = localStorage.getItem(MUTE_STORAGE_KEY) === 'true';
+}
 
-  // start game
-  startBtn.addEventListener('click', startGame);
+function bindStartControls() {
+  dom.startBtn?.addEventListener('click', startGame);
   window.addEventListener('keydown', onStartKeydown);
+}
 
-  // fullscreen
-  fullscreenBtn.addEventListener('click', toggleFullscreen);
+function bindUiControls() {
+  dom.fullscreenBtn?.addEventListener('click', toggleFullscreen);
   document.addEventListener('fullscreenchange', updateFullscreenBtn);
   updateFullscreenBtn();
 
-  // music
-  setupBackgroundMusic();
-  muteBtn.addEventListener('click', toggleMute);
+  dom.muteBtn?.addEventListener('click', toggleMute);
   updateMuteBtn();
-  
-  restartBtn?.addEventListener('click', () => {
+}
+
+function bindRestart() {
+  dom.restartBtn?.addEventListener('click', () => {
     setPaused(false);
     window.location.reload();
   });
+}
 
-  //MobileView
+function initAudio() {
+  setupBackgroundMusic();
+}
+
+function initMobile() {
   setupOrientationGuard();
   setupMobileControls();
   setupPauseControls();
 }
 
+function bindKeyboard() {
+  window.addEventListener('keydown', onKeydown, { passive: false });
+  window.addEventListener('keyup', onKeyup, { passive: false });
+}
+
 function onStartKeydown(e) {
   if (e.code === 'Enter') startGame();
 }
+
+// -------------------- Audio --------------------
 
 function setupBackgroundMusic() {
   bgMusic = new Audio('audio/background_music.mp3');
@@ -55,47 +99,10 @@ function setupBackgroundMusic() {
   bgMusic.volume = 0.35;
 }
 
-function startGame() {
-  if (world) return;
-  document.getElementById('startScreen').style.display = 'none';
-
-  if (window.matchMedia('(pointer: coarse)').matches) {
-    const container = document.getElementById('fullscreen');
-    container.requestFullscreen?.().catch(() => { });
-  }
-
-  startBackgroundMusic();
-  world = new World(canvas, keyboard);
-  gameStarted = true;
-  updateMobileControlsVisibility();
-}
-
-function toggleFullscreen() {
-  const container = document.getElementById('fullscreen');
-
-  // if not in fullscreen -> enter
-  if (!document.fullscreenElement) {
-    container.requestFullscreen().catch((err) => {
-      console.warn('Fullscreen failed:', err);
-    });
-  } else {
-    document.exitFullscreen();
-  }
-}
-
-function updateFullscreenBtn() {
-  const btn = document.getElementById('fullscreenBtn');
-  const isFs = !!document.fullscreenElement;
-
-  btn.textContent = isFs ? '⤫' : '⤢';
-  btn.title = isFs ? 'Exit fullscreen' : 'Enter fullscreen';
-}
-
 function startBackgroundMusic() {
   if (!bgMusic) return;
-
   bgMusic.muted = isMuted;
-  bgMusic.play().catch(() => { });
+  bgMusic.play().catch(() => {});
 }
 
 function toggleMute() {
@@ -106,16 +113,56 @@ function toggleMute() {
 }
 
 function updateMuteBtn() {
-  const btn = document.getElementById('muteBtn');
+  const btn = dom.muteBtn || document.getElementById('muteBtn');
+  if (!btn) return;
   btn.textContent = isMuted ? '🔇' : '🔊';
   btn.title = isMuted ? 'Unmute' : 'Mute';
 }
 
+// -------------------- Game start / fullscreen --------------------
+
+function startGame() {
+  if (world) return;
+
+  dom.startScreen?.style && (dom.startScreen.style.display = 'none');
+
+  if (window.matchMedia('(pointer: coarse)').matches) {
+    dom.fullscreenContainer?.requestFullscreen?.().catch(() => {});
+  }
+
+  startBackgroundMusic();
+  world = new World(canvas, keyboard);
+
+  gameStarted = true;
+  updateMobileControlsVisibility();
+}
+
+function toggleFullscreen() {
+  const container = dom.fullscreenContainer || document.getElementById('fullscreen');
+
+  if (!document.fullscreenElement) {
+    container?.requestFullscreen?.().catch((err) => {
+      console.warn('Fullscreen failed:', err);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+function updateFullscreenBtn() {
+  const btn = dom.fullscreenBtn || document.getElementById('fullscreenBtn');
+  if (!btn) return;
+
+  const isFs = !!document.fullscreenElement;
+  btn.textContent = isFs ? '⤫' : '⤢';
+  btn.title = isFs ? 'Exit fullscreen' : 'Enter fullscreen';
+}
+
+// -------------------- Orientation / mobile controls --------------------
+
 function setupOrientationGuard() {
   const gameContainer = document.getElementById('gameContainer');
   const overlay = document.getElementById('orientationOverlay');
-
-  // If you ever load the game without these elements, fail gracefully.
   if (!gameContainer || !overlay) return;
 
   function isMobileLike() {
@@ -134,13 +181,13 @@ function setupOrientationGuard() {
       overlay.style.display = 'none';
       gameContainer.classList.remove('portrait-blocked');
     }
+
     updateMobileControlsVisibility();
   }
 
   window.addEventListener('resize', updateOrientationUI, { passive: true });
   window.addEventListener('orientationchange', updateOrientationUI, { passive: true });
-
-  updateOrientationUI();//initial check
+  updateOrientationUI();
 }
 
 function updateMobileControlsVisibility() {
@@ -161,7 +208,6 @@ function setupMobileControls() {
   const controls = document.getElementById('mobileControls');
   if (!controls) return;
 
-  // Use Pointer Events so it works for touch + pen + mouse
   const setFlag = (action, pressed) => {
     if (action === 'LEFT') keyboard.LEFT = pressed;
     if (action === 'RIGHT') keyboard.RIGHT = pressed;
@@ -188,18 +234,20 @@ function setupMobileControls() {
   });
 }
 
+// -------------------- Pause --------------------
+
 function setPaused(paused) {
   isPaused = paused;
   if (world) world.isPaused = isPaused;
+
   const pauseOverlay = document.getElementById('pauseOverlay');
   if (pauseOverlay) pauseOverlay.style.display = isPaused ? 'flex' : 'none';
-  if (typeof updateMobileControlsVisibility === 'function') {
-    updateMobileControlsVisibility();
-  }
+
+  updateMobileControlsVisibility();
 }
 
 function togglePause() {
-  if (!world) return;        // can’t pause before starting
+  if (!world) return;            // can’t pause before starting
   if (isPortraitBlocked) return; // don’t pause/resume while blocked
   setPaused(!isPaused);
 }
@@ -208,16 +256,13 @@ function setupPauseControls() {
   const pauseBtn = document.getElementById('pauseBtn');
   const resumeBtn = document.getElementById('resumeBtn');
 
-  if (pauseBtn) {
-    pauseBtn.addEventListener('click', togglePause);
-  }
-
-  if (resumeBtn) {
-    resumeBtn.addEventListener('click', () => setPaused(false));
-  }
+  pauseBtn?.addEventListener('click', togglePause);
+  resumeBtn?.addEventListener('click', () => setPaused(false));
 }
 
-window.addEventListener('keydown', (e) => {
+// -------------------- Keyboard --------------------
+
+function onKeydown(e) {
   // Pause / resume
   if (e.code === 'Escape' || e.code === 'KeyP') {
     e.preventDefault();
@@ -233,15 +278,13 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault();
   }
 
-  // Movement / actions
   if (e.code === 'ArrowRight') keyboard.RIGHT = true;
   if (e.code === 'ArrowLeft') keyboard.LEFT = true;
   if (e.code === 'ArrowUp') keyboard.UP = true;
   if (e.code === 'Space') keyboard.SPACE = true;
-}, { passive: false });
+}
 
-
-window.addEventListener('keyup', (e) => {
+function onKeyup(e) {
   // Ignore input when portrait-locked or paused
   if (isPortraitBlocked || isPaused) return;
 
@@ -250,14 +293,8 @@ window.addEventListener('keyup', (e) => {
     e.preventDefault();
   }
 
-  // Movement / actions
   if (e.code === 'ArrowRight') keyboard.RIGHT = false;
   if (e.code === 'ArrowLeft') keyboard.LEFT = false;
   if (e.code === 'ArrowUp') keyboard.UP = false;
   if (e.code === 'Space') keyboard.SPACE = false;
-}, { passive: false });
-
-
-
-
-
+}
