@@ -520,3 +520,37 @@ canvas {
     display: none;
   }
 }
+
+.startScreenActions {
+  display: none;
+  gap: 10px;
+}
+
+.mini-action-btn {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(0,0,0,0.35);
+  color: #f2e6c9;
+  cursor: pointer;
+}
+
+.mini-action-btn:active {
+  transform: scale(0.98);
+}
+
+@media (pointer: coarse) {
+  #controlsHint,
+  #legalBar {
+    display: none;
+  }
+
+  .startScreenActions {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+}
+

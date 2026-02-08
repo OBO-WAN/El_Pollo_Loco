@@ -15,7 +15,7 @@ html, body {
 }
 
 h1 {
-  font-size: 2.4rem;
+  font-size: 2.5rem;
   margin-bottom: 24px;
   text-align: center;
 }
@@ -44,4 +44,40 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+#backBtn {
+  display: block;
+  margin: 40px auto 0;
+  padding: 12px 28px;
+  font-size: 1rem;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #8b4513, #5a2e0f);
+  color: #fff;
+}
+
+#backBtn:active {
+  transform: scale(0.98);
+}
+
+.impressum-header {
+  display: block;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.back-arrow {
+  font-size: 1.6rem;
+  background: none;
+  border: none;
+  color: #f2e6c9;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.back-arrow:active {
+  transform: scale(0.95);
 }

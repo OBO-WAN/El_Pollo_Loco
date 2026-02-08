@@ -10,7 +10,10 @@
 
 <body>
     <main class="impressum-container">
-        <h1>Impressum</h1>
+        <div class="impressum-header">
+            <button id="backArrow" class="back-arrow" aria-label="Back">&#x21A9;</button>
+            <h1>Impressum</h1>
+        </div>
 
         <section>
             <p><strong>Verantwortlich gemäß § 5 TMG:</strong></p>
@@ -61,7 +64,21 @@
             </p>
 
         </section>
+        <button id="backBtn" type="button">Back to Game</button>
     </main>
+
+    <script>
+        document.getElementById('backBtn')?.addEventListener('click', () => {
+            window.history.back();
+        });
+
+        const goBack = () => window.history.back();
+
+        document.getElementById('backBtn')?.addEventListener('click', goBack);
+        document.getElementById('backArrow')?.addEventListener('click', goBack);
+
+    </script>
+
 </body>
 
 

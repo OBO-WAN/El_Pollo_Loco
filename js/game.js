@@ -30,6 +30,7 @@ function init() {
   bindUiControls();
   bindRestart();
   bindLegal();
+  bindStartScreenExtras();
 
   initAudio();
   initMobile();
@@ -84,6 +85,16 @@ function bindLegal() {
     ?.addEventListener('click', () => {
       window.location.href = 'impressum.html';
     });
+}
+
+function bindStartScreenExtras() {
+  document.getElementById('impressumBtnMobile')?.addEventListener('click', () => {
+    window.location.href = 'impressum.html';
+  });
+
+  document.getElementById('howToBtn')?.addEventListener('click', () => {
+    alert('Move: ◀ ▶\nJump: ⤒\nThrow: ⦿');
+  });
 }
 
 function initAudio() {
