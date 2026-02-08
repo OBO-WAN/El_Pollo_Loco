@@ -29,6 +29,7 @@ function init() {
   bindStartControls();
   bindUiControls();
   bindRestart();
+  bindLegal();
 
   initAudio();
   initMobile();
@@ -74,6 +75,14 @@ function bindRestart() {
     .getElementById('gameOverRestartBtn')
     ?.addEventListener('click', () => {
       window.location.reload();
+    });
+}
+
+function bindLegal() {
+  document
+    .getElementById('impressumBtn')
+    ?.addEventListener('click', () => {
+      window.location.href = 'impressum.html';
     });
 }
 

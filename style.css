@@ -488,3 +488,35 @@ canvas {
   margin-bottom: 20px;
   object-fit: contain;
 }
+
+#legalBar {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.legal-btn {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
+  color: #f2e6c9;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.legal-btn:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.legal-btn:active {
+  transform: scale(0.98);
+}
+
+@media (pointer: coarse) {
+  #legalBar {
+    display: none;
+  }
+}
