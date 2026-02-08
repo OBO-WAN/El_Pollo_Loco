@@ -1,3 +1,22 @@
+function createRandomBottles(amount, minX, maxX) {
+    const bottles = [];
+    const minDistance = 250; // prevent boring clusters
+
+    let lastX = minX - minDistance;
+
+    for (let i = 0; i < amount; i++) {
+        let x;
+
+        do {
+            x = minX + Math.random() * (maxX - minX);
+        } while (Math.abs(x - lastX) < minDistance);
+
+        bottles.push(new Bottle(x, 350));
+        lastX = x;
+    }
+
+    return bottles;
+}
 
 function initLevel1() {
     return new Level(
@@ -52,13 +71,8 @@ function initLevel1() {
             new Coin(1500, 170),
         ],
 
-        [
-            new Bottle(0, 350),
-            new Bottle(400, 350),
-            new Bottle(800, 350),
-            new Bottle(1200, 350),
-            new Bottle(1600, 350),
-            // new Bottle(2000, 350),
-        ]
+        
+        createRandomBottles(5, 200, 1800),
+        
     )
 }

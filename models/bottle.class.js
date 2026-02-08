@@ -6,8 +6,8 @@ class Bottle extends movableObject {
 
   constructor(x, y) {
     super();
-    this.loadImage(this.IMAGES_BOTTLE[0]);  
-    this.loadImages(this.IMAGES_BOTTLE);    
+    this.loadImage(this.IMAGES_BOTTLE[0]);
+    this.loadImages(this.IMAGES_BOTTLE);
 
     this.x = x;
     this.y = y;
@@ -18,10 +18,10 @@ class Bottle extends movableObject {
   }
 
   animate() {
-  this.animationInterval = setInterval(() => {
-    this.playAnimation(this.IMAGES_BOTTLE);
-  }, 400);
-}
+    this.animationInterval = setInterval(() => {
+      this.playAnimation(this.IMAGES_BOTTLE);
+    }, 400);
+  }
 
 }
 
