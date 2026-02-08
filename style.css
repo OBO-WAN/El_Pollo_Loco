@@ -484,7 +484,7 @@ canvas {
 
 .game-over-image {
   max-width: 90%;
-  max-height: 70%;
+  max-height: 58%;
   margin-bottom: 20px;
   object-fit: contain;
 }

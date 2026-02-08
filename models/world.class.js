@@ -24,9 +24,17 @@ class World {
         this.level = initLevel1();
         this.setWorld();
         this.initStatusBars();
+
+        this.statusBarEndboss = new StatusBar();
+        this.statusBarEndboss.setImages(this.statusBarEndboss.ENDBOSS_BAR_IMAGES);
+        this.statusBarEndboss.x = 480;
+        this.statusBarEndboss.y = 10;
+        this.statusBarEndboss.setPercentage(100);
+
         this.draw();
         this.run();
     }
+
 
     setWorld() {
         this.character.world = this;
@@ -87,7 +95,6 @@ class World {
         });
     }
 
-
     checkCoinCollisions() {
         for (let i = this.level.coins.length - 1; i >= 0; i--) {
             const coin = this.level.coins[i];
@@ -126,11 +133,16 @@ class World {
 
                 if (bottle.isColliding(enemy)) {
                     bottle.stop();
-                    this.level.enemies.splice(j, 1);
                     this.throwableObjects.splice(i, 1);
-                    break;
-                }
 
+                    if (enemy instanceof Endboss) {
+                        enemy.hit();
+                        this.statusBarEndboss.setPercentage(enemy.energy);
+                    } else {
+                        this.level.enemies.splice(j, 1);
+                    }
+                    return;
+                }
             }
         }
     }
@@ -138,7 +150,7 @@ class World {
     gameOver() {
         if (this.isGameOver) return;
         this.isGameOver = true;
-        this.isPaused = true; 
+        this.isPaused = true;
         if (this.collisionInterval) clearInterval(this.collisionInterval);
         const overlay = document.getElementById('gameOverOverlay');
         if (overlay) overlay.style.display = 'flex';
@@ -219,6 +231,9 @@ class World {
         this.addToMap(this.statusBarHealth);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottles);
+        if (this.level.enemies.some(enemy => enemy instanceof Endboss)) {
+            this.addToMap(this.statusBarEndboss);
+        }
     }
     drawBottles() {
         this.addObjectsToMap(this.throwableObjects);
