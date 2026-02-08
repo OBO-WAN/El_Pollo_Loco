@@ -13,6 +13,7 @@ class World {
     statusBarBottles = new StatusBar();
     isPaused = false;
     collisionInterval = null;
+    isGameOver = false;
 
     throwableObjects = [];
 
@@ -40,6 +41,9 @@ class World {
             this.checkCoinCollisions();
             this.checkBottleCollisions();
             this.checkBottleEnemyCollisions();
+            if (this.character.isDead()) {
+                this.gameOver();
+            }
         }, 200);
     }
 
@@ -84,7 +88,7 @@ class World {
     }
 
 
-    checkCoinCollisions() { 
+    checkCoinCollisions() {
         for (let i = this.level.coins.length - 1; i >= 0; i--) {
             const coin = this.level.coins[i];
 
@@ -131,6 +135,14 @@ class World {
         }
     }
 
+    gameOver() {
+        if (this.isGameOver) return;
+        this.isGameOver = true;
+        this.isPaused = true; 
+        if (this.collisionInterval) clearInterval(this.collisionInterval);
+        const overlay = document.getElementById('gameOverOverlay');
+        if (overlay) overlay.style.display = 'flex';
+    }
     // Main loop
     draw() {
         this.clearCanvas();

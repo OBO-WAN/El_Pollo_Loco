@@ -70,6 +70,11 @@ function bindRestart() {
     setPaused(false);
     window.location.reload();
   });
+  document
+    .getElementById('gameOverRestartBtn')
+    ?.addEventListener('click', () => {
+      window.location.reload();
+    });
 }
 
 function initAudio() {
@@ -102,7 +107,7 @@ function setupBackgroundMusic() {
 function startBackgroundMusic() {
   if (!bgMusic) return;
   bgMusic.muted = isMuted;
-  bgMusic.play().catch(() => {});
+  bgMusic.play().catch(() => { });
 }
 
 function toggleMute() {
@@ -127,7 +132,7 @@ function startGame() {
   dom.startScreen?.style && (dom.startScreen.style.display = 'none');
 
   if (window.matchMedia('(pointer: coarse)').matches) {
-    dom.fullscreenContainer?.requestFullscreen?.().catch(() => {});
+    dom.fullscreenContainer?.requestFullscreen?.().catch(() => { });
   }
 
   startBackgroundMusic();
