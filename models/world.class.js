@@ -22,6 +22,8 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.level = initLevel1();
+        this.endboss = this.level.enemies.find(e => e instanceof Endboss);
+        this.endbossBarVisible = false;
         this.setWorld();
         this.initStatusBars();
 
@@ -147,6 +149,17 @@ class World {
         }
     }
 
+    checkEndbossBarTrigger() {
+        if (!this.endboss || this.endbossBarVisible) return;
+
+        // Show when player is close enough (tweak the distance to taste)
+        const triggerDistance = 600;
+        if (this.character.x >= this.endboss.x - triggerDistance) {
+            this.endbossBarVisible = true;
+        }
+    }
+
+
     gameOver() {
         if (this.isGameOver) return;
         this.isGameOver = true;
@@ -165,7 +178,7 @@ class World {
     // ----- UPDATE (logic) -----
     update() {
         if (this.isPaused) return;
-
+        this.checkEndbossBarTrigger();
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
         this.moveEnemies();             // enemy motion
@@ -231,10 +244,11 @@ class World {
         this.addToMap(this.statusBarHealth);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottles);
-        if (this.level.enemies.some(enemy => enemy instanceof Endboss)) {
+        if (this.endbossBarVisible) {
             this.addToMap(this.statusBarEndboss);
         }
     }
+    
     drawBottles() {
         this.addObjectsToMap(this.throwableObjects);
     }
