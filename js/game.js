@@ -77,6 +77,11 @@ function bindRestart() {
     ?.addEventListener('click', () => {
       window.location.reload();
     });
+  document
+    .getElementById('winRestartBtn')
+    ?.addEventListener('click', () => {
+      window.location.reload();
+    });
 }
 
 function bindLegal() {

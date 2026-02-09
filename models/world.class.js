@@ -54,6 +54,9 @@ class World {
             if (this.character.isDead()) {
                 this.gameOver();
             }
+            if (this.endboss && this.endboss.dead) {
+                this.win();
+            }
         }, 200);
     }
 
@@ -159,7 +162,6 @@ class World {
         }
     }
 
-
     gameOver() {
         if (this.isGameOver) return;
         this.isGameOver = true;
@@ -168,6 +170,17 @@ class World {
         const overlay = document.getElementById('gameOverOverlay');
         if (overlay) overlay.style.display = 'flex';
     }
+
+    win() {
+        if (this.isGameOver) return;     // reuse your existing guard
+        this.isGameOver = true;
+        this.isPaused = true;
+        if (this.collisionInterval) clearInterval(this.collisionInterval);
+
+        const overlay = document.getElementById('winOverlay');
+        if (overlay) overlay.style.display = 'flex';
+    }
+
     // Main loop
     draw() {
         this.clearCanvas();
@@ -244,11 +257,11 @@ class World {
         this.addToMap(this.statusBarHealth);
         this.addToMap(this.statusBarCoins);
         this.addToMap(this.statusBarBottles);
-        if (this.endbossBarVisible) {
+        if (this.endbossBarVisible && this.endboss && !this.endboss.dead) {
             this.addToMap(this.statusBarEndboss);
         }
     }
-    
+
     drawBottles() {
         this.addObjectsToMap(this.throwableObjects);
     }
