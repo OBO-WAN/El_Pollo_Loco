@@ -88,7 +88,7 @@ class World {
                     setTimeout(() => {
                         const idx = this.level.enemies.indexOf(enemy);
                         if (idx > -1) this.level.enemies.splice(idx, 1);
-                    }, 500);
+                    }, 600);
                     return;
                 }
                 this.character.hit();
