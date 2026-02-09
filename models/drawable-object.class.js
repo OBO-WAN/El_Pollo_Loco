@@ -8,15 +8,17 @@ class DrawableObject {
     currentImage = 0;
 
     loadImage(path) {
-        this.img = new Image(); 
+        this.img = new Image();
         this.img.src = path;
     }
 
     draw(ctx) {
+        if (!this.img) return;
         ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
     }
 
-     loadImages(arr) {
+
+    loadImages(arr) {
         arr.forEach(path => {
             const img = new Image();
             img.src = path;
@@ -24,16 +26,15 @@ class DrawableObject {
         });
     }
 
-      drawFrame(ctx) {
+    drawFrame(ctx) {
         // Blue rectangle
         if (this instanceof Character || this instanceof Chicken) {
             ctx.beginPath();
             ctx.lineWidth = 2;
             ctx.strokeStyle = "blue";
-            ctx.rect(this.x, this.y, this.width, this.height); //mo.x + mo.width | mo.y + height
+            ctx.rect(this.x, this.y, this.width, this.height);
             ctx.stroke();
         }
     }
-
 
 }
