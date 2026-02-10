@@ -32,7 +32,7 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #0a490a;
-  background-image: url("..assets/img/5_background/complete_background.png");
+  background-image: url("../assets/img/5_background/complete_background.png");
   background-size: cover;
   background-position: center;
   font-family: var(--font-ui);
