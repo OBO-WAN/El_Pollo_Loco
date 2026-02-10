@@ -1,14 +1,11 @@
 let canvas;
 let world;
 let bgMusic;
-
 let isMuted = false;
 let isPaused = false;
 const MUTE_STORAGE_KEY = 'game_muted';
-
 let isPortraitBlocked = false; // for mobile
 let gameStarted = false;       // buttons on mobile
-
 let keyboard = new Keyboard();
 
 // Cache DOM refs 
@@ -22,7 +19,28 @@ const dom = {
   startScreen: null,
 };
 
-function init() {
+async function init() {
+  const loader = document.getElementById('loadingOverlay');
+  const startScreen = document.getElementById('startScreen');
+  const loadingText = document.getElementById('loadingText');
+
+  if (startScreen) startScreen.style.display = 'none';
+  if (loader) loader.style.display = 'flex';
+
+  try {
+    await preloadImagesWithProgress(GAME_IMAGES, (percent) => {
+      if (loadingText) loadingText.textContent = `Loading game… ${percent}%`;
+    });
+  } catch (e) {
+    console.error('Asset loading failed:', e);
+  } finally {
+    if (loader) loader.style.display = 'none';
+    if (startScreen) startScreen.style.display = 'flex';
+    initGame();
+  }
+}
+
+function initGame() {
   cacheDom();
   loadSettings();
 
@@ -288,6 +306,44 @@ function setupPauseControls() {
 
   pauseBtn?.addEventListener('click', togglePause);
   resumeBtn?.addEventListener('click', () => setPaused(false));
+}
+
+function preloadImagesWithProgress(imagePaths, onProgress) {
+  const unique = [...new Set(imagePaths)];
+  const total = unique.length;
+  let loaded = 0;
+
+  const update = () => {
+    const percent = total === 0 ? 100 : Math.round((loaded / total) * 100);
+    onProgress?.(percent, loaded, total);
+  };
+
+  update();
+
+  return Promise.all(
+    unique.map(
+      (path) =>
+        new Promise((resolve) => {
+          const img = new Image();
+
+          img.onload = () => {
+            loaded++;
+            update();
+            resolve(path);
+          };
+
+          // Don’t block the whole game on a missing image:
+          img.onerror = () => {
+            console.warn('Missing image:', path);
+            loaded++;
+            update();
+            resolve(path);
+          };
+
+          img.src = path;
+        })
+    )
+  );
 }
 
 // -------------------- Keyboard --------------------

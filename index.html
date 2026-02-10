@@ -29,6 +29,7 @@
     <script src="./models/level.class.js"></script>
     <script src="./levels/level1.js"></script>
 
+    <script src="./js/assets.js"></script>
     <script src="./js/game.js"></script>
 
 </head>
@@ -43,6 +44,11 @@
         <button id="restartBtn" class="restart-btn" type="button" title="Restart game">⟳</button>
 
         <div id="gameContainer">
+            <div id="loadingOverlay">
+                <div class="spinner"></div>
+                <p id="loadingText">Loading game… 0%</p>
+            </div>
+
             <div id="startScreen">
                 <img src="img/9_intro_outro_screens/start/startscreen_1.png" alt="Start Game"
                     class="start-screen-image" />
