@@ -38,14 +38,6 @@ body {
   font-family: var(--font-ui);
 }
 
-/* @media (max-width: 768px) {
-  body {
-    background-position: center top;
-    background-size: cover;
-    background-image: url("../assets/img/5_background/complete_background.png");
-  }
-} */
-
 h1,
 h2 {
   font-family: var(--font-title);
