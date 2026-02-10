@@ -124,7 +124,7 @@ function onStartKeydown(e) {
 // -------------------- Audio --------------------
 
 function setupBackgroundMusic() {
-  bgMusic = new Audio('audio/background_music.mp3');
+  bgMusic = new Audio('assets/audio/background_music.mp3');
   bgMusic.loop = true;
   bgMusic.volume = 0.35;
 }

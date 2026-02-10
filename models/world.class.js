@@ -7,7 +7,7 @@ class World {
     camera_x = 0;
     coins = 0;
     bottles = 0;
-    coinSound = new Audio('audio/coin.mp3');
+    coinSound = new Audio('assets/audio/coin.mp3');
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
     statusBarBottles = new StatusBar();

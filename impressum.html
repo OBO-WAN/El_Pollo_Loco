@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Impressum</title>
-    <link rel="stylesheet" href="impressum.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+
+    <link rel="stylesheet" href="./style/impressum.css">
 
 </head>
 
@@ -68,16 +70,14 @@
     </main>
 
     <script>
-        document.getElementById('backBtn')?.addEventListener('click', () => {
-            window.history.back();
-        });
+        function goBackToGame() {
+            window.location.href = './index.html';
+        }
 
-        const goBack = () => window.history.back();
-
-        document.getElementById('backBtn')?.addEventListener('click', goBack);
-        document.getElementById('backArrow')?.addEventListener('click', goBack);
-
+        document.getElementById('backBtn')?.addEventListener('click', goBackToGame);
+        document.getElementById('backArrow')?.addEventListener('click', goBackToGame);
     </script>
+
 
 </body>
 
