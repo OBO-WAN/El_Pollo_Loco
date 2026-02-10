@@ -38,6 +38,14 @@ body {
   font-family: var(--font-ui);
 }
 
+/* @media (max-width: 768px) {
+  body {
+    background-position: center top;
+    background-size: cover;
+    background-image: url("../assets/img/5_background/complete_background.png");
+  }
+} */
+
 h1,
 h2 {
   font-family: var(--font-title);
@@ -74,6 +82,7 @@ h1 {
     transform: scale(0.85);
     opacity: 0;
   }
+
   to {
     transform: scale(1);
     opacity: 1;
@@ -186,6 +195,7 @@ canvas {
 }
 
 @media (pointer: coarse) {
+
   .start-btn,
   .start-screen-btn {
     font-size: 1.5rem;
@@ -475,7 +485,8 @@ canvas {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
-  display: none; /* important: hidden until game over */
+  display: none;
+  /* important: hidden until game over */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -494,8 +505,9 @@ canvas {
 #winOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  display: none; /* hidden until win */
+  background: rgb(67 65 65 / 85%);
+  display: none;
+  /* hidden until win */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -534,7 +546,7 @@ canvas {
   max-height: 46vh;
   margin: 10px 0 16px;
   object-fit: contain;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
 }
 
 #legalBar {
@@ -579,8 +591,8 @@ canvas {
   font-size: 0.95rem;
   padding: 8px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.35);
   color: #f2e6c9;
   cursor: pointer;
 }
@@ -590,6 +602,7 @@ canvas {
 }
 
 @media (pointer: coarse) {
+
   #controlsHint,
   #legalBar {
     display: none;
@@ -598,7 +611,6 @@ canvas {
   .startScreenActions {
     display: flex;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 0px;
   }
 }
-
