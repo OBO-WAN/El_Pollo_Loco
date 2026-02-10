@@ -476,7 +476,7 @@ canvas {
 #gameOverOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: repeating-linear-gradient(45deg, black, transparent 100px);
   display: none;
   /* important: hidden until game over */
   flex-direction: column;
@@ -497,7 +497,7 @@ canvas {
 #winOverlay {
   position: absolute;
   inset: 0;
-  background: rgb(67 65 65 / 85%);
+  background: repeating-radial-gradient(black, transparent 100px);
   display: none;
   /* hidden until win */
   flex-direction: column;
