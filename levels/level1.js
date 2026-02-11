@@ -22,7 +22,9 @@ function initLevel1() {
     return new Level(
         [
             new Chicken(),
+            new Chicken2(),
             new Chicken(),
+            new Chicken2(),
             new Chicken(),
             new Endboss(),
         ],

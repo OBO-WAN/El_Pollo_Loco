@@ -42,6 +42,15 @@ const CHICKEN_IMAGES = [
   'assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png',
 ];
 
+// -------------------- Small Chickens --------------------
+
+const SMALL_CHICKEN_IMAGES = [
+  'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
+  'assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
+  'assets/img/3_enemies_chicken/chicken_small/1_walk/3_w.png',
+  'assets/img/3_enemies_chicken/chicken_small/2_dead/dead.png',
+];
+
 // -------------------- ENDBOSS --------------------
 const ENDBOSS_IMAGES = [
   // walking
@@ -96,6 +105,7 @@ const STATUSBAR_IMAGES = [
 const GAME_IMAGES = [
   ...CHARACTER_IMAGES,
   ...CHICKEN_IMAGES,
+  ...SMALL_CHICKEN_IMAGES,
   ...ENDBOSS_IMAGES,
   ...STATUSBAR_IMAGES,
 ];

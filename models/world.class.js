@@ -81,17 +81,22 @@ class World {
             this.keyboard.SPACE = false;
         }
     }
-
     checkCollisions() {
         this.level.enemies.forEach((enemy) => {
+            if (enemy.dead) return;
             if (this.character.isColliding(enemy)) {
-                if (enemy instanceof Chicken && this.character.isFalling() && !enemy.dead) {
+                if (
+                    (enemy instanceof Chicken || enemy instanceof Chicken2) &&
+                    this.character.isFalling()
+                ) {
                     enemy.die();
-                    this.character.speedY = 15;  // bounce
+                    this.character.speedY = 15; // bounce
+
                     setTimeout(() => {
                         const idx = this.level.enemies.indexOf(enemy);
                         if (idx > -1) this.level.enemies.splice(idx, 1);
                     }, 600);
+
                     return;
                 }
                 this.character.hit();
