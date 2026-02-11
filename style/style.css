@@ -143,7 +143,7 @@ canvas {
 
 .start-screen-image {
   max-width: 90%;
-  max-height: 70%;
+  max-height: 64%;
   object-fit: contain;
 }
 

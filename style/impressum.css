@@ -1,42 +1,70 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  background: #111;
-  color: #f2e6c9;
+:root {
+  --font-title: "Smokum", cursive;
+  --font-ui: "Rye", serif;
+  --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* 🚫 no scrolling */
+  font-family: var(--font-ui);
+  background-image: url("../assets/img/5_background/complete_background.png");
+  background-size: cover;
+  background-position: center;
+  color: #f2e6c9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Main container */
 .impressum-container {
-  max-width: 720px;
-  margin: 60px auto;
-  padding: 32px 24px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 16px;
+  width: min(92%, 760px);
+  max-height: 90vh; 
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Header */
+.impressum-header {
+  display: flex;          
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 h1 {
-  font-size: 2.5rem;
-  margin-bottom: 24px;
+  font-size: 2.0rem;
+  margin: 0;
   text-align: center;
+  flex: 1;
+  font-family: var(--font-title);
+  letter-spacing: 2px;
+}
+
+/* Content */
+section {
+  flex: 1;
+  overflow: auto;     
+  font-size: 1.00rem;
+  line-height: 1.55;
+  padding: 10px;
 }
 
 section p {
-  margin: 12px 0;
-  line-height: 1.6;
+  margin: 10px 0;
 }
 
-button {
-  display: block;
-  margin: 40px auto 0;
-  padding: 12px 28px;
-  font-size: 1rem;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(to bottom, #8b4513, #5a2e0f);
-  color: #fff;
-}
-
+/* Links */
 a {
   color: #ffcc66;
   text-decoration: none;
@@ -46,38 +74,100 @@ a:hover {
   text-decoration: underline;
 }
 
-#backBtn {
-  display: block;
-  margin: 40px auto 0;
-  padding: 12px 28px;
-  font-size: 1rem;
+/* Buttons */
+button {
+  align-self: center;
+  padding: 20px 28px;
+  font-size: 1.2rem;
   border-radius: 14px;
   border: none;
   cursor: pointer;
+  font-family: var(--font-title);
+  letter-spacing: 2px;
   background: linear-gradient(to bottom, #8b4513, #5a2e0f);
   color: #fff;
 }
 
-#backBtn:active {
+button:active {
   transform: scale(0.98);
 }
 
-.impressum-header {
-  display: block;
+/* Back arrow */
+.back-arrow {
+  display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 24px;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  font-size: 2rem;
+  font-weight: bold;
+  border-radius: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.7)
+  );
+  color: #f7e4b2;
+  cursor: pointer;
+  user-select: none;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.7),
+    0 0 0 rgba(255, 200, 120, 0.2);
+
+  transition: transform 0.12s ease,
+              box-shadow 0.2s ease,
+              background 0.2s ease;
 }
 
-.back-arrow {
-  font-size: 1.6rem;
-  background: none;
-  border: none;
-  color: #f2e6c9;
-  cursor: pointer;
-  padding: 4px 8px;
+.back-arrow:hover {
+  background: linear-gradient(
+    to bottom,
+    rgba(40, 25, 10, 0.95),
+    rgba(20, 10, 5, 0.85)
+  );
+
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.8),
+    0 0 16px rgba(255, 200, 120, 0.35);
 }
 
 .back-arrow:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.8);
+}
+
+/* -------------------- Orientation Lock -------------------- */
+
+.orientationOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0, 0, 0, 0.9);
+  text-align: center;
+  padding: 20px;
+}
+
+.orientationCard {
+  background: rgba(0, 0, 0, 0.75);
+  border-radius: 18px;
+  padding: 24px;
+  color: #f7e4b2;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* Hide content in portrait mode */
+@media (orientation: portrait) {
+  .impressum-container {
+    display: none;
+  }
+
+  .orientationOverlay {
+    display: flex;
+  }
 }

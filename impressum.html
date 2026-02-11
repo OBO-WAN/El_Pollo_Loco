@@ -3,83 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Impressum</title>
+    <title>El Pollo Loco | Legal Notice</title>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
 
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Smokum&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style/impressum.css">
+    <link rel="manifest" href="manifest.json">
 
 </head>
 
 <body>
+
+    <div id="orientationOverlay" class="orientationOverlay">
+        <div class="orientationCard">
+            <h2>Please rotate your device</h2>
+            <p>This page is best viewed in landscape mode.</p>
+        </div>
+    </div>
+
     <main class="impressum-container">
         <div class="impressum-header">
             <button id="backArrow" class="back-arrow" aria-label="Back">&#x21A9;</button>
-            <h1>Impressum</h1>
+            <h1>Legal Notice</h1>
         </div>
 
         <section>
-            <p><strong>Verantwortlich gemäß § 5 TMG:</strong></p>
+            <p><strong>Project Owner</strong></p>
             <p>
-                Francisco Naranjo<br>
-                Schneidemühlerstr. 12e<br>
-                76139 Karlsruhe<br>
-                Deutschland
+                Francisco Naranjo
             </p>
 
-            <p><strong>Kontakt:</strong></p>
+            <p><strong>Contact</strong></p>
             <p>
-                E-Mail:
+                Email:
                 <a href="mailto:francisco.naranjo@posteo.net">
                     francisco.naranjo@posteo.net
                 </a>
             </p>
 
-            <p><strong>Haftungsausschluss (Disclaimer)</strong></p>
+            <p><strong>About This Project</strong></p>
             <p>
-                Die Inhalte dieses Spiels wurden mit größter Sorgfalt erstellt. Für die
-                Richtigkeit, Vollständigkeit und Aktualität der Inhalte kann jedoch keine
-                Gewähr übernommen werden.
+                This game was developed as a personal portfolio project.
+                All content has been created with care and for educational
+                and demonstration purposes.
             </p>
 
-            <p><strong>Haftung für externe Links</strong></p>
+            <p><strong>Disclaimer</strong></p>
             <p>
-                Dieses Spiel kann Links zu externen Webseiten Dritter enthalten, auf deren
-                Inhalte ich keinen Einfluss habe.
+                While every effort has been made to ensure the accuracy of
+                the content, no guarantee is given regarding completeness
+                or correctness.
             </p>
 
-            <p><strong>Urheberrecht</strong></p>
+            <p><strong>External Links</strong></p>
             <p>
-                Die in diesem Spiel verwendeten Grafiken, Sounds und Inhalte unterliegen
-                dem deutschen Urheberrecht.
+                This project may contain links to external websites.
+                I am not responsible for the content of any external sites.
             </p>
 
-            <p><strong>Datenschutz</strong></p>
+            <p><strong>Copyright</strong></p>
             <p>
-                Dieses Spiel verarbeitet keine personenbezogenen Daten, sofern nicht ausdrücklich anders angegeben.
-                Sollten Daten erhoben werden, geschieht dies ausschließlich im Rahmen der gesetzlichen Bestimmungen
+                The graphics, sounds, and source code used in this project
+                are protected by copyright. Unauthorized reproduction,
+                distribution, or modification is not permitted.
             </p>
 
-            <p><strong>Kontakt zum Verantwortlichen</strong></p>
+            <p><strong>Data Protection</strong></p>
             <p>
-                Bei Fragen zum Spiel oder zu diesem Impressum kannst du dich jederzeit an die oben genannte
-                Kontaktadresse wenden.
+                This project does not collect, store, or process personal data.
             </p>
-
         </section>
+
         <button id="backBtn" type="button">Back to Game</button>
     </main>
-
-    <script>
-        function goBackToGame() {
-            window.location.href = './index.html';
-        }
-
-        document.getElementById('backBtn')?.addEventListener('click', goBackToGame);
-        document.getElementById('backArrow')?.addEventListener('click', goBackToGame);
-    </script>
-
-
 </body>
+<script>
+    function goBackToGame() {
+        window.location.href = './index.html';
+    }
 
+    document.getElementById('backBtn')?.addEventListener('click', goBackToGame);
+    document.getElementById('backArrow')?.addEventListener('click', goBackToGame);
+</script>
 
 </html>
