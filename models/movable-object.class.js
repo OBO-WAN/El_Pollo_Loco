@@ -14,6 +14,8 @@ class movableObject extends DrawableObject {
             if (this.isInAir() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
+            } else {
+                this.speedY = 0;
             }
         }, 1000 / 25);
     }

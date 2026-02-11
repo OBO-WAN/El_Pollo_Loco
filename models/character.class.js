@@ -51,6 +51,8 @@ class Character extends movableObject {
 
     constructor() {
         super();
+        this.energy = 100;
+        this.lastHit = 0;
         this.loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
         this.loadImages(this.animatedCharachter);
         this.loadImages(this.imagesJumping);
@@ -88,7 +90,7 @@ class Character extends movableObject {
     }
 
     isFalling() {
-        return this.speedY < 0;
+        return this.speedY < 0 && this.isInAir();
     }
 
 }
