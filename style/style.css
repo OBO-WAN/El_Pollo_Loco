@@ -682,3 +682,54 @@ canvas {
   display: none !important;
   pointer-events: none;
 }
+
+/* -------------------- How-to overlay -------------------- */
+
+.uiOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.uiOverlay.show {
+  display: flex;
+}
+
+.uiCard {
+  width: min(92%, 420px);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.uiCard h2 {
+  margin: 0 0 12px 0;
+  color: #f7e4b2;
+  text-shadow:
+    2px 2px 0 #5a2e0f,
+    4px 4px 0 #3b1f0f,
+    0 0 10px rgba(255, 200, 100, 0.35);
+}
+
+.howToRows {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.howToRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #fff6dc;
+  font-family: var(--font-ui);
+}
+

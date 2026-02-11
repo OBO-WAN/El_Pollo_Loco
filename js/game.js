@@ -7,6 +7,7 @@ const MUTE_STORAGE_KEY = 'game_muted';
 let isPortraitBlocked = false; // for mobile
 let gameStarted = false;       // buttons on mobile
 let keyboard = new Keyboard();
+let lastFocusBeforeOverlay = null;
 
 // Cache DOM refs 
 const dom = {
@@ -115,8 +116,25 @@ function bindStartScreenExtras() {
     window.location.href = 'impressum.html';
   });
 
-  document.getElementById('howToBtn')?.addEventListener('click', () => {
-    alert('Move: ◀ ▶\nJump: ⤒\nThrow: ⦿');
+  const overlayId = 'howToOverlay';
+  const howToBtn = document.getElementById('howToBtn');
+  const overlay = document.getElementById(overlayId);
+
+  if (overlay) {
+    overlay.inert = true;
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  howToBtn?.addEventListener('click', () => showOverlay(overlayId));
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay || e.target.closest('#closeHowToBtn')) {
+      hideOverlay(overlayId);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideOverlay(overlayId);
   });
 }
 
@@ -383,4 +401,34 @@ function onKeyup(e) {
   if (e.code === 'ArrowLeft') keyboard.LEFT = false;
   if (e.code === 'ArrowUp') keyboard.UP = false;
   if (e.code === 'Space') keyboard.SPACE = false;
+}
+
+
+// -------------------- Helpers --------------------
+
+function showOverlay(id, { focusSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])' } = {}) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  lastFocusBeforeOverlay = document.activeElement;
+
+  el.classList.add('show');
+  el.inert = false;              
+  el.setAttribute('aria-hidden', 'false');
+
+  const focusTarget = el.querySelector(focusSelector);
+  focusTarget?.focus();
+}
+
+function hideOverlay(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  if (lastFocusBeforeOverlay && typeof lastFocusBeforeOverlay.focus === 'function') {
+    lastFocusBeforeOverlay.focus();
+  }
+
+  el.classList.remove('show');
+  el.inert = true;           
+  el.setAttribute('aria-hidden', 'true');
 }
