@@ -8,12 +8,19 @@ class World {
     coins = 0;
     bottles = 0;
     coinSound = new Audio('assets/audio/coin.mp3');
+    snoringSound = new Audio('assets/audio/pepe-snoring.mp3');
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
     statusBarBottles = new StatusBar();
     isPaused = false;
     collisionInterval = null;
     isGameOver = false;
+    //Idle
+    idleTimeout = null;
+    isSnoring = false;
+    isCharacterSleeping = false;
+
+
 
     throwableObjects = [];
 
@@ -202,6 +209,31 @@ class World {
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
         this.moveEnemies();             // enemy motion
+        this.checkIdleState();          // sound character
+    }
+
+    checkIdleState() {
+        if (this.isPaused || this.character.isDead()) {
+            this.stopSnoring();
+            return;
+        }
+
+        const isMoving =
+            this.keyboard.LEFT ||
+            this.keyboard.RIGHT ||
+            this.keyboard.UP ||
+            this.keyboard.SPACE;
+
+        if (isMoving) {
+            this.resetIdleTimer();
+            return;
+        }
+
+        if (!this.idleTimeout && !this.isSnoring) {
+            this.idleTimeout = setTimeout(() => {
+                this.startSnoring();
+            }, 2000);
+        }
     }
 
     handleCharacterMovement() {
@@ -303,6 +335,38 @@ class World {
         this.ctx.scale(-1, 1);
         this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
         this.ctx.restore();
+    }
+
+    resetIdleTimer() {
+        if (this.idleTimeout) {
+            clearTimeout(this.idleTimeout);
+            this.idleTimeout = null;
+        }
+        this.isCharacterSleeping = false;
+        this.stopSnoring();
+    }
+
+    startSnoring() {
+        if (this.isSnoring) return;
+        this.isCharacterSleeping = true;
+        this.snoringSound.loop = true;
+        this.snoringSound.volume = 0.4;
+        this.snoringSound.muted = isMuted;
+        this.snoringSound.currentTime = 0;
+        this.snoringSound.play().catch(() => { });
+        this.isSnoring = true;
+    }
+
+    stopSnoring() {
+        if (!this.isSnoring) {
+            this.isCharacterSleeping = false;
+            return;
+        }
+
+        this.snoringSound.pause();
+        this.snoringSound.currentTime = 0;
+        this.isSnoring = false;
+        this.isCharacterSleeping = false;
     }
 
     initStatusBars() {

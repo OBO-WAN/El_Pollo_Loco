@@ -174,6 +174,7 @@ function startBackgroundMusic() {
 function toggleMute() {
   isMuted = !isMuted;
   if (bgMusic) bgMusic.muted = isMuted;
+  if (world?.snoringSound) world.snoringSound.muted = isMuted;
   localStorage.setItem(MUTE_STORAGE_KEY, isMuted);
   updateMuteBtn();
 }
