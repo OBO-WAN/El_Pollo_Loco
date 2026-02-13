@@ -173,11 +173,17 @@ function startBackgroundMusic() {
 
 function toggleMute() {
   isMuted = !isMuted;
+
   if (bgMusic) bgMusic.muted = isMuted;
   if (world?.snoringSound) world.snoringSound.muted = isMuted;
+  if (world?.coinSound) world.coinSound.muted = isMuted;
+  if (world?.winSound) world.winSound.muted = isMuted;
+  if (world?.gameOverSound) world.gameOverSound.muted = isMuted;
+
   localStorage.setItem(MUTE_STORAGE_KEY, isMuted);
   updateMuteBtn();
 }
+
 
 function updateMuteBtn() {
   const btn = dom.muteBtn || document.getElementById('muteBtn');
@@ -199,6 +205,10 @@ function startGame() {
 
   startBackgroundMusic();
   world = new World(canvas, keyboard);
+  if (world.coinSound) world.coinSound.muted = isMuted;
+  if (world.snoringSound) world.snoringSound.muted = isMuted;
+  if (world.winSound) world.winSound.muted = isMuted;
+  if (world.gameOverSound) world.gameOverSound.muted = isMuted;
 
   gameStarted = true;
   updateMobileControlsVisibility();
@@ -414,7 +424,7 @@ function showOverlay(id, { focusSelector = 'button, [href], input, select, texta
   lastFocusBeforeOverlay = document.activeElement;
 
   el.classList.add('show');
-  el.inert = false;              
+  el.inert = false;
   el.setAttribute('aria-hidden', 'false');
 
   const focusTarget = el.querySelector(focusSelector);
@@ -430,6 +440,10 @@ function hideOverlay(id) {
   }
 
   el.classList.remove('show');
-  el.inert = true;           
+  el.inert = true;
   el.setAttribute('aria-hidden', 'true');
+}
+
+function stopBackgroundMusic() {
+  if (bgMusic) bgMusic.pause();
 }

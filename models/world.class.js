@@ -9,6 +9,8 @@ class World {
     bottles = 0;
     coinSound = new Audio('assets/audio/coin.mp3');
     snoringSound = new Audio('assets/audio/pepe-snoring.mp3');
+    winSound = new Audio('assets/audio/win.mp3');
+    gameOverSound = new Audio('assets/audio/game_over.mp3');
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
     statusBarBottles = new StatusBar();
@@ -178,18 +180,50 @@ class World {
 
     gameOver() {
         if (this.isGameOver) return;
+
         this.isGameOver = true;
         this.isPaused = true;
+
         if (this.collisionInterval) clearInterval(this.collisionInterval);
+
+        this.stopSnoring();
+
+        // Stop music first (if provided by game.js)
+        if (typeof stopBackgroundMusic === 'function') {
+            stopBackgroundMusic();
+        }
+
+        // Play game over sound (mute-safe)
+        if (!this.gameOverSound.muted) {
+            this.gameOverSound.currentTime = 0;
+            this.gameOverSound.play().catch(() => { });
+        }
+
         const overlay = document.getElementById('gameOverOverlay');
         if (overlay) overlay.style.display = 'flex';
     }
 
     win() {
-        if (this.isGameOver) return;     // reuse your existing guard
+        if (this.isGameOver) return;
+
         this.isGameOver = true;
         this.isPaused = true;
+
         if (this.collisionInterval) clearInterval(this.collisionInterval);
+
+        // Stop idle / snoring
+        this.stopSnoring();
+
+        // Stop background music (from game.js)
+        if (typeof stopBackgroundMusic === 'function') {
+            stopBackgroundMusic();
+        }
+
+        // Play win sound (mute-safe)
+        if (!this.winSound.muted) {
+            this.winSound.currentTime = 0;
+            this.winSound.play().catch(() => { });
+        }
 
         const overlay = document.getElementById('winOverlay');
         if (overlay) overlay.style.display = 'flex';
@@ -358,15 +392,16 @@ class World {
     }
 
     stopSnoring() {
-        if (!this.isSnoring) {
-            this.isCharacterSleeping = false;
-            return;
-        }
-
         this.snoringSound.pause();
         this.snoringSound.currentTime = 0;
+
         this.isSnoring = false;
         this.isCharacterSleeping = false;
+
+        if (this.idleTimeout) {
+            clearTimeout(this.idleTimeout);
+            this.idleTimeout = null;
+        }
     }
 
     initStatusBars() {

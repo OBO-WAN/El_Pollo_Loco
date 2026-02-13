@@ -26,22 +26,22 @@ class DrawableObject {
         });
     }
 
-    drawFrame(ctx) {
-        if (this instanceof Character || this instanceof Chicken || this instanceof Coin) {
-            const o = this.offset || { top: 0, left: 0, right: 0, bottom: 0 };
+    // drawFrame(ctx) {
+    //     if (this instanceof Character || this instanceof Chicken || this instanceof Coin) {
+    //         const o = this.offset || { top: 0, left: 0, right: 0, bottom: 0 };
 
-            const x = this.x + o.left;
-            const y = this.y + o.top;
-            const w = this.width - o.left - o.right;
-            const h = this.height - o.top - o.bottom;
+    //         const x = this.x + o.left;
+    //         const y = this.y + o.top;
+    //         const w = this.width - o.left - o.right;
+    //         const h = this.height - o.top - o.bottom;
 
-            ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "blue";
-            ctx.rect(x, y, w, h);
-            ctx.stroke();
-        }
-    }
+    //         ctx.beginPath();
+    //         ctx.lineWidth = 2;
+    //         ctx.strokeStyle = "blue";
+    //         ctx.rect(x, y, w, h);
+    //         ctx.stroke();
+    //     }
+    // }
 
 
 }
