@@ -1,9 +1,10 @@
 class Character extends movableObject {
 
+    offset = { top: 20, right: 35, bottom: 10, left: 35 };
     height = 240;
     width = 140;
     x = 120;
-    y = 50; // 40-200
+    y = 50; 
     speed = 10;
     isJumping = false;
 

@@ -28,19 +28,16 @@ class movableObject extends DrawableObject {
         }
     }
 
-
-    //character.isColliding.chicken
     isColliding(mo) {
-        const collide =
-            this.x < mo.x + mo.width &&
-            this.x + this.width > mo.x &&
-            this.y < mo.y + mo.height &&
-            this.y + this.height > mo.y;
+        const a = this.offset || { top: 0, right: 0, bottom: 0, left: 0 };
+        const b = mo.offset || { top: 0, right: 0, bottom: 0, left: 0 };
 
-        if (collide) {
-            console.log('COLLISION', this, mo);
-        }
-        return collide;
+        return (
+            this.x + a.left < mo.x + mo.width - b.right &&
+            this.x + this.width - a.right > mo.x + b.left &&
+            this.y + a.top < mo.y + mo.height - b.bottom &&
+            this.y + this.height - a.bottom > mo.y + b.top
+        );
     }
 
     hit() {
