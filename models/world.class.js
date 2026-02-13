@@ -16,6 +16,7 @@ class World {
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
     statusBarBottles = new StatusBar();
+    // isBossFight = false;
     isPaused = false;
     collisionInterval = null;
     isGameOver = false;
@@ -37,7 +38,6 @@ class World {
         this.endbossBarVisible = false;
         this.setWorld();
         this.initStatusBars();
-
         this.statusBarEndboss = new StatusBar();
         this.statusBarEndboss.setImages(this.statusBarEndboss.ENDBOSS_BAR_IMAGES);
         this.statusBarEndboss.x = 480;
@@ -62,6 +62,9 @@ class World {
             this.checkCoinCollisions();
             this.checkBottleCollisions();
             this.checkBottleEnemyCollisions();
+            // if (typeof updateMobileHudVisibility === 'function') {
+            //     updateMobileHudVisibility();
+            // }
             if (this.character.isDead()) {
                 this.gameOver();
             }
@@ -69,6 +72,7 @@ class World {
                 this.win();
             }
         }, 100);
+
     }
 
 
@@ -97,6 +101,9 @@ class World {
             }, ms);
         };
 
+        if (this.character.x > 2000 && !this.isBossFight) {
+            this.isBossFight = true;
+        }
         const isStompableChicken = (enemy) =>
             enemy instanceof Chicken || enemy instanceof Chicken2;
 
@@ -172,7 +179,6 @@ class World {
     checkEndbossBarTrigger() {
         if (!this.endboss || this.endbossBarVisible) return;
 
-        // Show when player is close enough (tweak the distance to taste)
         const triggerDistance = 600;
         if (this.character.x >= this.endboss.x - triggerDistance) {
             this.endbossBarVisible = true;

@@ -452,3 +452,18 @@ function hideOverlay(id) {
 function stopBackgroundMusic() {
   if (bgMusic) bgMusic.pause();
 }
+
+
+// function updateMobileHudVisibility() {
+//   if (!window.matchMedia("(pointer: coarse)").matches) return;
+
+//   const hud = document.getElementById("mobileHud");
+
+//   if (world?.isBossFight) {
+//     hud.style.opacity = "0";
+//     hud.style.pointerEvents = "none";
+//   } else {
+//     hud.style.opacity = "1";
+//     hud.style.pointerEvents = "auto";
+//   }
+// }
