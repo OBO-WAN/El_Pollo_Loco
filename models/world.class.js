@@ -68,7 +68,7 @@ class World {
             if (this.endboss && this.endboss.dead) {
                 this.win();
             }
-        }, 200);
+        }, 100);
     }
 
 
@@ -80,18 +80,11 @@ class World {
                 this.character.y + 100,
                 direction
             );
-
             this.throwableObjects.push(bottle);
             this.bottles--;
-            //Throw sound
-            if (!this.throwBottleSound.muted) {
-                this.throwBottleSound.currentTime = 0;
-                this.throwBottleSound.play().catch(() => { });
-            }
-
+            this.playSound(this.throwBottleSound);//Throw sound
             const bottlePercent = Math.min(100, this.bottles * 20);
             this.statusBarBottles.setPercentage(bottlePercent);
-
             this.keyboard.SPACE = false;
         }
     }
@@ -130,8 +123,7 @@ class World {
                 this.coins++;
                 const coinPercent = Math.min(100, this.coins * 20);
                 this.statusBarCoins.setPercentage(coinPercent);
-                this.coinSound.currentTime = 0;
-                this.coinSound.play();
+                this.playSound(this.coinSound);
             }
         }
     }
@@ -148,11 +140,8 @@ class World {
 
                 const bottlePercent = Math.min(100, this.bottles * 20);
                 this.statusBarBottles.setPercentage(bottlePercent);
+                this.playSound(this.bottleSound);
 
-                if (!this.bottleSound.muted) {
-                    this.bottleSound.currentTime = 0;
-                    this.bottleSound.play().catch(() => { });
-                }
             }
         }
     }
@@ -192,51 +181,29 @@ class World {
 
     gameOver() {
         if (this.isGameOver) return;
-
         this.isGameOver = true;
         this.isPaused = true;
-
         if (this.collisionInterval) clearInterval(this.collisionInterval);
-
         this.stopSnoring();
-
-        // Stop music first (if provided by game.js)
         if (typeof stopBackgroundMusic === 'function') {
             stopBackgroundMusic();
         }
-
-        // Play game over sound (mute-safe)
-        if (!this.gameOverSound.muted) {
-            this.gameOverSound.currentTime = 0;
-            this.gameOverSound.play().catch(() => { });
-        }
-
+        this.playSound(this.gameOverSound);
         const overlay = document.getElementById('gameOverOverlay');
         if (overlay) overlay.style.display = 'flex';
     }
 
     win() {
         if (this.isGameOver) return;
-
         this.isGameOver = true;
         this.isPaused = true;
-
         if (this.collisionInterval) clearInterval(this.collisionInterval);
-
-        // Stop idle/snoring
         this.stopSnoring();
-
         // Stop background music
         if (typeof stopBackgroundMusic === 'function') {
             stopBackgroundMusic();
         }
-
-        // Play win sound (mute-safe)
-        if (!this.winSound.muted) {
-            this.winSound.currentTime = 0;
-            this.winSound.play().catch(() => { });
-        }
-
+        this.playSound(this.winSound);
         const overlay = document.getElementById('winOverlay');
         if (overlay) overlay.style.display = 'flex';
     }
@@ -415,6 +382,16 @@ class World {
             this.idleTimeout = null;
         }
     }
+
+    playSound(audio, { restart = true } = {}) {
+        // Single source of truth
+        if (typeof isMuted !== 'undefined' && isMuted) return;
+        if (!audio) return;
+
+        if (restart) audio.currentTime = 0;
+        audio.play().catch(() => { });
+    }
+
 
     initStatusBars() {
         // Health

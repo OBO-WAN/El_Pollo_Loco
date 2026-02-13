@@ -89,6 +89,12 @@ h1 {
   gap: 12px;
 }
 
+@media (pointer: coarse) {
+  #fullscreenBtn {
+    display: none !important;
+  }
+}
+
 #gameContainer {
   position: relative;
   width: min(90vw, 720px);

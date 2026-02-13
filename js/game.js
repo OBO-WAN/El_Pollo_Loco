@@ -178,6 +178,7 @@ function toggleMute() {
   if (world?.snoringSound) world.snoringSound.muted = isMuted;
   if (world?.coinSound) world.coinSound.muted = isMuted;
   if (world?.bottleSound) world.bottleSound.muted = isMuted;
+  if (world?.throwBottleSound) world.throwBottleSound = isMuted;
   if (world?.winSound) world.winSound.muted = isMuted;
   if (world?.gameOverSound) world.gameOverSound.muted = isMuted;
 
