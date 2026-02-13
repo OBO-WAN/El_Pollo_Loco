@@ -8,7 +8,6 @@ class Bottle extends movableObject {
     super();
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
-
     this.x = x;
     this.y = y;
     this.width = 60;

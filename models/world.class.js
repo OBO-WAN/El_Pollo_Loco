@@ -8,6 +8,8 @@ class World {
     coins = 0;
     bottles = 0;
     coinSound = new Audio('assets/audio/coin.mp3');
+    bottleSound = new Audio('assets/audio/bottle.mp3');
+    throwBottleSound = new Audio('assets/audio/throw_bottle.mp3');
     snoringSound = new Audio('assets/audio/pepe-snoring.mp3');
     winSound = new Audio('assets/audio/win.mp3');
     gameOverSound = new Audio('assets/audio/game_over.mp3');
@@ -72,9 +74,7 @@ class World {
 
     checkThrowObjects() {
         if (this.keyboard.SPACE && this.bottles > 0) {
-
             const direction = this.character.otherDirection ? -1 : 1;
-
             let bottle = new ThrowableObject(
                 this.character.x + (direction === 1 ? 100 : -20),
                 this.character.y + 100,
@@ -83,6 +83,11 @@ class World {
 
             this.throwableObjects.push(bottle);
             this.bottles--;
+            //Throw sound
+            if (!this.throwBottleSound.muted) {
+                this.throwBottleSound.currentTime = 0;
+                this.throwBottleSound.play().catch(() => { });
+            }
 
             const bottlePercent = Math.min(100, this.bottles * 20);
             this.statusBarBottles.setPercentage(bottlePercent);
@@ -137,10 +142,17 @@ class World {
 
             if (this.character.isColliding(bottle)) {
                 if (bottle.animationInterval) clearInterval(bottle.animationInterval);
+
                 this.level.bottles.splice(i, 1);
                 this.bottles++;
+
                 const bottlePercent = Math.min(100, this.bottles * 20);
                 this.statusBarBottles.setPercentage(bottlePercent);
+
+                if (!this.bottleSound.muted) {
+                    this.bottleSound.currentTime = 0;
+                    this.bottleSound.play().catch(() => { });
+                }
             }
         }
     }
@@ -211,10 +223,10 @@ class World {
 
         if (this.collisionInterval) clearInterval(this.collisionInterval);
 
-        // Stop idle / snoring
+        // Stop idle/snoring
         this.stopSnoring();
 
-        // Stop background music (from game.js)
+        // Stop background music
         if (typeof stopBackgroundMusic === 'function') {
             stopBackgroundMusic();
         }

@@ -177,6 +177,7 @@ function toggleMute() {
   if (bgMusic) bgMusic.muted = isMuted;
   if (world?.snoringSound) world.snoringSound.muted = isMuted;
   if (world?.coinSound) world.coinSound.muted = isMuted;
+  if (world?.bottleSound) world.bottleSound.muted = isMuted;
   if (world?.winSound) world.winSound.muted = isMuted;
   if (world?.gameOverSound) world.gameOverSound.muted = isMuted;
 
@@ -206,6 +207,9 @@ function startGame() {
   startBackgroundMusic();
   world = new World(canvas, keyboard);
   if (world.coinSound) world.coinSound.muted = isMuted;
+  if (world.bottleSound) world.bottleSound.muted = isMuted;
+  if (world.throwBottleSound) world.throwBottleSound.muted = isMuted;
+  if (world?.throwBottleSound) world.throwBottleSound.muted = isMuted;
   if (world.snoringSound) world.snoringSound.muted = isMuted;
   if (world.winSound) world.winSound.muted = isMuted;
   if (world.gameOverSound) world.gameOverSound.muted = isMuted;
