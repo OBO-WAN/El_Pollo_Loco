@@ -38,6 +38,13 @@ body {
   font-family: var(--font-ui);
 }
 
+@media (pointer: coarse) {
+  body {
+    display: block;
+    background: #000;
+  }
+}
+
 /* -------------------- Typography -------------------- */
 
 h1,
@@ -69,14 +76,27 @@ h1 {
 }
 
 @keyframes titlePop {
-  from { transform: scale(0.85); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @media (pointer: coarse) {
+
   h1,
-  h2 { font-size: 1.6rem; }
-  h1 { display: none; }
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h1 {
+    display: none;
+  }
 }
 
 /* -------------------- Stage layout -------------------- */
@@ -110,23 +130,23 @@ canvas {
 
 @media (pointer: coarse) {
   #fullscreen {
+    position: fixed;
+    inset: 0;
     width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: center;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
   }
 
   #gameContainer {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
   }
 
   canvas {
     width: 100vw;
-    height: 100vh;
-    aspect-ratio: auto;
+    height: 100dvh;
+    display: block;
   }
 }
 
@@ -180,6 +200,7 @@ canvas {
 }
 
 @media (pointer: coarse) {
+
   .start-btn,
   .start-screen-btn {
     font-size: 1.1rem;
@@ -222,6 +243,7 @@ canvas {
       0 10px 30px rgba(0, 0, 0, 0.7),
       0 0 0 rgba(255, 200, 120, 0.2);
   }
+
   to {
     box-shadow:
       0 10px 30px rgba(0, 0, 0, 0.7),
@@ -257,12 +279,25 @@ canvas {
     inset 0 -2px 4px rgba(0, 0, 0, 0.4);
 }
 
-#controlsHint .key-move { color: #f2c36b; text-shadow: 0 0 4px rgba(242, 195, 107, 0.5); }
-#controlsHint .key-jump { color: #7fc8ff; text-shadow: 0 0 4px rgba(127, 200, 255, 0.5); }
-#controlsHint .key-throw { color: #ff6b4a; text-shadow: 0 0 4px rgba(255, 107, 74, 0.5); }
+#controlsHint .key-move {
+  color: #f2c36b;
+  text-shadow: 0 0 4px rgba(242, 195, 107, 0.5);
+}
+
+#controlsHint .key-jump {
+  color: #7fc8ff;
+  text-shadow: 0 0 4px rgba(127, 200, 255, 0.5);
+}
+
+#controlsHint .key-throw {
+  color: #ff6b4a;
+  text-shadow: 0 0 4px rgba(255, 107, 74, 0.5);
+}
 
 @media (pointer: coarse) {
-  #controlsHint { display: none; }
+  #controlsHint {
+    display: none;
+  }
 }
 
 /* -------------------- Top / canvas buttons -------------------- */
@@ -300,7 +335,7 @@ canvas {
 .fullscreen-btn-canvas {
   bottom: auto;
   left: 50%;
-  top: calc(40px + var(--pad-safe-top));
+  top: calc(60px + var(--pad-safe-top));
   transform: translateX(-50%);
   z-index: 25;
   padding: 2px 6px;
@@ -314,13 +349,30 @@ canvas {
   -webkit-tap-highlight-color: transparent;
 }
 
-.fullscreen-btn-canvas:hover { opacity: 1; background: rgba(114, 105, 105, 0.472); }
-.fullscreen-btn-canvas:active { transform: translateX(-50%) scale(0.96); }
+.fullscreen-btn-canvas:hover {
+  opacity: 1;
+  background: rgba(114, 105, 105, 0.472);
+}
+
+.fullscreen-btn-canvas:active {
+  transform: translateX(-50%) scale(0.96);
+}
 
 /* Positioning (desktop) */
-.restart-btn { right: calc(16px + var(--pad-safe-right)); z-index: 30; }
-.mute-btn { right: calc(76px + var(--pad-safe-right)); z-index: 30; }
-.pause-btn { right: calc(136px + var(--pad-safe-right)); z-index: 35; }
+.restart-btn {
+  right: calc(16px + var(--pad-safe-right));
+  z-index: 30;
+}
+
+.mute-btn {
+  right: calc(76px + var(--pad-safe-right));
+  z-index: 30;
+}
+
+.pause-btn {
+  right: calc(136px + var(--pad-safe-right));
+  z-index: 35;
+}
 
 .pause-btn:hover,
 .mute-btn:hover,
@@ -340,6 +392,7 @@ canvas {
 
 /* Responsive HUD buttons */
 @media (max-width: 520px) {
+
   .fullscreen-btn,
   .mute-btn,
   .pause-btn,
@@ -349,12 +402,22 @@ canvas {
     height: 44px;
     font-size: 18px;
   }
-  .restart-btn { right: calc(10px + var(--pad-safe-right)); }
-  .mute-btn { right: calc(66px + var(--pad-safe-right)); }
-  .pause-btn { right: calc(122px + var(--pad-safe-right)); }
+
+  .restart-btn {
+    right: calc(10px + var(--pad-safe-right));
+  }
+
+  .mute-btn {
+    right: calc(66px + var(--pad-safe-right));
+  }
+
+  .pause-btn {
+    right: calc(122px + var(--pad-safe-right));
+  }
 }
 
 @media (pointer: coarse) {
+
   .fullscreen-btn,
   .mute-btn,
   .pause-btn,
@@ -364,12 +427,22 @@ canvas {
     font-size: 22px;
     top: calc(12px + var(--pad-safe-top));
   }
-  .restart-btn { right: calc(12px + var(--pad-safe-right)); }
-  .mute-btn { right: calc(84px + var(--pad-safe-right)); }
-  .pause-btn { right: calc(156px + var(--pad-safe-right)); }
+
+  .restart-btn {
+    right: calc(12px + var(--pad-safe-right));
+  }
+
+  .mute-btn {
+    right: calc(84px + var(--pad-safe-right));
+  }
+
+  .pause-btn {
+    right: calc(156px + var(--pad-safe-right));
+  }
 }
 
 @media (max-height: 420px) {
+
   .fullscreen-btn,
   .mute-btn,
   .pause-btn,
@@ -452,8 +525,13 @@ canvas {
   pointer-events: none;
 }
 
-#mobileControls .mc-left { left: calc(12px + var(--pad-safe-left)); }
-#mobileControls .mc-right { right: calc(12px + var(--pad-safe-right)); }
+#mobileControls .mc-left {
+  left: calc(12px + var(--pad-safe-left));
+}
+
+#mobileControls .mc-right {
+  right: calc(12px + var(--pad-safe-right));
+}
 
 #mobileControls .mc-btn {
   pointer-events: auto;
@@ -514,7 +592,8 @@ canvas {
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(45deg, black, transparent 100px);
-  display: none; /* hidden until game over */
+  display: none;
+  /* hidden until game over */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -534,7 +613,8 @@ canvas {
   position: absolute;
   inset: 0;
   background: repeating-radial-gradient(black, transparent 100px);
-  display: none; /* hidden until win */
+  display: none;
+  /* hidden until win */
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -590,26 +670,26 @@ canvas {
   letter-spacing: 0.5px;
   padding: 10px 18px;
   border-radius: 14px;
-
-  background: linear-gradient(to bottom, #5a2e0f, #6b5142);
-  border: 2px solid #2a1408;
-  color: #f7e4b2;
-
+  background: linear-gradient(to bottom, #f7e4b2, #e0c48a);
+  /* light sand */
+  border: 2px solid #5a2e0f;
+  color: #2a1408;
+  /* dark brown text */
+  font-weight: 600;
   cursor: pointer;
-
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.7),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
-
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .legal-btn:hover {
-  background: linear-gradient(to bottom, rgba(40, 25, 10, 0.95), rgba(20, 10, 5, 0.85));
+  background: linear-gradient(to bottom, #fff2c6, #f2d79c);
   box-shadow:
     0 10px 28px rgba(0, 0, 0, 0.8),
-    0 0 18px rgba(255, 200, 120, 0.35);
+    0 0 18px rgba(255, 220, 150, 0.4);
 }
+
 
 .legal-btn:active {
   transform: scale(0.97);
@@ -617,7 +697,9 @@ canvas {
 }
 
 @media (pointer: coarse) {
-  #legalBar { display: none; }
+  #legalBar {
+    display: none;
+  }
 }
 
 /* Start screen actions (mobile) */
@@ -632,17 +714,38 @@ canvas {
   font-size: 0.95rem;
   padding: 8px 14px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.35);
-  color: #f2e6c9;
+  background: linear-gradient(to bottom, #f7e4b2, #e0c48a);
+  border: 2px solid #5a2e0f;
+  color: #2a1408;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
-.mini-action-btn:active { transform: scale(0.98); }
+.mini-action-btn:hover {
+  background: linear-gradient(to bottom, #fff2c6, #f2d79c);
+}
+
+.mini-action-btn:active {
+  transform: scale(0.97);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.7);
+}
+
+.mini-action-btn:active {
+  transform: scale(0.98);
+}
 
 @media (pointer: coarse) {
+
   #controlsHint,
-  #legalBar { display: none; }
+  #legalBar {
+    display: none;
+  }
 
   .startScreenActions {
     display: flex;
@@ -682,7 +785,11 @@ canvas {
   animation: spin 0.9s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
 #loadingOverlay.hidden {
   display: none !important;
@@ -738,4 +845,3 @@ canvas {
   color: #fff6dc;
   font-family: var(--font-ui);
 }
-
