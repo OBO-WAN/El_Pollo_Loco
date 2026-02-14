@@ -33,7 +33,7 @@ const CHARACTER_IMAGES = [
   'assets/img/2_character_pepe/4_hurt/H-42.png',
   'assets/img/2_character_pepe/4_hurt/H-43.png',
 
-    // sleep / long idle
+  // sleep / long idle
   'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
   'assets/img/2_character_pepe/1_idle/long_idle/I-12.png',
   'assets/img/2_character_pepe/1_idle/long_idle/I-13.png',
@@ -76,10 +76,20 @@ const ENDBOSS_IMAGES = [
   'assets/img/4_enemie_boss_chicken/2_alert/G11.png',
   'assets/img/4_enemie_boss_chicken/2_alert/G12.png',
 
-    // hurt
+  // hurt
   'assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
   'assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
   'assets/img/4_enemie_boss_chicken/4_hurt/G23.png',
+
+  // attack
+  'assets/img/4_enemie_boss_chicken/3_attack/G13.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G14.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G15.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G16.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G17.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G18.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G19.png',
+  'assets/img/4_enemie_boss_chicken/3_attack/G20.png',
 
   // dead
   'assets/img/4_enemie_boss_chicken/5_dead/G24.png',

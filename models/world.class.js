@@ -27,6 +27,7 @@ class World {
 
 
 
+
     throwableObjects = [];
 
     constructor(canvas, keyboard) {
@@ -36,6 +37,7 @@ class World {
         this.level = initLevel1();
         this.endboss = this.level.enemies.find(e => e instanceof Endboss);
         this.endbossBarVisible = false;
+        this.endbossAttackStarted = false;
         this.setWorld();
         this.initStatusBars();
         this.statusBarEndboss = new StatusBar();
@@ -62,9 +64,6 @@ class World {
             this.checkCoinCollisions();
             this.checkBottleCollisions();
             this.checkBottleEnemyCollisions();
-            // if (typeof updateMobileHudVisibility === 'function') {
-            //     updateMobileHudVisibility();
-            // }
             if (this.character.isDead()) {
                 this.gameOver();
             }
@@ -189,6 +188,7 @@ class World {
         if (this.isGameOver) return;
         this.isGameOver = true;
         this.isPaused = true;
+        this.endbossAttackStarted = false;
         if (this.collisionInterval) clearInterval(this.collisionInterval);
         this.stopSnoring();
         if (typeof stopBackgroundMusic === 'function') {
@@ -203,6 +203,7 @@ class World {
         if (this.isGameOver) return;
         this.isGameOver = true;
         this.isPaused = true;
+        this.endbossAttackStarted = false;
         if (this.collisionInterval) clearInterval(this.collisionInterval);
         this.stopSnoring();
         // Stop background music
@@ -225,6 +226,11 @@ class World {
     update() {
         if (this.isPaused) return;
         this.checkEndbossBarTrigger();
+        if (this.endbossBarVisible && this.endboss && !this.endbossAttackStarted) {
+            this.endbossAttackStarted = true;
+            this.endboss.startAttackCycle();
+        }
+
         this.handleCharacterMovement(); // input -> move
         this.updateCamera();            // follow player
         this.moveEnemies();             // enemy motion
