@@ -53,7 +53,7 @@ function initGame() {
 
   initAudio();
   initMobile();
-  bindKeyboard(); // keydown/keyup (movement + pause)
+  bindKeyboard();
 }
 
 function cacheDom() {
@@ -87,21 +87,25 @@ function bindUiControls() {
 }
 
 function bindRestart() {
-  dom.restartBtn?.addEventListener('click', () => {
-    setPaused(false);
-    window.location.reload();
-  });
+  dom.restartBtn?.addEventListener('click', restartGame);
+
   document
     .getElementById('gameOverRestartBtn')
-    ?.addEventListener('click', () => {
-      window.location.reload();
-    });
+    ?.addEventListener('click', restartGame);
+
   document
     .getElementById('winRestartBtn')
-    ?.addEventListener('click', () => {
-      window.location.reload();
-    });
+    ?.addEventListener('click', restartGame);
+
+  document
+    .getElementById('gameOverMenuBtn')
+    ?.addEventListener('click', goToMainMenu);
+
+  document
+    .getElementById('winMenuBtn')
+    ?.addEventListener('click', goToMainMenu);
 }
+
 
 function bindLegal() {
   document
@@ -178,7 +182,7 @@ function toggleMute() {
   if (world?.snoringSound) world.snoringSound.muted = isMuted;
   if (world?.coinSound) world.coinSound.muted = isMuted;
   if (world?.bottleSound) world.bottleSound.muted = isMuted;
-  if (world?.throwBottleSound) world.throwBottleSound = isMuted;
+  if (world?.throwBottleSound) world.throwBottleSound.muted = isMuted;
   if (world?.winSound) world.winSound.muted = isMuted;
   if (world?.gameOverSound) world.gameOverSound.muted = isMuted;
 
@@ -210,7 +214,6 @@ function startGame() {
   if (world.coinSound) world.coinSound.muted = isMuted;
   if (world.bottleSound) world.bottleSound.muted = isMuted;
   if (world.throwBottleSound) world.throwBottleSound.muted = isMuted;
-  if (world?.throwBottleSound) world.throwBottleSound.muted = isMuted;
   if (world.snoringSound) world.snoringSound.muted = isMuted;
   if (world.winSound) world.winSound.muted = isMuted;
   if (world.gameOverSound) world.gameOverSound.muted = isMuted;
@@ -218,6 +221,54 @@ function startGame() {
   gameStarted = true;
   updateMobileControlsVisibility();
 }
+
+function restartGame() {
+  if (!world) return;
+
+  // Stop world loop
+  if (world.collisionInterval) {
+    clearInterval(world.collisionInterval);
+  }
+
+  // Hide overlays
+  document.getElementById('gameOverOverlay').style.display = 'none';
+  document.getElementById('winOverlay').style.display = 'none';
+
+  // Reset flags
+  isPaused = false;
+  gameStarted = false;
+  world = null;
+
+  // Start fresh game
+  startGame();
+}
+
+
+function goToMainMenu() {
+  // Stop world loop
+  if (world?.collisionInterval) {
+    clearInterval(world.collisionInterval);
+  }
+
+  // Stop background music if desired
+  stopBackgroundMusic();
+
+  // Hide overlays
+  document.getElementById('gameOverOverlay').style.display = 'none';
+  document.getElementById('winOverlay').style.display = 'none';
+
+  // Reset state
+  world = null;
+  isPaused = false;
+  gameStarted = false;
+
+  // Show start screen
+  dom.startScreen.style.display = 'flex';
+
+  updateMobileControlsVisibility();
+}
+
+
 
 function toggleFullscreen() {
   const container = dom.fullscreenContainer || document.getElementById('fullscreen');
@@ -452,18 +503,3 @@ function hideOverlay(id) {
 function stopBackgroundMusic() {
   if (bgMusic) bgMusic.pause();
 }
-
-
-// function updateMobileHudVisibility() {
-//   if (!window.matchMedia("(pointer: coarse)").matches) return;
-
-//   const hud = document.getElementById("mobileHud");
-
-//   if (world?.isBossFight) {
-//     hud.style.opacity = "0";
-//     hud.style.pointerEvents = "none";
-//   } else {
-//     hud.style.opacity = "1";
-//     hud.style.pointerEvents = "auto";
-//   }
-// }

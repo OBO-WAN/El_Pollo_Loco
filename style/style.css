@@ -332,6 +332,13 @@ canvas {
   transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+.overlayActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
 .fullscreen-btn-canvas {
   bottom: auto;
   left: 50%;
