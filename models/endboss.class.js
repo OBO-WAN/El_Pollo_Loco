@@ -17,6 +17,13 @@ class Endboss extends movableObject {
     attackInterval = null;
     attackTimeout = null;
 
+    //Attack
+    dashSpeed = 25;      // how fast the dash is
+    dashDistance = 120;  // how far boss moves forward
+    dashProgress = 0;
+    isDashing = false;
+
+
     // --- Animations ---
     IMAGES_WALKING = [
         'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -78,6 +85,9 @@ class Endboss extends movableObject {
 
             if (this.isAttacking) {
                 this.playAnimation(this.IMAGES_ATTACK);
+                if (this.isDashing) {
+                    this.performDash();
+                }
                 return;
             }
 
@@ -108,7 +118,6 @@ class Endboss extends movableObject {
         }, 600);
     }
 
-    // 🔥 THIS METHOD MUST BE INSIDE THE CLASS
     startAttackCycle() {
         if (this.attackInterval || this.attackStartTimeout || this.dead) return;
 
@@ -130,12 +139,30 @@ class Endboss extends movableObject {
         if (this.dead) return;
 
         this.isAttacking = true;
+        this.startDash();
 
         if (this.attackTimeout) clearTimeout(this.attackTimeout);
 
         this.attackTimeout = setTimeout(() => {
             this.isAttacking = false;
+            this.isDashing = false;
+            this.dashProgress = 0;
         }, this.IMAGES_ATTACK.length * 200);
+    }
+
+    startDash() {
+        this.isDashing = true;
+        this.dashProgress = 0;
+    }
+
+    performDash() {
+        if (this.dashProgress >= this.dashDistance) {
+            this.isDashing = false;
+            return;
+        }
+
+        this.x -= this.dashSpeed; // boss moves toward player (left)
+        this.dashProgress += this.dashSpeed;
     }
 
     die() {
