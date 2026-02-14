@@ -28,11 +28,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* padding:
-    calc(12px + var(--pad-safe-top))
-    calc(12px + var(--pad-safe-right))
-    calc(12px + var(--pad-safe-bottom))
-    calc(12px + var(--pad-safe-left)); */
 }
 
 /* Main container */
@@ -71,8 +66,6 @@ h1 {
 /* Content */
 section {
   flex: 1;
-
-  /* ✅ Scroll inside the card if content is long */
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 
