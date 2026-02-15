@@ -18,6 +18,7 @@ class World {
     statusBarBottles = new StatusBar();
     isPaused = false;
     collisionInterval = null;
+    animationFrameId = null;
     isGameOver = false;
     //Idle
     idleTimeout = null;
@@ -72,7 +73,6 @@ class World {
         }, 100);
 
     }
-
 
     checkThrowObjects() {
         if (this.keyboard.SPACE && this.bottles > 0) {
@@ -187,6 +187,7 @@ class World {
         if (this.isGameOver) return;
         this.isGameOver = true;
         this.isPaused = true;
+        this.stopLoops();
         this.endbossAttackStarted = false;
         if (this.collisionInterval) clearInterval(this.collisionInterval);
         this.stopSnoring();
@@ -219,8 +220,9 @@ class World {
         this.clearCanvas();
         this.update();
         this.render();
-        requestAnimationFrame(() => this.draw());
+        this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
+
     // ----- UPDATE (logic) -----
     update() {
         if (this.isPaused) return;
@@ -393,6 +395,15 @@ class World {
             this.idleTimeout = null;
         }
     }
+
+    stopLoops() {
+        if (this.collisionInterval) clearInterval(this.collisionInterval);
+        this.collisionInterval = null;
+
+        if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+    }
+
 
     playSound(audio, { restart = true } = {}) {
         // Single source of truth

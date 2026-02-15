@@ -71,7 +71,7 @@ class Endboss extends movableObject {
 
         this.animate();
 
-        console.log('Endboss loaded. startAttackCycle:', typeof this.startAttackCycle);
+        // console.log('Endboss loaded. startAttackCycle:', typeof this.startAttackCycle);
     }
 
     animate() {
