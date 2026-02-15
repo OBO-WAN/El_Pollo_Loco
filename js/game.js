@@ -123,29 +123,50 @@ function bindLegal() {
 }
 
 function bindStartScreenExtras() {
+  bindMobileImpressum();
+  setupHowToOverlay();
+}
+
+function bindMobileImpressum() {
   document.getElementById('impressumBtnMobile')?.addEventListener('click', () => {
     window.location.href = 'impressum.html';
   });
+}
 
+function setupHowToOverlay() {
   const overlayId = 'howToOverlay';
-  const howToBtn = document.getElementById('howToBtn');
   const overlay = document.getElementById(overlayId);
+  if (!overlay) return;
 
-  if (overlay) {
-    overlay.inert = true;
-    overlay.setAttribute('aria-hidden', 'true');
-  }
+  initOverlayHidden(overlay);
+  bindHowToOpen(overlayId);
+  bindHowToClose(overlay, overlayId);
+  bindEscapeClose(overlay, overlayId);
+}
 
-  howToBtn?.addEventListener('click', () => showOverlay(overlayId));
+function initOverlayHidden(overlay) {
+  overlay.inert = true;
+  overlay.setAttribute('aria-hidden', 'true');
+}
 
-  overlay?.addEventListener('click', (e) => {
+function bindHowToOpen(overlayId) {
+  document.getElementById('howToBtn')
+    ?.addEventListener('click', () => showOverlay(overlayId));
+}
+
+function bindHowToClose(overlay, overlayId) {
+  overlay.addEventListener('click', (e) => {
     if (e.target === overlay || e.target.closest('#closeHowToBtn')) {
       hideOverlay(overlayId);
     }
   });
+}
 
+function bindEscapeClose(overlay, overlayId) {
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') hideOverlay(overlayId);
+    if (e.key === 'Escape' && overlay.classList.contains('show')) {
+      hideOverlay(overlayId);
+    }
   });
 }
 
