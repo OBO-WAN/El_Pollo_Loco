@@ -16,7 +16,6 @@ class World {
     statusBarHealth = new StatusBar();
     statusBarCoins = new StatusBar();
     statusBarBottles = new StatusBar();
-    // isBossFight = false;
     isPaused = false;
     collisionInterval = null;
     isGameOver = false;

@@ -87,7 +87,14 @@ function bindUiControls() {
 }
 
 function bindRestart() {
-  dom.restartBtn?.addEventListener('click', restartGame);
+  dom.restartBtn?.addEventListener('click', () => {
+    if (world) {
+      world.isPaused = true;
+      world.stopSnoring();
+    }
+    setPaused(false);
+    window.location.reload();
+  });
 
   document
     .getElementById('gameOverRestartBtn')
@@ -224,16 +231,12 @@ function startGame() {
 
 function restartGame() {
   if (!world) return;
-
   // Stop world loop
   if (world.collisionInterval) {
     clearInterval(world.collisionInterval);
   }
-
-  // Hide overlays
   document.getElementById('gameOverOverlay').style.display = 'none';
   document.getElementById('winOverlay').style.display = 'none';
-
   // Reset flags
   isPaused = false;
   gameStarted = false;
@@ -242,7 +245,6 @@ function restartGame() {
   // Start fresh game
   startGame();
 }
-
 
 function goToMainMenu() {
   // Stop world loop
@@ -267,8 +269,6 @@ function goToMainMenu() {
 
   updateMobileControlsVisibility();
 }
-
-
 
 function toggleFullscreen() {
   const container = dom.fullscreenContainer || document.getElementById('fullscreen');
@@ -371,17 +371,49 @@ function setupMobileControls() {
 
 function setPaused(paused) {
   isPaused = paused;
+
   if (world) world.isPaused = isPaused;
 
   const pauseOverlay = document.getElementById('pauseOverlay');
-  if (pauseOverlay) pauseOverlay.style.display = isPaused ? 'flex' : 'none';
+  if (pauseOverlay) {
+    pauseOverlay.style.display = isPaused ? 'flex' : 'none';
+  }
+
+  if (isPaused) {
+    // Stop background music
+    stopBackgroundMusic();
+
+    if (world) {
+      world.stopSnoring();
+
+      // Stop all world sounds immediately
+      [
+        world.coinSound,
+        world.bottleSound,
+        world.throwBottleSound,
+        world.winSound,
+        world.gameOverSound
+      ].forEach(sound => {
+        if (sound) {
+          sound.pause();
+          sound.currentTime = 0;
+        }
+      });
+    }
+
+  } else {
+    if (!isMuted) {
+      startBackgroundMusic();
+    }
+  }
 
   updateMobileControlsVisibility();
 }
 
+
 function togglePause() {
-  if (!world) return;            // can’t pause before starting
-  if (isPortraitBlocked) return; // don’t pause/resume while blocked
+  if (!world) return;
+  if (isPortraitBlocked) return;
   setPaused(!isPaused);
 }
 
