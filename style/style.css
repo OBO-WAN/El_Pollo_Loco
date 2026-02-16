@@ -207,8 +207,8 @@ canvas {
 .start-btn,
 .start-screen-btn {
   font-family: var(--font-ui);
-  font-size: 1.3rem;
   letter-spacing: 1px;
+  font-size: 1.5rem;
   padding: 14px 32px;
   border-radius: var(--radius-md);
   border: 2px solid #3b1f0f;
@@ -248,6 +248,54 @@ canvas {
   margin: 0.75rem 0 0;
   line-height: 1.25;
 }
+
+@media (min-width: 1920px) {
+
+  .start-screen-image {
+    max-width: 95%;
+    max-height: 70%;
+  }
+
+  .start-screen-btn {
+    font-size: 1.6rem;
+    padding: 18px 42px;
+  }
+
+  .mini-action-btn {
+    font-size: 1.05rem;
+    padding: 10px 18px;
+  }
+}
+
+@media (min-width: 2560px) {
+
+  .start-screen-image {
+    max-height: 75%;
+  }
+
+  .start-screen-btn {
+    font-size: 1.8rem;
+    padding: 20px 50px;
+  }
+
+  .mini-action-btn {
+    font-size: 1.1rem;
+    padding: 12px 20px;
+  }
+}
+
+@media (min-width: 3200px) {
+
+  .start-screen-image {
+    max-height: 80%;
+  }
+
+  .start-screen-btn {
+    font-size: 2rem;
+    padding: 22px 56px;
+  }
+}
+
 
 /* -------------------- Controls hint -------------------- */
 
