@@ -118,6 +118,37 @@ h1 {
 #gameContainer {
   position: relative;
   width: min(90vw, 720px);
+  /* width: min(92vw, calc(80vh * 1.5), 1320px); */
+}
+
+/* -------------------- Desktop scaling (from Full HD onwards) -------------------- */
+
+/* Full HD (1920x1080) */
+@media (min-width: 1920px) {
+  #gameContainer {
+    width: min(92vw, 1200px);
+  }
+}
+
+/* QHD (2560x1440) */
+@media (min-width: 2560px) {
+  #gameContainer {
+    width: min(92vw, 1500px);
+  }
+}
+
+/* Ultrawide 3440x1440 */
+@media (min-width: 3200px) {
+  #gameContainer {
+    width: min(92vw, 1700px);
+  }
+}
+
+/* 4K (3840x2160) */
+@media (min-width: 3840px) {
+  #gameContainer {
+    width: min(92vw, 2100px);
+  }
 }
 
 canvas {
@@ -545,7 +576,7 @@ canvas {
   width: 64px;
   height: 64px;
   border-radius: 18px;
-  border: 2px solid rgba(255,255,255,0.6);
+  border: 2px solid rgba(255, 255, 255, 0.6);
   font-size: 22px;
   background: var(--ui-bg);
   color: #fff;
