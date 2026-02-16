@@ -265,7 +265,7 @@ class World {
         if (!this.idleTimeout && !this.isSnoring) {
             this.idleTimeout = setTimeout(() => {
                 this.startSnoring();
-            }, 2000);
+            }, 1000);
         }
     }
 
@@ -413,7 +413,6 @@ class World {
 
 
     playSound(audio, { restart = true } = {}) {
-        // Single source of truth
         if (typeof isMuted !== 'undefined' && isMuted) return;
         if (!audio) return;
 
