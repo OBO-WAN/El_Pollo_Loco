@@ -3,8 +3,8 @@
   --font-ui: "Rye", serif;
   --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 
-  --ui-bg: rgba(0, 0, 0, 0.55);
-  --ui-bg-hover: rgba(0, 0, 0, 0.75);
+  --ui-bg: #111;
+  --ui-bg-hover: #a8b2b0;
   --overlay-bg: rgba(0, 0, 0, 0.75);
   --overlay-card: rgba(255, 255, 255, 0.08);
 
@@ -545,7 +545,7 @@ canvas {
   width: 64px;
   height: 64px;
   border-radius: 18px;
-  border: none;
+  border: 2px solid rgba(255,255,255,0.6);
   font-size: 22px;
   background: var(--ui-bg);
   color: #fff;
@@ -853,4 +853,3 @@ canvas {
   color: #fff6dc;
   font-family: var(--font-ui);
 }
-
