@@ -233,10 +233,6 @@ function startGame() {
 
   dom.startScreen?.style && (dom.startScreen.style.display = 'none');
 
-  if (window.matchMedia('(pointer: coarse)').matches) {
-    dom.fullscreenContainer?.requestFullscreen?.().catch(() => { });
-  }
-
   startBackgroundMusic();
   world = new World(canvas, keyboard);
   if (world.coinSound) world.coinSound.muted = isMuted;
