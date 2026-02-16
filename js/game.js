@@ -344,15 +344,23 @@ function updateMobileControlsVisibility() {
   const controls = document.getElementById('mobileControls');
   if (!controls) return;
 
-  const isMobileLike = window.matchMedia('(pointer: coarse)').matches;
+  const isTouch = window.matchMedia('(pointer: coarse)').matches;
   const isLandscape = window.innerWidth > window.innerHeight;
+  const isSmallScreen = window.innerWidth < 1024;
 
-  if (gameStarted && isMobileLike && isLandscape && !isPortraitBlocked) {
+  if (
+    gameStarted &&
+    isTouch &&
+    isLandscape &&
+    isSmallScreen &&
+    !isPortraitBlocked
+  ) {
     controls.style.display = 'block';
   } else {
     controls.style.display = 'none';
   }
 }
+
 
 function setupMobileControls() {
   const controls = document.getElementById('mobileControls');
