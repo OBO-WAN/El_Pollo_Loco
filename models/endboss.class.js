@@ -18,8 +18,8 @@ class Endboss extends movableObject {
     attackTimeout = null;
 
     //Attack
-    dashSpeed = 25;      // how fast the dash is
-    dashDistance = 120;  // how far boss moves forward
+    dashSpeed = 40;
+    dashDistance = 180;
     dashProgress = 0;
     isDashing = false;
 
@@ -90,7 +90,7 @@ class Endboss extends movableObject {
                 return;
             }
             this.playAnimation(this.IMAGES_WALKING);
-        }, 200);
+        }, 140);
     }
 
     hit() {
@@ -100,6 +100,11 @@ class Endboss extends movableObject {
         this.energy = Math.max(0, this.energy);
 
         this.triggerHurtAnimation();
+
+        if (this.energy <= 50 && this.dashSpeed !== 55) {
+            this.dashSpeed = 55;
+            this.dashDistance = 220;
+        }
 
         if (this.energy === 0) {
             this.die();
@@ -117,24 +122,43 @@ class Endboss extends movableObject {
     }
 
     startAttackCycle() {
-        if (this.attackInterval || this.attackStartTimeout || this.dead) return;
+        if (this.dead || this.attackStartTimeout) return;
+        if (this.attackInterval) return;
 
         this.attackStartTimeout = setTimeout(() => {
             if (this.dead) return;
 
             this.triggerAttack();
-
-            this.attackInterval = setInterval(() => {
-                if (this.dead) return;
-                this.triggerAttack();
-            }, 4000);
+            this.scheduleNextAttack();
 
             this.attackStartTimeout = null;
-        }, 2500);
+        }, 1500);
+    }
+
+    scheduleNextAttack() {
+        if (this.dead) return;
+        const delay = this.getNextAttackDelay();
+
+        this.attackInterval = setTimeout(() => {
+            if (this.dead) return;
+
+            this.triggerAttack();
+            this.scheduleNextAttack();
+        }, delay);
+    }
+
+    getNextAttackDelay() {
+        if (this.energy <= 30) {
+            return 1000 + Math.random() * 400;
+        }
+        if (this.energy <= 50) {
+            return 1500 + Math.random() * 600;
+        }
+        return 2000 + Math.random() * 800;
     }
 
     triggerAttack() {
-        if (this.dead) return;
+        if (this.dead || this.isAttacking) return;
 
         this.isAttacking = true;
         this.startDash();
@@ -145,7 +169,7 @@ class Endboss extends movableObject {
             this.isAttacking = false;
             this.isDashing = false;
             this.dashProgress = 0;
-        }, this.IMAGES_ATTACK.length * 200);
+        }, this.IMAGES_ATTACK.length * 140);
     }
 
     startDash() {
@@ -167,7 +191,7 @@ class Endboss extends movableObject {
         this.dead = true;
 
         if (this.animationInterval) clearInterval(this.animationInterval);
-        if (this.attackInterval) clearInterval(this.attackInterval);
+        if (this.attackInterval) clearTimeout(this.attackInterval);
         if (this.attackStartTimeout) clearTimeout(this.attackStartTimeout);
         if (this.attackTimeout) clearTimeout(this.attackTimeout);
         if (this.hurtTimeout) clearTimeout(this.hurtTimeout);
