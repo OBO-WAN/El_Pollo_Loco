@@ -217,11 +217,18 @@ class World {
 
     // Main loop
     draw() {
+        if (this.isPaused) {
+            this.animationFrameId = null;
+            return;
+        }
+
         this.clearCanvas();
         this.update();
         this.render();
+
         this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
+
 
     // ----- UPDATE (logic) -----
     update() {
@@ -412,6 +419,23 @@ class World {
 
         if (restart) audio.currentTime = 0;
         audio.play().catch(() => { });
+    }
+
+    pause() {
+        this.isPaused = true;
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            this.animationFrameId = null;
+        }
+    }
+
+    resume() {
+        if (!this.isPaused) return;
+        this.isPaused = false;
+
+        if (!this.animationFrameId) {
+            this.draw();
+        }
     }
 
 

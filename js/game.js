@@ -393,48 +393,60 @@ function setupMobileControls() {
 function setPaused(paused) {
   isPaused = paused;
 
-  if (world) world.isPaused = isPaused;
-
-  const pauseOverlay = document.getElementById('pauseOverlay');
-  if (pauseOverlay) {
-    pauseOverlay.style.display = isPaused ? 'flex' : 'none';
-  }
-
-  if (isPaused) {
-    // Stop background music
-    stopBackgroundMusic();
-
-    if (world) {
-      world.stopSnoring();
-
-      // Stop all world sounds immediately
-      [
-        world.coinSound,
-        world.bottleSound,
-        world.throwBottleSound,
-        world.winSound,
-        world.gameOverSound
-      ].forEach(sound => {
-        if (sound) {
-          sound.pause();
-          sound.currentTime = 0;
-        }
-      });
-    }
-
-  } else {
-    if (!isMuted) {
-      startBackgroundMusic();
-    }
-  }
+  toggleWorldPause(isPaused);
+  togglePauseOverlay(isPaused);
+  handlePauseAudio(isPaused);
 
   updateMobileControlsVisibility();
 }
 
+function toggleWorldPause(paused) {
+  if (!world) return;
+  (paused ? world.pause : world.resume)?.call(world);
+}
+
+function togglePauseOverlay(paused) {
+  const pauseOverlay = document.getElementById('pauseOverlay');
+  if (!pauseOverlay) return;
+  pauseOverlay.style.display = paused ? 'flex' : 'none';
+}
+
+function handlePauseAudio(paused) {
+  if (paused) {
+    stopBackgroundMusic();
+    stopWorldSounds();
+    return;
+  }
+
+  if (!isMuted && gameStarted && world && !world.isGameOver) {
+    startBackgroundMusic();
+  }
+}
+
+function stopWorldSounds() {
+  if (!world) return;
+
+  world.stopSnoring?.();
+
+  const sounds = [
+    world.coinSound,
+    world.bottleSound,
+    world.throwBottleSound,
+    world.winSound,
+    world.gameOverSound,
+  ];
+
+  sounds.forEach((sound) => {
+    if (!sound) return;
+    sound.pause();
+    sound.currentTime = 0;
+  });
+}
 
 function togglePause() {
   if (!world) return;
   if (isPortraitBlocked) return;
+  if (world.isGameOver) return;
   setPaused(!isPaused);
 }
 

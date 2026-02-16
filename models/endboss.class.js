@@ -77,12 +77,11 @@ class Endboss extends movableObject {
     animate() {
         this.animationInterval = setInterval(() => {
             if (this.dead) return;
-
+            if (typeof isPaused !== 'undefined' && isPaused) return;
             if (this.isHurt) {
                 this.playAnimation(this.IMAGES_HURT);
                 return;
             }
-
             if (this.isAttacking) {
                 this.playAnimation(this.IMAGES_ATTACK);
                 if (this.isDashing) {
@@ -90,7 +89,6 @@ class Endboss extends movableObject {
                 }
                 return;
             }
-
             this.playAnimation(this.IMAGES_WALKING);
         }, 200);
     }
