@@ -132,8 +132,8 @@ class World {
             }
         }
     }
-
     checkBottleCollisions() {
+        // 1) Collect normal bottles from the level
         for (let i = this.level.bottles.length - 1; i >= 0; i--) {
             const bottle = this.level.bottles[i];
 
@@ -141,15 +141,30 @@ class World {
                 if (bottle.animationInterval) clearInterval(bottle.animationInterval);
 
                 this.level.bottles.splice(i, 1);
-                this.bottles++;
+                this.addBottleToInventory();
+            }
+        }
+        // 2) Collect thrown bottles AFTER they landed (or stopped)
+        for (let i = this.throwableObjects.length - 1; i >= 0; i--) {
+            const bottle = this.throwableObjects[i];
 
-                const bottlePercent = Math.min(100, this.bottles * 20);
-                this.statusBarBottles.setPercentage(bottlePercent);
-                this.playSound(this.bottleSound);
+            const isLanded = bottle.speedY === 0;
 
+            if (isLanded && this.character.isColliding(bottle)) {
+                bottle.stop?.();
+                this.throwableObjects.splice(i, 1);
+                this.addBottleToInventory();
             }
         }
     }
+
+    addBottleToInventory() {
+        this.bottles++;
+        const bottlePercent = Math.min(100, this.bottles * 20);
+        this.statusBarBottles.setPercentage(bottlePercent);
+        this.playSound(this.bottleSound);
+    }
+
 
     checkBottleEnemyCollisions() {
         for (let i = this.throwableObjects.length - 1; i >= 0; i--) {

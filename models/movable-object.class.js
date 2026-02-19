@@ -8,25 +8,31 @@ class movableObject extends DrawableObject {
     energy = 100;
     lastHit = 0;
 
-
     applyGravity() {
         setInterval(() => {
+            const groundY = (typeof this.groundY === 'number') ? this.groundY : 180;
+
             if (this.isInAir() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
+
+                if (this.y > groundY) {
+                    this.y = groundY;
+                    this.speedY = 0;
+                }
             } else {
                 this.speedY = 0;
+                this.y = groundY;
             }
         }, 1000 / 25);
     }
 
     isInAir() {
-        if (this instanceof ThrowableObject) {
-            return true;
-        } else {
-            return this.y < 180;
-        }
+        if (this instanceof ThrowableObject) return true;
+        const groundY = (typeof this.groundY === 'number') ? this.groundY : 180;
+        return this.y < groundY;
     }
+
 
     isColliding(mo) {
         const a = this.offset || { top: 0, right: 0, bottom: 0, left: 0 };
@@ -52,7 +58,6 @@ class movableObject extends DrawableObject {
     isDead() {
         return this.energy == 0;
     }
-
 
     isHurt() {
         const timePassed = (Date.now() - this.lastHit) / 1000; //seconds

@@ -5,6 +5,7 @@ class Character extends movableObject {
     width = 140;
     x = 120;
     y = 50;
+    groundY = 180;
     speed = 10;
     isJumping = false;
 
