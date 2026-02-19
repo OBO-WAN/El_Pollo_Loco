@@ -265,7 +265,7 @@ class World {
         if (!this.idleTimeout && !this.isSnoring) {
             this.idleTimeout = setTimeout(() => {
                 this.startSnoring();
-            }, 1000);
+            }, 3000);
         }
     }
 
@@ -294,20 +294,44 @@ class World {
     }
 
     render() {
-        this.ctx.save();                    // camera on
-        this.ctx.translate(this.camera_x, 0);
-        this.drawBackground();
-        this.drawCharacter();
-        this.drawClouds();
-        this.drawEnemies();
-        this.drawBottles();
-        this.drawCoins();
-        this.drawBottlesOnGround();
-        this.ctx.restore();                 // camera off
-        //Sticky StatusBars
+        const aboveUi = this.shouldCharacterDrawAboveUi();
+        this.drawWorldLayer(aboveUi);
+        this.drawUiLayer();
+        this.drawOverlayLayer(aboveUi);
+    }
+
+    drawWorldLayer(aboveUi) {
+        this.withCamera(() => {
+            this.drawBackground();
+            this.drawClouds();
+            this.drawEnemies();
+            this.drawBottles();
+            this.drawCoins();
+            this.drawBottlesOnGround();
+            if (!aboveUi) {
+                this.drawCharacter();
+            }
+        });
+    }
+
+    drawUiLayer() {
         this.drawStatusBar();
+    }
 
+    drawOverlayLayer(aboveUi) {
+        if (!aboveUi) return;
+        this.withCamera(() => this.drawCharacter());
+    }
 
+    shouldCharacterDrawAboveUi() {
+        return this.character?.isInAir?.() === true;
+    }
+
+    withCamera(fn) {
+        this.ctx.save();
+        this.ctx.translate(this.camera_x, 0);
+        fn();
+        this.ctx.restore();
     }
 
     drawBackground() {
