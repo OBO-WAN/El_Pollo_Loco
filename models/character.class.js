@@ -4,7 +4,7 @@ class Character extends movableObject {
     height = 240;
     width = 140;
     x = 120;
-    y = 50; 
+    y = 50;
     speed = 10;
     isJumping = false;
 
@@ -48,6 +48,19 @@ class Character extends movableObject {
         'assets/img/2_character_pepe/4_hurt/H-43.png',
     ]
 
+    imagesIdle = [
+        'assets/img/2_character_pepe/1_idle/idle/I-1.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-2.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-3.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-4.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-5.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-6.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-7.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-8.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-9.png',
+        'assets/img/2_character_pepe/1_idle/idle/I-10.png',
+    ];
+
     imagesSleep = [
 
         'assets/img/2_character_pepe/1_idle/long_idle/I-11.png',
@@ -73,6 +86,7 @@ class Character extends movableObject {
         this.loadImages(this.imagesJumping);
         this.loadImages(this.imagesDead);
         this.loadImages(this.imagesHurt);
+        this.loadImages(this.imagesIdle);
         this.loadImages(this.imagesSleep);
         this.applyGravity();
         this.animate();
@@ -93,15 +107,17 @@ class Character extends movableObject {
             } else if (this.world?.isCharacterSleeping) {
                 this.playAnimation(this.imagesSleep);
 
+            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+                this.playAnimation(this.animatedCharachter);
+
             } else {
-                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                    this.playAnimation(this.animatedCharachter);
-                }
+                this.playAnimation(this.imagesIdle);
             }
 
             if (this.world.keyboard.UP && !this.isInAir()) {
                 this.speedY = 28;
             }
+
         }, 100);
     }
 
