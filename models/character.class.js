@@ -8,6 +8,7 @@ class Character extends movableObject {
     groundY = 180;
     speed = 10;
     isJumping = false;
+    invincibleUntil = 0;
 
 
     animatedCharachter = [
@@ -130,6 +131,14 @@ class Character extends movableObject {
 
     isFalling() {
         return this.speedY < 0 && this.isInAir();
+    }
+
+    grantInvincibility(ms = 1500) {
+        this.invincibleUntil = Date.now() + ms;
+    }
+
+    isInvincible() {
+        return Date.now() < this.invincibleUntil;
     }
 
 }

@@ -111,6 +111,7 @@ class World {
             if (isStompableChicken(enemy) && this.character.isFalling()) {
                 enemy.die();
                 this.character.speedY = 15; // bounce
+                this.character.grantInvincibility(1500);
                 removeEnemyAfter(enemy, 600);
                 return;
             }

@@ -47,6 +47,10 @@ class movableObject extends DrawableObject {
     }
 
     hit() {
+        if (typeof this.isInvincible === 'function' && this.isInvincible()) {
+            return;
+        }
+
         this.energy -= 5;
         if (this.energy < 0) {
             this.energy = 0;
