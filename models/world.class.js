@@ -68,7 +68,10 @@ class World {
                 this.gameOver();
             }
             if (this.endboss && this.endboss.dead) {
-                this.win();
+                if (!this.winScheduled) {
+                    this.winScheduled = true;
+                    setTimeout(() => this.win(), 700);
+                }
             }
         }, 100);
 
