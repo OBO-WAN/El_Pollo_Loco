@@ -346,13 +346,13 @@ function updateMobileControlsVisibility() {
 
   const isTouch = window.matchMedia('(pointer: coarse)').matches;
   const isLandscape = window.innerWidth > window.innerHeight;
-  const isSmallScreen = window.innerWidth < 1024;
+  const isTabletOrSmaller = window.innerWidth <= 1366;
 
   if (
     gameStarted &&
     isTouch &&
     isLandscape &&
-    isSmallScreen &&
+    isTabletOrSmaller &&
     !isPortraitBlocked
   ) {
     controls.style.display = 'block';

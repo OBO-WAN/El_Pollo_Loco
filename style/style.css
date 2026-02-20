@@ -675,8 +675,7 @@ canvas {
     inset 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
-/* Show only on touch devices */
-@media (pointer: coarse) {
+@media (hover: none) and (pointer: coarse) and (max-width: 1366px) {
   #mobileControls {
     display: block;
   }
