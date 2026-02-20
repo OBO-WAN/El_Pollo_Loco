@@ -121,6 +121,12 @@ h1 {
   /* width: min(92vw, calc(80vh * 1.5), 1320px); */
 }
 
+/* Hide end-of-game overlays when device is portrait-blocked */
+#gameContainer.portrait-blocked~#gameOverOverlay,
+#gameContainer.portrait-blocked~#winOverlay {
+  display: none !important;
+}
+
 /* -------------------- Desktop scaling (from Full HD onwards) -------------------- */
 
 /* Full HD (1920x1080) */
@@ -250,7 +256,6 @@ canvas {
 }
 
 @media (min-width: 1920px) {
-
   .start-screen-image {
     max-width: 95%;
     max-height: 70%;
@@ -268,7 +273,6 @@ canvas {
 }
 
 @media (min-width: 2560px) {
-
   .start-screen-image {
     max-height: 75%;
   }
@@ -285,7 +289,6 @@ canvas {
 }
 
 @media (min-width: 3200px) {
-
   .start-screen-image {
     max-height: 80%;
   }
