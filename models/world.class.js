@@ -19,6 +19,7 @@ class World {
     isPaused = false;
     collisionInterval = null;
     animationFrameId = null;
+    winScheduled = false;
     isGameOver = false;
     //Idle
     idleTimeout = null;
@@ -320,8 +321,9 @@ class World {
     }
 
     drawWorldLayer(aboveUi) {
+        this.drawBackground();
+
         this.withCamera(() => {
-            this.drawBackground();
             this.drawClouds();
             this.drawEnemies();
             this.drawBottles();
@@ -354,7 +356,20 @@ class World {
     }
 
     drawBackground() {
-        this.addObjectsToMap(this.level.backgroundObjects);
+        const groups = new Map();
+
+        this.level.backgroundObjects.forEach(obj => {
+            const factor = obj.parallaxFactor ?? 1;
+            if (!groups.has(factor)) groups.set(factor, []);
+            groups.get(factor).push(obj);
+        });
+
+        for (const [factor, objects] of groups.entries()) {
+            this.ctx.save();
+            this.ctx.translate(this.camera_x * factor, 0);
+            this.addObjectsToMap(objects);
+            this.ctx.restore();
+        }
     }
 
     drawCharacter() {
