@@ -90,6 +90,26 @@
             <!-- Portrait only mode -->
             <div id="orientationOverlay" aria-live="polite">
                 <div class="orientationCard">
+                    <div class="western-rotate-icon">
+                        <svg viewBox="0 0 120 120" class="rotate-svg">
+                            <!-- Wood sign background -->
+                            <rect x="10" y="30" width="100" height="60" rx="12" fill="#8b5a2b" stroke="#5c3317"
+                                stroke-width="6" />
+
+                            <!-- Phone outline -->
+                            <rect x="45" y="40" width="30" height="50" rx="6" fill="#f5deb3" stroke="#3e2a14"
+                                stroke-width="4" />
+
+                            <!-- Screen -->
+                            <rect x="50" y="48" width="20" height="32" rx="3" fill="#2f4f4f" />
+
+                            <!-- Rotate arrow -->
+                            <path d="M60 15
+             a35 35 0 0 1 35 35" fill="none" stroke="#ffc30d" stroke-width="6" stroke-linecap="round" />
+
+                            <polygon points="90,50 100,45 95,60" fill="#ffc30d" />
+                        </svg>
+                    </div>
                     <h2>Turn your device to play</h2>
                     <p>This game works in landscape mode only</p>
                 </div>
@@ -123,7 +143,7 @@
             </div>
         </div>
 
-          <!-- Game Over Overlay -->
+        <!-- Game Over Overlay -->
         <div id="gameOverOverlay" style="display:none;">
             <h2 style="color: #ff4343; font-size:64px; margin-bottom:16px;">You Lose</h2>
             <div class="overlayActions">

@@ -53,6 +53,7 @@ h2 {
   letter-spacing: 1px;
   font-size: 2rem;
   margin: 0;
+  color: yellow;
 }
 
 h1 {
@@ -249,7 +250,7 @@ canvas {
 #orientationOverlay p,
 #pauseOverlay p {
   font-family: var(--font-ui);
-  color: #fff;
+  color: red;
   font-size: 1rem;
   margin: 0.75rem 0 0;
   line-height: 1.25;
@@ -587,6 +588,24 @@ canvas {
   background: var(--overlay-card);
   border-radius: var(--radius-lg);
   padding: 18px 16px;
+}
+
+.western-rotate-icon {
+  width: 120px;
+  margin: 20px auto;
+}
+
+.rotate-svg {
+  width: 100%;
+  animation: rotateDevice 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 6px 0 #3e2a14);
+}
+
+@keyframes rotateDevice {
+  0%   { transform: rotate(0deg); }
+  40%  { transform: rotate(90deg); }
+  60%  { transform: rotate(90deg); }
+  100% { transform: rotate(0deg); }
 }
 
 #gameContainer.portrait-blocked canvas,
