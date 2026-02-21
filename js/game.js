@@ -4,8 +4,8 @@ let bgMusic;
 let isMuted = false;
 let isPaused = false;
 const MUTE_STORAGE_KEY = 'game_muted';
-let isPortraitBlocked = false; // for mobile
-let gameStarted = false;       // buttons on mobile
+let isPortraitBlocked = false; 
+let gameStarted = false;       
 let keyboard = new Keyboard();
 let lastFocusBeforeOverlay = null;
 
@@ -248,40 +248,27 @@ function startGame() {
 
 function restartGame() {
   if (!world) return;
-  // Stop world loop
   if (world.collisionInterval) {
     clearInterval(world.collisionInterval);
   }
   document.getElementById('gameOverOverlay').style.display = 'none';
   document.getElementById('winOverlay').style.display = 'none';
-  // Reset flags
   isPaused = false;
   gameStarted = false;
   world = null;
-
-  // Start fresh game
   startGame();
 }
 
 function goToMainMenu() {
-  // Stop world loop
   if (world?.collisionInterval) {
     clearInterval(world.collisionInterval);
   }
-
-  // Stop background music if desired
   stopBackgroundMusic();
-
-  // Hide overlays
   document.getElementById('gameOverOverlay').style.display = 'none';
   document.getElementById('winOverlay').style.display = 'none';
-
-  // Reset state
   world = null;
   isPaused = false;
   gameStarted = false;
-
-  // Show start screen
   dom.startScreen.style.display = 'flex';
 
   updateMobileControlsVisibility();
@@ -321,11 +308,14 @@ function setupOrientationGuard() {
 
   function updateOrientationUI() {
     const portrait = window.innerHeight > window.innerWidth;
+    const mobilePortrait = isMobileLike() && portrait;
 
-    if (isMobileLike() && portrait) {
+    if (mobilePortrait) {
       isPortraitBlocked = true;
       overlay.style.display = 'flex';
       gameContainer.classList.add('portrait-blocked');
+
+      hideOverlay('howToOverlay');
     } else {
       isPortraitBlocked = false;
       overlay.style.display = 'none';
@@ -412,6 +402,11 @@ function toggleWorldPause(paused) {
 function togglePauseOverlay(paused) {
   const pauseOverlay = document.getElementById('pauseOverlay');
   if (!pauseOverlay) return;
+
+  if (isPortraitBlocked) {
+    pauseOverlay.style.display = 'none';
+    return;
+  }
   pauseOverlay.style.display = paused ? 'flex' : 'none';
 }
 
@@ -485,8 +480,6 @@ function preloadImagesWithProgress(imagePaths, onProgress) {
             update();
             resolve(path);
           };
-
-          // Don’t block the whole game on a missing image:
           img.onerror = () => {
             console.warn('Missing image:', path);
             loaded++;
@@ -503,17 +496,12 @@ function preloadImagesWithProgress(imagePaths, onProgress) {
 // -------------------- Keyboard --------------------
 
 function onKeydown(e) {
-  // Pause / resume
   if (e.code === 'Escape' || e.code === 'KeyP') {
     e.preventDefault();
     togglePause();
     return;
   }
-
-  // Block input when portrait-locked or paused
   if (isPortraitBlocked || isPaused) return;
-
-  // Prevent scrolling
   if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'Space'].includes(e.code)) {
     e.preventDefault();
   }
@@ -525,10 +513,7 @@ function onKeydown(e) {
 }
 
 function onKeyup(e) {
-  // Ignore input when portrait-locked or paused
   if (isPortraitBlocked || isPaused) return;
-
-  // Prevent scrolling
   if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'Space'].includes(e.code)) {
     e.preventDefault();
   }

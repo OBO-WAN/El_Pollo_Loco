@@ -128,6 +128,16 @@ h1 {
   display: none !important;
 }
 
+/* Hide How-To overlay when device is portrait-blocked */
+#gameContainer.portrait-blocked #howToOverlay {
+  display: none !important;
+}
+
+/* Hide pause overlay when device is portrait-blocked */
+#gameContainer.portrait-blocked #pauseOverlay {
+  display: none !important;
+}
+
 /* -------------------- Desktop scaling (from Full HD onwards) -------------------- */
 
 /* Full HD (1920x1080) */
@@ -602,10 +612,21 @@ canvas {
 }
 
 @keyframes rotateDevice {
-  0%   { transform: rotate(0deg); }
-  40%  { transform: rotate(90deg); }
-  60%  { transform: rotate(90deg); }
-  100% { transform: rotate(0deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  40% {
+    transform: rotate(90deg);
+  }
+
+  60% {
+    transform: rotate(90deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 #gameContainer.portrait-blocked canvas,
@@ -734,6 +755,160 @@ canvas {
   border: none;
   cursor: pointer;
   font-family: var(--font-ui);
+}
+
+/* ---- Pause overlay: widescreen scaling (Full HD+) ---- */
+
+/* Full HD (1920+) */
+@media (min-width: 1920px) {
+  #pauseOverlay .pauseCard {
+    max-width: 560px;
+    padding: 24px 22px;
+  }
+
+  #pauseOverlay .pauseCard h2 {
+    font-size: 2.4rem;
+  }
+
+  #pauseOverlay .pauseCard p {
+    font-size: 1.15rem;
+  }
+
+  #pauseOverlay .pauseCard .start-screen-btn {
+    font-size: 1.6rem;
+    padding: 18px 42px;
+  }
+}
+
+/* QHD (2560+) */
+@media (min-width: 2560px) {
+  #pauseOverlay .pauseCard {
+    max-width: 680px;
+    padding: 28px 26px;
+  }
+
+  #pauseOverlay .pauseCard h2 {
+    font-size: 2.8rem;
+  }
+
+  #pauseOverlay .pauseCard p {
+    font-size: 1.25rem;
+  }
+
+  #pauseOverlay .pauseCard .start-screen-btn {
+    font-size: 1.8rem;
+    padding: 20px 50px;
+  }
+}
+
+/* 4K (3840+) */
+@media (min-width: 3840px) {
+  #pauseOverlay .pauseCard {
+    max-width: 860px;
+    padding: 34px 30px;
+  }
+
+  #pauseOverlay .pauseCard h2 {
+    font-size: 3.2rem;
+  }
+
+  #pauseOverlay .pauseCard p {
+    font-size: 1.4rem;
+  }
+
+  #pauseOverlay .pauseCard .start-screen-btn {
+    font-size: 2rem;
+    padding: 22px 56px;
+  }
+}
+
+/* ---- How-To overlay scaling (Full HD+) ---- */
+
+/* Full HD (1920+) */
+@media (min-width: 1920px) {
+  .uiCard {
+    width: min(92%, 560px);
+    padding: 24px 22px;
+  }
+
+  .uiCard h2 {
+    font-size: 2.4rem;
+  }
+
+  .howToRow {
+    font-size: 1.15rem;
+  }
+
+  .howToRow .key {
+    font-size: 1.4rem;
+    min-width: 42px;
+    height: 40px;
+  }
+
+  #closeHowToBtn {
+    font-size: 1.6rem;
+    padding: 18px 42px;
+  }
+}
+
+/* QHD (2560+) */
+@media (min-width: 2560px) {
+  .uiCard {
+    width: min(92%, 680px);
+    padding: 28px 26px;
+  }
+
+  .uiCard h2 {
+    font-size: 2.8rem;
+  }
+
+  .howToRow {
+    font-size: 1.25rem;
+  }
+
+  .howToRow .key {
+    font-size: 1.6rem;
+    min-width: 48px;
+    height: 46px;
+  }
+
+  #closeHowToBtn {
+    font-size: 1.8rem;
+    padding: 20px 50px;
+  }
+}
+
+/* 4K (3840+) */
+@media (min-width: 3840px) {
+  .uiCard {
+    width: min(92%, 860px);
+    padding: 34px 30px;
+  }
+
+  .uiCard h2 {
+    font-size: 3.2rem;
+  }
+
+  .howToRow {
+    font-size: 1.4rem;
+  }
+
+  .howToRow .key {
+    font-size: 1.8rem;
+    min-width: 54px;
+    height: 52px;
+  }
+
+  #closeHowToBtn {
+    font-size: 2rem;
+    padding: 22px 56px;
+  }
+}
+
+.uiCard,
+#pauseOverlay .pauseCard,
+#winOverlay .winCard {
+  backdrop-filter: blur(6px);
 }
 
 /* -------------------- Game over overlay (image) -------------------- */
