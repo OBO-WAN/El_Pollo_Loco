@@ -249,8 +249,8 @@ class World {
         this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
 
-
     // ----- UPDATE (logic) -----
+
     update() {
         if (this.isPaused) return;
         this.checkEndbossBarTrigger();
@@ -259,10 +259,12 @@ class World {
             this.endboss.startAttackCycle();
         }
 
-        this.handleCharacterMovement(); // input -> move
-        this.updateCamera();            // follow player
-        this.moveEnemies();             // enemy motion
-        this.checkIdleState();          // sound character
+        this.handleCharacterMovement();
+        this.resolveEndbossWall();
+        this.clampCharacterToWorld();
+        this.updateCamera();
+        this.moveEnemies();
+        this.checkIdleState();
     }
 
     checkIdleState() {
@@ -514,6 +516,23 @@ class World {
         this.statusBarBottles.setPercentage(0);
         this.statusBarBottles.x = 20;
         this.statusBarBottles.y = 110;
+    }
+
+    resolveEndbossWall() {
+        if (!this.endboss || this.endboss.dead) return;
+
+        if (this.character.isColliding(this.endboss)) {
+            const bossLeft = this.endboss.x;
+            const padding = 6;
+
+            if (this.character.x < bossLeft) {
+                this.character.x = bossLeft - this.character.width + padding;
+            }
+        }
+    }
+
+    clampCharacterToWorld() {
+        if (this.character.x < 0) this.character.x = 0;
     }
 
 }
