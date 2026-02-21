@@ -4,10 +4,11 @@ let bgMusic;
 let isMuted = false;
 let isPaused = false;
 const MUTE_STORAGE_KEY = 'game_muted';
-let isPortraitBlocked = false; 
-let gameStarted = false;       
+let isPortraitBlocked = false;
+let gameStarted = false;
 let keyboard = new Keyboard();
 let lastFocusBeforeOverlay = null;
+let pausedByOrientation = false;
 
 // Cache DOM refs 
 const dom = {
@@ -316,10 +317,20 @@ function setupOrientationGuard() {
       gameContainer.classList.add('portrait-blocked');
 
       hideOverlay('howToOverlay');
+
+      if (gameStarted && world && !world.isGameOver && !isPaused) {
+        pausedByOrientation = true;
+        setPaused(true);
+      }
     } else {
       isPortraitBlocked = false;
       overlay.style.display = 'none';
       gameContainer.classList.remove('portrait-blocked');
+
+      if (pausedByOrientation) {
+        pausedByOrientation = false;
+        setPaused(false);
+      }
     }
 
     updateMobileControlsVisibility();
