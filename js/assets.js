@@ -1,4 +1,22 @@
+/**
+ * Asset definitions for the game.
+ * 
+ * This file contains all image path collections used by:
+ * - Character animations
+ * - Enemies
+ * - Endboss
+ * - Status bars
+ * 
+ * Each constant is an array of image paths.
+ */
+
 // -------------------- CHARACTER --------------------
+
+/**
+ * Character animation image paths.
+ * Includes walking, jumping, hurt, dead, idle and long idle animations.
+ * @type {string[]}
+ */
 const CHARACTER_IMAGES = [
   // walk
   'assets/img/2_character_pepe/2_walk/W-21.png',
@@ -61,6 +79,12 @@ const CHARACTER_IMAGES = [
 ];
 
 // -------------------- CHICKEN --------------------
+
+/**
+ * Normal chicken enemy image paths.
+ * Includes walk and dead animation.
+ * @type {string[]}
+ */
 const CHICKEN_IMAGES = [
   'assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
   'assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
@@ -70,6 +94,12 @@ const CHICKEN_IMAGES = [
 
 // -------------------- Small Chickens --------------------
 
+
+/**
+ * Small chicken enemy image paths.
+ * Includes walk and dead animation.
+ * @type {string[]}
+ */
 const SMALL_CHICKEN_IMAGES = [
   'assets/img/3_enemies_chicken/chicken_small/1_walk/1_w.png',
   'assets/img/3_enemies_chicken/chicken_small/1_walk/2_w.png',
@@ -78,6 +108,12 @@ const SMALL_CHICKEN_IMAGES = [
 ];
 
 // -------------------- ENDBOSS --------------------
+
+/**
+ * Endboss image paths.
+ * Includes alert, attack, hurt and dead animations.
+ * @type {string[]}
+ */
 const ENDBOSS_IMAGES = [
   // walking
   'assets/img/4_enemie_boss_chicken/2_alert/G5.png',
@@ -111,6 +147,12 @@ const ENDBOSS_IMAGES = [
 ];
 
 // -------------------- STATUS BARS --------------------
+
+/**
+ * Status bar image paths.
+ * Includes health, coin, bottle and endboss bars.
+ * @type {string[]}
+ */
 const STATUSBAR_IMAGES = [
   // health
   'assets/img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png',
@@ -143,6 +185,12 @@ const STATUSBAR_IMAGES = [
 ];
 
 // -------------------- MASTER LIST --------------------
+
+/**
+ * Master list of all game image paths.
+ * Used for global preloading.
+ * @type {string[]}
+ */
 const GAME_IMAGES = [
   ...CHARACTER_IMAGES,
   ...CHICKEN_IMAGES,
