@@ -107,21 +107,46 @@ class World {
         if (this.character.x > 2000 && !this.isBossFight) {
             this.isBossFight = true;
         }
+
         const isStompableChicken = (enemy) =>
             enemy instanceof Chicken || enemy instanceof Chicken2;
+
+        const isBoss = (enemy) => enemy instanceof Endboss;
+
+        const isStompFromAbove = (enemy) => {
+            const c = this.character;
+
+            const cBottom = c.y + c.height - (c.offset?.bottom ?? 0);
+            const eTop = enemy.y + (enemy.offset?.top ?? 0);
+
+            return c.isFalling?.() && cBottom <= eTop + 35;
+        };
 
         this.level.enemies.forEach((enemy) => {
             if (enemy.dead) return;
             if (!this.character.isColliding(enemy)) return;
+
             if (isStompableChicken(enemy) && this.character.isFalling()) {
                 enemy.die();
-                this.character.speedY = 15; // bounce
-                this.character.grantInvincibility(1500);
+                this.character.speedY = 15;
+                this.character.grantInvincibility(500);
                 removeEnemyAfter(enemy, 600);
                 return;
             }
-            this.character.hit();
-            this.statusBarHealth.setPercentage(this.character.energy);
+
+            if (isBoss(enemy) && isStompFromAbove(enemy)) {
+                enemy.hit();
+                this.statusBarEndboss?.setPercentage?.(enemy.energy);
+                this.character.speedY = 15;
+                this.character.grantInvincibility?.(900);
+                return;
+            }
+
+            if (!this.character.isInvincible?.()) {
+                this.character.hit();
+                this.character.grantInvincibility?.(900);
+                this.statusBarHealth.setPercentage(this.character.energy);
+            }
         });
     }
 
