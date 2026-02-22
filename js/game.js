@@ -69,6 +69,37 @@ function cacheDom() {
   canvas = dom.canvas;
 }
 
+function resizeCanvasToDisplaySize() {
+  const canvas = dom.canvas;
+  if (!canvas) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+
+  const displayWidth = Math.round(rect.width * dpr);
+  const displayHeight = Math.round(rect.height * dpr);
+
+  if (canvas.width !== displayWidth) canvas.width = displayWidth;
+  if (canvas.height !== displayHeight) canvas.height = displayHeight;
+
+  if (!world?.ctx) return;
+
+  const LOGICAL_W = 720;
+  const LOGICAL_H = 480;
+
+  const scale = rect.width / LOGICAL_W;
+  const offsetX = 0;
+  const offsetY = (rect.height - LOGICAL_H * scale) / 2;
+
+  world.ctx.setTransform(
+    dpr * scale, 0,
+    0, dpr * scale,
+    offsetX * dpr, offsetY * dpr
+  );
+
+  world.ctx.imageSmoothingEnabled = false;
+}
+
 function loadSettings() {
   isMuted = localStorage.getItem(MUTE_STORAGE_KEY) === 'true';
 }
@@ -233,9 +264,11 @@ function startGame() {
   if (world) return;
 
   dom.startScreen?.style && (dom.startScreen.style.display = 'none');
-
+  resizeCanvasToDisplaySize();
   startBackgroundMusic();
   world = new World(canvas, keyboard);
+  resizeCanvasToDisplaySize();
+
   if (world.coinSound) world.coinSound.muted = isMuted;
   if (world.bottleSound) world.bottleSound.muted = isMuted;
   if (world.throwBottleSound) world.throwBottleSound.muted = isMuted;

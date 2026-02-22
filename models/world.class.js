@@ -34,6 +34,7 @@ class World {
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+        this.ctx.imageSmoothingEnabled = false;
         this.keyboard = keyboard;
         this.level = initLevel1();
         this.endboss = this.level.enemies.find(e => e instanceof Endboss);
@@ -241,7 +242,6 @@ class World {
             this.animationFrameId = null;
             return;
         }
-
         this.clearCanvas();
         this.update();
         this.render();
@@ -312,7 +312,10 @@ class World {
     // ----- RENDER (drawing) -----
 
     clearCanvas() {
+        this.ctx.save();
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.restore();
     }
 
     render() {
@@ -352,7 +355,7 @@ class World {
 
     withCamera(fn) {
         this.ctx.save();
-        this.ctx.translate(this.camera_x, 0);
+        this.ctx.translate(Math.floor(this.camera_x), 0);
         fn();
         this.ctx.restore();
     }
@@ -368,7 +371,8 @@ class World {
 
         for (const [factor, objects] of groups.entries()) {
             this.ctx.save();
-            this.ctx.translate(this.camera_x * factor, 0);
+            const tx = Math.floor(this.camera_x * factor);
+            this.ctx.translate(tx, 0);
             this.addObjectsToMap(objects);
             this.ctx.restore();
         }
