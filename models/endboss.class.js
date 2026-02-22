@@ -1,6 +1,8 @@
 class Endboss extends movableObject {
     offset = { top: 70, right: 55, bottom: 25, left: 55 };
-    
+    followSpeed = 2.2;
+    dashDir = -1;
+    DIR = -1;
     height = 280;
     width = 270;
     energy = 100;
@@ -256,6 +258,30 @@ class Endboss extends movableObject {
         }
     }
 
+    followCharacter(character, { active = true } = {}) {
+        if (!active) return;
+        if (this.dead) return;
+        if (typeof isPaused !== 'undefined' && isPaused) return;
+        if (!character) return;
+
+        const bossCenter = this.x + this.width / 2;
+        const charCenter = character.x + character.width / 2;
+
+        const dx = (charCenter - bossCenter) * this.DIR;
+
+        if (this.isAttacking || this.isHurt) {
+            this.otherDirection = dx < 0;
+            return;
+        }
+
+        this.otherDirection = dx < 0;
+
+        const stopDistance = 90;
+        if (Math.abs(dx) <= stopDistance) return;
+
+        this.x += Math.sign(dx) * this.followSpeed * this.DIR;
+    }
+
     getDashTimeMs() {
         const steps = Math.ceil(this.dashDistance / this.dashSpeed);
         return steps * 140;
@@ -283,6 +309,21 @@ class Endboss extends movableObject {
     }
 
     startDash() {
+        const w = this.getWorld?.();
+        const c = w?.character;
+
+        if (c) {
+            const bossCenter = this.x + this.width / 2;
+            const charCenter = c.x + c.width / 2;
+
+            const dx = (charCenter - bossCenter) * this.DIR;
+
+            this.dashDir = (dx < 0 ? -1 : 1) * this.DIR;
+            this.otherDirection = dx < 0;
+        } else {
+            this.dashDir = -1 * this.DIR;
+        }
+
         this.isDashing = true;
         this.dashProgress = 0;
 
@@ -317,7 +358,7 @@ class Endboss extends movableObject {
             return;
         }
 
-        this.x -= this.dashSpeed;
+        this.x += this.dashDir * this.dashSpeed;
         this.dashProgress += this.dashSpeed;
     }
 

@@ -55,6 +55,7 @@ class World {
 
     setWorld() {
         this.character.world = this;
+        if (this.endboss) this.endboss.world = this;
     }
 
     run() {
@@ -129,7 +130,7 @@ class World {
             if (isStompableChicken(enemy) && this.character.isFalling()) {
                 enemy.die();
                 this.character.speedY = 15;
-                this.character.grantInvincibility(500);
+                this.character.grantInvincibility(900);
                 removeEnemyAfter(enemy, 600);
                 return;
             }
@@ -331,7 +332,13 @@ class World {
     }
 
     moveEnemies() {
-        this.level.enemies.forEach(enemy => enemy.moveLeft());
+        this.level.enemies.forEach(enemy => {
+            if (enemy instanceof Endboss) {
+                enemy.followCharacter?.(this.character, { active: this.isBossFight || this.endbossBarVisible });
+            } else {
+                enemy.moveLeft();
+            }
+        });
     }
 
     // ----- RENDER (drawing) -----
@@ -550,13 +557,29 @@ class World {
     resolveEndbossWall() {
         if (!this.endboss || this.endboss.dead) return;
 
-        if (this.character.isColliding(this.endboss)) {
-            const bossLeft = this.endboss.x;
-            const padding = 6;
+        const c = this.character;
+        const b = this.endboss;
 
-            if (this.character.x < bossLeft) {
-                this.character.x = bossLeft - this.character.width + padding;
-            }
+        if (!c.isColliding(b)) return;
+
+        const cBottom = c.y + c.height - (c.offset?.bottom ?? 0);
+        const bTop = b.y + (b.offset?.top ?? 0);
+        const stompFromAbove = c.isFalling?.() && cBottom <= bTop + 35;
+
+        if (!stompFromAbove && !c.isInvincible?.()) {
+            c.hit(10);
+            c.grantInvincibility?.(400);
+            this.statusBarHealth.setPercentage(c.energy);
+        }
+
+        const padding = 6;
+        const cCenter = c.x + c.width / 2;
+        const bCenter = b.x + b.width / 2;
+
+        if (cCenter < bCenter) {
+            c.x = b.x - c.width + padding;
+        } else {
+            c.x = b.x + b.width - padding;
         }
     }
 

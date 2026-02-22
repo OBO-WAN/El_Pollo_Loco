@@ -141,4 +141,11 @@ class Character extends movableObject {
         return Date.now() < this.invincibleUntil;
     }
 
+    hit(damage = 5) {
+        if (this.isInvincible()) return;
+
+        this.energy = Math.max(0, this.energy - damage);
+        this.lastHit = Date.now();
+    }
+
 }
