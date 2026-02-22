@@ -81,6 +81,11 @@ class World {
     }
 
     checkThrowObjects() {
+        if (this.isCharacterSleeping) {
+            this.keyboard.SPACE = false;
+            return;
+        }
+
         if (this.keyboard.SPACE && this.bottles > 0) {
             const direction = this.character.otherDirection ? -1 : 1;
             let bottle = new ThrowableObject(
@@ -90,7 +95,7 @@ class World {
             );
             this.throwableObjects.push(bottle);
             this.bottles--;
-            this.playSound(this.throwBottleSound);//Throw sound
+            this.playSound(this.throwBottleSound);
             const bottlePercent = Math.min(100, this.bottles * 20);
             this.statusBarBottles.setPercentage(bottlePercent);
             this.keyboard.SPACE = false;

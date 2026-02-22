@@ -62,7 +62,6 @@ function updateMobileControlsVisibility() {
   }
 }
 
-
 function setupMobileControls() {
   const controls = document.getElementById('mobileControls');
   if (!controls) return;
@@ -71,7 +70,15 @@ function setupMobileControls() {
     if (action === 'LEFT') keyboard.LEFT = pressed;
     if (action === 'RIGHT') keyboard.RIGHT = pressed;
     if (action === 'UP') keyboard.UP = pressed;
-    if (action === 'SPACE') keyboard.SPACE = pressed;
+
+    if (action === 'SPACE') {
+      if (pressed && world?.isCharacterSleeping) {
+        world.resetIdleTimer?.();
+        keyboard.SPACE = false;
+        return;
+      }
+      keyboard.SPACE = pressed;
+    }
   };
 
   controls.querySelectorAll('.mc-btn').forEach((btn) => {
@@ -92,7 +99,6 @@ function setupMobileControls() {
     btn.addEventListener('pointerleave', up, { passive: false });
   });
 }
-
 
 function setPaused(paused) {
   isPaused = paused;
@@ -203,7 +209,6 @@ function preloadImagesWithProgress(imagePaths, onProgress) {
   );
 }
 
-
 function onKeydown(e) {
   if (e.code === 'Escape' || e.code === 'KeyP') {
     e.preventDefault();
@@ -211,8 +216,15 @@ function onKeydown(e) {
     return;
   }
   if (isPortraitBlocked || isPaused) return;
+
   if (['ArrowRight', 'ArrowLeft', 'ArrowUp', 'Space'].includes(e.code)) {
     e.preventDefault();
+  }
+
+  if (e.code === 'Space' && world?.isCharacterSleeping) {
+    world.resetIdleTimer?.();
+    keyboard.SPACE = false;
+    return;
   }
 
   if (e.code === 'ArrowRight') keyboard.RIGHT = true;
@@ -232,7 +244,6 @@ function onKeyup(e) {
   if (e.code === 'ArrowUp') keyboard.UP = false;
   if (e.code === 'Space') keyboard.SPACE = false;
 }
-
 
 function showOverlay(id, { focusSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])' } = {}) {
   const el = document.getElementById(id);
