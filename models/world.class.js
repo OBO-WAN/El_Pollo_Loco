@@ -104,57 +104,100 @@ class World {
     }
 
     checkCollisions() {
-        const removeEnemyAfter = (enemy, ms = 600) => {
-            setTimeout(() => {
-                const idx = this.level.enemies.indexOf(enemy);
-                if (idx > -1) this.level.enemies.splice(idx, 1);
-            }, ms);
-        };
+        this.updateBossFightState();
+        this.level.enemies.forEach((enemy) => this.handleEnemyCollision(enemy));
+    }
 
+    updateBossFightState() {
         if (this.character.x > 2000 && !this.isBossFight) {
             this.isBossFight = true;
         }
+    }
 
-        const isStompableChicken = (enemy) =>
-            enemy instanceof Chicken || enemy instanceof Chicken2;
+    handleEnemyCollision(enemy) {
+        if (!this.isEnemyCollidable(enemy)) return;
+        if (!this.character.isColliding(enemy)) return;
 
-        const isBoss = (enemy) => enemy instanceof Endboss;
+        if (this.tryHandleStomp(enemy)) return;
 
-        const isStompFromAbove = (enemy) => {
-            const c = this.character;
+        this.handleContactDamage(enemy);
+    }
 
-            const cBottom = c.y + c.height - (c.offset?.bottom ?? 0);
-            const eTop = enemy.y + (enemy.offset?.top ?? 0);
+    isEnemyCollidable(enemy) {
+        return enemy && !enemy.dead;
+    }
 
-            return c.isFalling?.() && cBottom <= eTop + 35;
-        };
+    isChicken(enemy) {
+        return enemy instanceof Chicken || enemy instanceof Chicken2;
+    }
 
-        this.level.enemies.forEach((enemy) => {
-            if (enemy.dead) return;
-            if (!this.character.isColliding(enemy)) return;
+    isBoss(enemy) {
+        return enemy instanceof Endboss;
+    }
 
-            if (isStompableChicken(enemy) && this.character.isFalling()) {
-                enemy.die();
-                this.character.speedY = 15;
-                this.character.grantInvincibility(900);
-                removeEnemyAfter(enemy, 600);
-                return;
-            }
+    isStompFromAbove(enemy) {
+        const c = this.character;
+        const cBottom = c.y + c.height - (c.offset?.bottom ?? 0);
+        const eTop = enemy.y + (enemy.offset?.top ?? 0);
 
-            if (isBoss(enemy) && isStompFromAbove(enemy)) {
-                enemy.hit();
-                this.statusBarEndboss?.setPercentage?.(enemy.energy);
-                this.character.speedY = 15;
-                this.character.grantInvincibility?.(900);
-                return;
-            }
+        return c.isFalling?.() && cBottom <= eTop + 35;
+    }
 
-            if (!this.character.isInvincible?.()) {
-                this.character.hit();
-                this.character.grantInvincibility?.(900);
-                this.statusBarHealth.setPercentage(this.character.energy);
-            }
-        });
+    tryHandleStomp(enemy) {
+        if (!this.isStompFromAbove(enemy)) return false;
+
+        if (this.isChicken(enemy)) {
+            this.handleChickenStomp(enemy);
+            return true;
+        }
+
+        if (this.isBoss(enemy)) {
+            this.handleBossStomp(enemy);
+            return true;
+        }
+
+        return false;
+    }
+
+    handleChickenStomp(enemy) {
+        const IFRAME_CHICKEN = 300;
+
+        enemy.die();
+        this.character.speedY = 15;
+        this.character.grantInvincibility?.(IFRAME_CHICKEN);
+
+        this.removeEnemyAfter(enemy, 600);
+    }
+
+    handleBossStomp(enemy) {
+        const IFRAME_BOSS = 900;
+
+        enemy.hit();
+        this.statusBarEndboss?.setPercentage?.(enemy.energy);
+
+        this.character.speedY = 15;
+        this.character.grantInvincibility?.(IFRAME_BOSS);
+    }
+
+    handleContactDamage(enemy) {
+        if (this.character.isInvincible?.()) return;
+
+        const IFRAME_CHICKEN = 300;
+        const IFRAME_BOSS = 900;
+
+        this.character.hit();
+
+        const iframe = this.isBoss(enemy) ? IFRAME_BOSS : IFRAME_CHICKEN;
+        this.character.grantInvincibility?.(iframe);
+
+        this.statusBarHealth.setPercentage(this.character.energy);
+    }
+
+    removeEnemyAfter(enemy, ms = 600) {
+        setTimeout(() => {
+            const idx = this.level.enemies.indexOf(enemy);
+            if (idx > -1) this.level.enemies.splice(idx, 1);
+        }, ms);
     }
 
     checkCoinCollisions() {
@@ -477,7 +520,7 @@ class World {
         this.ctx.scale(-1, 1);
 
         const oldX = mo.x;
-        mo.x = 0;        
+        mo.x = 0;
         mo.draw(this.ctx);
         mo.x = oldX;
 
