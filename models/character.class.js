@@ -125,7 +125,7 @@ class Character extends movableObject {
 
     jump() {
         this.speedY = 20;
-        this.currentImage = 0; // start jump animation at J-31
+        this.currentImage = 0; 
         this.isJumping = true;
     }
 
