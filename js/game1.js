@@ -21,8 +21,6 @@ const dom = {
   startScreen: null,
 };
 
-
-
 function initGame() {
   cacheDom();
   loadSettings();
@@ -81,6 +79,10 @@ function resizeCanvasToDisplaySize() {
 
   const offsetX = (rect.width - LOGICAL_W * scale) / 2;
   const offsetY = (rect.height - LOGICAL_H * scale) / 2;
+  const logicalViewportW = rect.width / scale;
+  const logicalViewportH = rect.height / scale;
+
+  world.view = { dpr, scale, offsetX, offsetY, logicalViewportW, logicalViewportH };
 
   world.ctx.setTransform(
     dpr * scale, 0,
@@ -89,6 +91,7 @@ function resizeCanvasToDisplaySize() {
   );
 
   world.ctx.imageSmoothingEnabled = false;
+  world?.setHudPositions?.();
 }
 
 function loadSettings() {
@@ -135,7 +138,6 @@ function bindRestart() {
     .getElementById('winMenuBtn')
     ?.addEventListener('click', goToMainMenu);
 }
-
 
 function bindLegal() {
   document
@@ -212,7 +214,6 @@ function onStartKeydown(e) {
   if (e.code === 'Enter') startGame();
 }
 
-
 function setupBackgroundMusic() {
   bgMusic = new Audio('assets/audio/background_music.mp3');
   bgMusic.loop = true;
@@ -239,7 +240,6 @@ function toggleMute() {
   localStorage.setItem(MUTE_STORAGE_KEY, isMuted);
   updateMuteBtn();
 }
-
 
 function updateMuteBtn() {
   const btn = dom.muteBtn || document.getElementById('muteBtn');

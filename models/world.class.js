@@ -44,9 +44,10 @@ class World {
         this.initStatusBars();
         this.statusBarEndboss = new StatusBar();
         this.statusBarEndboss.setImages(this.statusBarEndboss.ENDBOSS_BAR_IMAGES);
-        this.statusBarEndboss.x = 480;
-        this.statusBarEndboss.y = 10;
+        // this.statusBarEndboss.x = 480;
+        // this.statusBarEndboss.y = 10;
         this.statusBarEndboss.setPercentage(100);
+        this.setHudPositions();
 
         this.draw();
         this.run();
@@ -378,7 +379,12 @@ class World {
     }
 
     drawUiLayer() {
+        const v = this.view;
+        if (!v) return;
+        this.ctx.save();
+        this.ctx.setTransform(v.dpr * v.scale, 0, 0, v.dpr * v.scale, 0, 0);
         this.drawStatusBar();
+        this.ctx.restore();
     }
 
     drawOverlayLayer(aboveUi) {
@@ -464,10 +470,17 @@ class World {
     }
 
     flipImage(mo) {
+        if (!mo.img) return;
+
         this.ctx.save();
         this.ctx.translate(mo.x + mo.width, 0);
         this.ctx.scale(-1, 1);
-        this.ctx.drawImage(mo.img, 0, mo.y, mo.width, mo.height);
+
+        const oldX = mo.x;
+        mo.x = 0;        
+        mo.draw(this.ctx);
+        mo.x = oldX;
+
         this.ctx.restore();
     }
 
@@ -538,6 +551,17 @@ class World {
         }
     }
 
+    setHudPositions() {
+        if (!this.view) return;
+        const PAD = 20;
+        const viewportW = this.view?.logicalViewportW ?? 720;
+        const coinY = this.statusBarCoins?.y ?? 60;
+
+        if (this.statusBarEndboss) {
+            this.statusBarEndboss.x = viewportW - PAD - this.statusBarEndboss.width;
+            this.statusBarEndboss.y = coinY;
+        }
+    }
 
     initStatusBars() {
         // Health
