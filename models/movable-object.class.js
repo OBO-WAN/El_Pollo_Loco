@@ -1,13 +1,68 @@
+/**
+ * Base class for all movable game objects.
+ *
+ * Extends {@link DrawableObject} and adds:
+ * - Horizontal movement
+ * - Gravity & jumping physics
+ * - Collision detection
+ * - Health system
+ * - Animation handling
+ *
+ * @class movableObject
+ * @extends DrawableObject
+ */
 class movableObject extends DrawableObject {
 
+    /**
+     * Horizontal movement speed.
+     * @type {number}
+     * @default 0.15
+     */
     speed = 0.15;
+
+    /**
+     * Indicates whether the object is facing the opposite direction.
+     * @type {boolean}
+     * @default false
+     */
     otherDirection = false;
-    //Gravitation
+
+    /**
+     * Vertical movement speed (used for jumping & gravity).
+     * @type {number}
+     * @default 0
+     */
     speedY = 0;
+
+    /**
+     * Downward acceleration (gravity strength).
+     * @type {number}
+     * @default 2.0
+     */
     acceleration = 2.0;
+
+    /**
+     * Current health/energy of the object.
+     * @type {number}
+     * @default 100
+     */
     energy = 100;
+
+    /**
+     * Timestamp of the last hit taken.
+     * @type {number}
+     * @default 0
+     */
     lastHit = 0;
 
+    /**
+     * Applies gravity to the object.
+     *
+     * Updates vertical position 25 times per second.
+     * Stops falling when ground level is reached.
+     *
+     * @returns {void}
+     */
     applyGravity() {
         setInterval(() => {
             const groundY = (typeof this.groundY === 'number') ? this.groundY : 180;
@@ -27,13 +82,28 @@ class movableObject extends DrawableObject {
         }, 1000 / 25);
     }
 
+    /**
+     * Checks whether the object is currently in the air.
+     *
+     * ThrowableObjects are always considered airborne.
+     *
+     * @returns {boolean}
+     */
     isInAir() {
         if (this instanceof ThrowableObject) return true;
+
         const groundY = (typeof this.groundY === 'number') ? this.groundY : 180;
         return this.y < groundY;
     }
 
-
+    /**
+     * Checks collision between this object and another movable object.
+     *
+     * Uses optional hitbox offsets for more accurate collision detection.
+     *
+     * @param {movableObject} mo - The other movable object.
+     * @returns {boolean} True if objects overlap.
+     */
     isColliding(mo) {
         const a = this.offset || { top: 0, right: 0, bottom: 0, left: 0 };
         const b = mo.offset || { top: 0, right: 0, bottom: 0, left: 0 };
@@ -46,12 +116,22 @@ class movableObject extends DrawableObject {
         );
     }
 
+    /**
+     * Reduces energy when the object is hit.
+     *
+     * - Prevents damage if invincible
+     * - Reduces energy by 5
+     * - Updates last hit timestamp
+     *
+     * @returns {void}
+     */
     hit() {
         if (typeof this.isInvincible === 'function' && this.isInvincible()) {
             return;
         }
 
         this.energy -= 5;
+
         if (this.energy < 0) {
             this.energy = 0;
         } else {
@@ -59,31 +139,55 @@ class movableObject extends DrawableObject {
         }
     }
 
+    /**
+     * Checks if the object has no remaining energy.
+     *
+     * @returns {boolean}
+     */
     isDead() {
         return this.energy == 0;
     }
 
+    /**
+     * Checks whether the object is currently in a hurt state.
+     * The hurt state lasts 1 second after being hit.
+     *
+     * @returns {boolean}
+     */
     isHurt() {
-        const timePassed = (Date.now() - this.lastHit) / 1000; //seconds
+        const timePassed = (Date.now() - this.lastHit) / 1000;
         return timePassed < 1;
     }
 
+    /**
+     * Plays an animation by cycling through provided image paths.
+     *
+     * Uses cached images from {@link DrawableObject#imageCache}.
+     *
+     * @param {string[]} images - Array of image paths.
+     * @returns {void}
+     */
     playAnimation(images) {
         let i = this.currentImage % images.length;
-        let path = images[i];
         this.img = this.imageCache[images[i]];
         this.currentImage++;
-
     }
 
+    /**
+     * Moves the object to the right.
+     *
+     * @returns {void}
+     */
     moveRight() {
-        // console.log("moveRight");
         this.x += this.speed;
     }
 
+    /**
+     * Moves the object to the left.
+     *
+     * @returns {void}
+     */
     moveLeft() {
-        // console.log("moveLeft");
         this.x -= this.speed;
     }
-
 }

@@ -8,27 +8,22 @@ class Endboss extends movableObject {
     energy = 100;
     dead = false;
     animationInterval = null;
-
     isHurt = false;
     isAttacking = false;
-
     hurtTimeout = null;
     attackStartTimeout = null;
     attackInterval = null;
     attackTimeout = null;
     windupTimeout = null;
-
     dashSpeed = 40;
     dashDistance = 180;
     dashProgress = 0;
     isDashing = false;
-
     isJumpSlamming = false;
     slamTimeout = null;
     baseY = 160;
     slamLift = 120;
     slamRadius = 170;
-
     isEnraged = false;
     dashChainRemaining = 0;
 

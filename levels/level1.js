@@ -1,6 +1,16 @@
+/**
+ * Creates randomly positioned Bottle objects within a given X range.
+ *
+ * Ensures a minimum distance between bottles to prevent clustering.
+ *
+ * @param {number} amount - Number of bottles to generate.
+ * @param {number} minX - Minimum X coordinate.
+ * @param {number} maxX - Maximum X coordinate.
+ * @returns {Bottle[]} Array of generated Bottle instances.
+ */
 function createRandomBottles(amount, minX, maxX) {
     const bottles = [];
-    const minDistance = 250; // prevent boring clusters
+    const minDistance = 250; // Prevent boring clusters
 
     let lastX = minX - minDistance;
 
@@ -18,8 +28,26 @@ function createRandomBottles(amount, minX, maxX) {
     return bottles;
 }
 
+/**
+ * Initializes and returns Level 1 configuration.
+ *
+ * The level contains:
+ * - Enemies (Chicken, Chicken2, Endboss)
+ * - Background clouds
+ * - Parallax background layers
+ * - Collectible coins
+ * - Randomly generated bottles
+ *
+ * @function initLevel1
+ * @returns {Level} Configured Level instance.
+ */
 function initLevel1() {
     return new Level(
+
+        /**
+         * Enemies in the level.
+         * @type {(Chicken|Chicken2|Endboss)[]}
+         */
         [
             new Chicken(),
             new Chicken2(),
@@ -29,10 +57,20 @@ function initLevel1() {
             new Endboss(),
         ],
 
+        /**
+         * Cloud background elements.
+         * @type {Cloud[]}
+         */
         [
             new Cloud()
         ],
 
+        /**
+         * Parallax background layers.
+         * Ordered from farthest (air) to nearest (first layer).
+         *
+         * @type {BackgroundObject[]}
+         */
         [
             new BackgroundObject('assets/img/5_background/layers/air.png', -720),
             new BackgroundObject('assets/img/5_background/layers/3_third_layer/2.png', -720),
@@ -65,7 +103,10 @@ function initLevel1() {
             new BackgroundObject('assets/img/5_background/layers/1_first_layer/2.png', 720 * 4),
         ],
 
-
+        /**
+         * Collectible coins in the level.
+         * @type {Coin[]}
+         */
         [
             new Coin(300, 200),
             new Coin(600, 150),
@@ -74,8 +115,10 @@ function initLevel1() {
             new Coin(1500, 170),
         ],
 
-
+        /**
+         * Randomly generated bottles.
+         * @type {Bottle[]}
+         */
         createRandomBottles(5, 200, 1800),
-
     )
 }
