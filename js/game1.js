@@ -36,6 +36,15 @@ function initGame() {
   initAudio();
   initMobile();
   bindKeyboard();
+  bindCanvasResizeEvents();
+}
+
+function bindCanvasResizeEvents() {
+  window.addEventListener('resize', resizeCanvasToDisplaySize, { passive: true });
+  document.addEventListener('fullscreenchange', resizeCanvasToDisplaySize);
+  window.addEventListener('orientationchange', () =>
+    setTimeout(resizeCanvasToDisplaySize, 50)
+  );
 }
 
 function cacheDom() {
@@ -68,8 +77,9 @@ function resizeCanvasToDisplaySize() {
   const LOGICAL_W = 720;
   const LOGICAL_H = 480;
 
-  const scale = rect.width / LOGICAL_W;
-  const offsetX = 0;
+  const scale = Math.min(rect.width / LOGICAL_W, rect.height / LOGICAL_H);
+
+  const offsetX = (rect.width - LOGICAL_W * scale) / 2;
   const offsetY = (rect.height - LOGICAL_H * scale) / 2;
 
   world.ctx.setTransform(
@@ -238,12 +248,10 @@ function updateMuteBtn() {
   btn.title = isMuted ? 'Unmute' : 'Mute';
 }
 
-
 function startGame() {
   if (world) return;
-
+  if (isPortraitBlocked) return;
   dom.startScreen?.style && (dom.startScreen.style.display = 'none');
-  resizeCanvasToDisplaySize();
   startBackgroundMusic();
   world = new World(canvas, keyboard);
   resizeCanvasToDisplaySize();
