@@ -80,7 +80,7 @@ class World {
         this.collisionInterval = setInterval(() => {
             if (this.isPaused) return;
             this.tick();
-        }, 100);
+        }, 40);
     }
 
     tick() {
@@ -249,7 +249,7 @@ class World {
         const IFRAME_CHICKEN = 300;
         const IFRAME_BOSS = 900;
 
-        this.character.hit();
+        this.character.hit(20, 2500);
 
         const iframe = this.isBoss(enemy) ? IFRAME_BOSS : IFRAME_CHICKEN;
         this.character.grantInvincibility?.(iframe);

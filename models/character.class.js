@@ -125,7 +125,7 @@ class Character extends movableObject {
 
     jump() {
         this.speedY = 20;
-        this.currentImage = 0; 
+        this.currentImage = 0;
         this.isJumping = true;
     }
 
@@ -133,7 +133,7 @@ class Character extends movableObject {
         return this.speedY < 0 && this.isInAir();
     }
 
-    grantInvincibility(ms = 1500) {
+    grantInvincibility(ms = 2500) {
         this.invincibleUntil = Date.now() + ms;
     }
 
@@ -141,11 +141,13 @@ class Character extends movableObject {
         return Date.now() < this.invincibleUntil;
     }
 
-    hit(damage = 5) {
+    hit(damage = 5, invMs = 2500) {
         if (this.isInvincible()) return;
 
         this.energy = Math.max(0, this.energy - damage);
         this.lastHit = Date.now();
+
+        this.grantInvincibility(invMs); 
     }
 
 }

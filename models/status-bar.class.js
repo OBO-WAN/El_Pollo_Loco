@@ -121,31 +121,24 @@ class StatusBar extends DrawableObject {
     }
 
     /**
-     * Determines the correct image index based on the current percentage.
+     * Resolves the image index based on the current percentage value.
      *
-     * Mapping:
-     * - 100% → index 5
-     * - 80%  → index 4
-     * - 60%  → index 3
-     * - 40%  → index 2
-     * - 20%  → index 1
-     * - 0%   → index 0
+     * The percentage is normalized to the range 0–100 and then mapped
+     * to a 20% step interval (0, 20, 40, 60, 80, 100).
      *
-     * @returns {number} Image index.
+     * Example mapping:
+     * - 100 → 5
+     * - 85  → 4
+     * - 60  → 3
+     * - 25  → 1
+     * - 0   → 0
+     *
+     * @returns {number} Index of the corresponding status bar image.
      */
+
     resolveImageIndex() {
-        if (this.percentage >= 100) {
-            return 5;
-        } else if (this.percentage >= 80) {
-            return 4;
-        } else if (this.percentage >= 60) {
-            return 3;
-        } else if (this.percentage >= 40) {
-            return 2;
-        } else if (this.percentage >= 20) {
-            return 1;
-        } else {
-            return 0;
-        }
+        const normalized = Math.max(0, Math.min(100, this.percentage));
+        const step = Math.floor(normalized / 20);
+        return step;
     }
 }
