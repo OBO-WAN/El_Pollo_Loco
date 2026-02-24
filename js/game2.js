@@ -3,101 +3,141 @@ function setupOrientationGuard() {
   const overlay = document.getElementById('orientationOverlay');
   if (!gameContainer || !overlay) return;
 
-  function isMobileLike() {
-    return window.matchMedia('(pointer: coarse)').matches;
+  const update = () => updateOrientationUI({ gameContainer, overlay });
+
+  bindOrientationListeners(update);
+  update();
+}
+
+function bindOrientationListeners(updateFn) {
+  window.addEventListener('resize', updateFn, { passive: true });
+  window.addEventListener('orientationchange', updateFn, { passive: true });
+}
+
+function updateOrientationUI({ gameContainer, overlay }) {
+  const mobilePortrait = isMobilePortrait();
+
+  if (mobilePortrait) {
+    applyPortraitBlock({ gameContainer, overlay });
+  } else {
+    clearPortraitBlock({ gameContainer, overlay });
   }
 
-  function updateOrientationUI() {
-    const portrait = window.innerHeight > window.innerWidth;
-    const mobilePortrait = isMobileLike() && portrait;
+  updateMobileControlsVisibility();
+}
 
-    if (mobilePortrait) {
-      isPortraitBlocked = true;
-      overlay.style.display = 'flex';
-      gameContainer.classList.add('portrait-blocked');
+function isMobilePortrait() {
+  const portrait = window.innerHeight > window.innerWidth;
+  return isMobileLike() && portrait;
+}
 
-      hideOverlay('howToOverlay');
+function isMobileLike() {
+  return window.matchMedia('(pointer: coarse)').matches;
+}
 
-      if (gameStarted && world && !world.isGameOver && !isPaused) {
-        pausedByOrientation = true;
-        setPaused(true);
-      }
-    } else {
-      isPortraitBlocked = false;
-      overlay.style.display = 'none';
-      gameContainer.classList.remove('portrait-blocked');
+function applyPortraitBlock({ gameContainer, overlay }) {
+  isPortraitBlocked = true;
+  overlay.style.display = 'flex';
+  gameContainer.classList.add('portrait-blocked');
 
-      if (pausedByOrientation) {
-        pausedByOrientation = false;
-        setPaused(false);
-      }
-    }
+  hideOverlay('howToOverlay');
 
-    updateMobileControlsVisibility();
+  if (shouldPauseForOrientation()) {
+    pausedByOrientation = true;
+    setPaused(true);
   }
+}
 
-  window.addEventListener('resize', updateOrientationUI, { passive: true });
-  window.addEventListener('orientationchange', updateOrientationUI, { passive: true });
-  updateOrientationUI();
+function clearPortraitBlock({ gameContainer, overlay }) {
+  isPortraitBlocked = false;
+  overlay.style.display = 'none';
+  gameContainer.classList.remove('portrait-blocked');
+
+  if (pausedByOrientation) {
+    pausedByOrientation = false;
+    setPaused(false);
+  }
+}
+
+function shouldPauseForOrientation() {
+  return (
+    gameStarted &&
+    world &&
+    !world.isGameOver &&
+    !isPaused
+  );
 }
 
 function updateMobileControlsVisibility() {
   const controls = document.getElementById('mobileControls');
   if (!controls) return;
 
-  const isTouch = window.matchMedia('(pointer: coarse)').matches;
+  const isTouch = isMobileLike();
   const isLandscape = window.innerWidth > window.innerHeight;
   const isTabletOrSmaller = window.innerWidth <= 1366;
 
-  if (
-    gameStarted &&
-    isTouch &&
-    isLandscape &&
-    isTabletOrSmaller &&
-    !isPortraitBlocked
-  ) {
-    controls.style.display = 'block';
-  } else {
-    controls.style.display = 'none';
-  }
+  controls.style.display =
+    gameStarted && isTouch && isLandscape && isTabletOrSmaller && !isPortraitBlocked
+      ? 'block'
+      : 'none';
 }
 
 function setupMobileControls() {
   const controls = document.getElementById('mobileControls');
   if (!controls) return;
 
-  const setFlag = (action, pressed) => {
-    if (action === 'LEFT') keyboard.LEFT = pressed;
-    if (action === 'RIGHT') keyboard.RIGHT = pressed;
-    if (action === 'UP') keyboard.UP = pressed;
+  bindMobileControlButtons(controls);
+}
 
-    if (action === 'SPACE') {
-      if (pressed && world?.isCharacterSleeping) {
-        world.resetIdleTimer?.();
-        keyboard.SPACE = false;
-        return;
-      }
-      keyboard.SPACE = pressed;
-    }
+function bindMobileControlButtons(controlsEl) {
+  controlsEl.querySelectorAll('.mc-btn').forEach((btn) => bindMobileButton(btn));
+}
+
+function bindMobileButton(btn) {
+  const action = btn.dataset.action;
+  if (!action) return;
+  const onDown = makePointerHandler(action, true);
+  const onUp = makePointerHandler(action, false);
+
+  btn.addEventListener('pointerdown', onDown, { passive: false });
+  btn.addEventListener('pointerup', onUp, { passive: false });
+  btn.addEventListener('pointercancel', onUp, { passive: false });
+  btn.addEventListener('pointerleave', onUp, { passive: false });
+}
+
+function makePointerHandler(action, pressed) {
+  return (e) => {
+    e.preventDefault();
+    setMobileKeyFlag(action, pressed);
   };
+}
 
-  controls.querySelectorAll('.mc-btn').forEach((btn) => {
-    const action = btn.dataset.action;
+const MOBILE_KEY_MAP = {
+  LEFT: 'LEFT',
+  RIGHT: 'RIGHT',
+  UP: 'UP',
+};
 
-    const down = (e) => {
-      e.preventDefault();
-      setFlag(action, true);
-    };
-    const up = (e) => {
-      e.preventDefault();
-      setFlag(action, false);
-    };
+function setMobileKeyFlag(action, pressed) {
+  if (action === 'SPACE') {
+    handleSpaceMobile(pressed);
+    return;
+  }
 
-    btn.addEventListener('pointerdown', down, { passive: false });
-    btn.addEventListener('pointerup', up, { passive: false });
-    btn.addEventListener('pointercancel', up, { passive: false });
-    btn.addEventListener('pointerleave', up, { passive: false });
-  });
+  const key = MOBILE_KEY_MAP[action];
+  if (!key) return;
+
+  keyboard[key] = pressed;
+}
+
+function handleSpaceMobile(pressed) {
+  if (pressed && world?.isCharacterSleeping) {
+    world.resetIdleTimer?.();
+    keyboard.SPACE = false;
+    return;
+  }
+
+  keyboard.SPACE = pressed;
 }
 
 function setPaused(paused) {
@@ -175,7 +215,14 @@ function setupPauseControls() {
 
 function preloadImagesWithProgress(imagePaths, onProgress) {
   const unique = [...new Set(imagePaths)];
-  const total = unique.length;
+  const tracker = createProgressTracker(unique.length, onProgress);
+
+  tracker.update();
+
+  return Promise.all(unique.map((path) => loadImage(path, tracker)));
+}
+
+function createProgressTracker(total, onProgress) {
   let loaded = 0;
 
   const update = () => {
@@ -183,30 +230,31 @@ function preloadImagesWithProgress(imagePaths, onProgress) {
     onProgress?.(percent, loaded, total);
   };
 
-  update();
+  const tick = () => {
+    loaded++;
+    update();
+  };
 
-  return Promise.all(
-    unique.map(
-      (path) =>
-        new Promise((resolve) => {
-          const img = new Image();
+  return { update, tick };
+}
 
-          img.onload = () => {
-            loaded++;
-            update();
-            resolve(path);
-          };
-          img.onerror = () => {
-            console.warn('Missing image:', path);
-            loaded++;
-            update();
-            resolve(path);
-          };
+function loadImage(path, tracker) {
+  return new Promise((resolve) => {
+    const img = new Image();
 
-          img.src = path;
-        })
-    )
-  );
+    img.onload = () => {
+      tracker.tick();
+      resolve(path);
+    };
+
+    img.onerror = () => {
+      console.warn('Missing image:', path);
+      tracker.tick();
+      resolve(path);
+    };
+
+    img.src = path;
+  });
 }
 
 function onKeydown(e) {
