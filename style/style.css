@@ -666,29 +666,27 @@ canvas {
 }
 
 #mobileControls .mc-btn {
-  pointer-events: auto;
-
+  -webkit-touch-callout: none;/* iOS Safari */
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
   width: 64px;
   height: 64px;
   border-radius: 16px;
-
+  pointer-events: auto;
   font-family: var(--font-system);
   font-size: 22px;
   font-weight: 800;
-
   background: linear-gradient(to bottom, #3b2a16, #2a1c0f);
   border: 1px solid rgba(255, 200, 120, 0.4);
   color: #f7e4b2;
-
   box-shadow:
     0 6px 16px rgba(0, 0, 0, 0.7),
     inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-
   cursor: pointer;
   touch-action: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-
   transition: transform 0.12s ease, box-shadow 0.2s ease;
 }
 
