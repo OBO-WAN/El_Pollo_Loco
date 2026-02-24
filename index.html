@@ -38,9 +38,17 @@
 
     <script src="./js/assets.js"></script>
 
-    <script src="js/game1.js"></script>
-    <script src="js/game2.js"></script>
-    <script src="js/game.js"></script>
+    <!-- GAME -->
+    <script src="./js/state.js"></script>
+    <script src="./js/preload.js"></script>
+    <script src="./js/ui.overlays.js"></script>
+    <script src="./js/render.viewport.js"></script>
+    <script src="./js/audio.js"></script>
+    <script src="./js/pause.js"></script>
+    <script src="./js/keyboard.js"></script>
+    <script src="./js/mobile.js"></script>
+    <script src="./js/main.js"></script>
+    <script src="./js/boot.js"></script>
 
 </head>
 
@@ -134,13 +142,16 @@
             <!-- Mobile controls -->
             <div id="mobileControls" aria-label="Mobile controls">
                 <div class="mc-left">
-                    <button oncontextmenu="return false;" class="mc-btn" data-action="LEFT" aria-label="Move left">◀</button>
-                    <button oncontextmenu="return false;" class="mc-btn" data-action="RIGHT" aria-label="Move right">▶</button>
+                    <button oncontextmenu="return false;" class="mc-btn" data-action="LEFT"
+                        aria-label="Move left">◀</button>
+                    <button oncontextmenu="return false;" class="mc-btn" data-action="RIGHT"
+                        aria-label="Move right">▶</button>
                 </div>
 
                 <div class="mc-right">
                     <button oncontextmenu="return false;" class="mc-btn" data-action="UP" aria-label="Jump">⤒</button>
-                    <button oncontextmenu="return false;" class="mc-btn" data-action="SPACE" aria-label="Throw">⦿</button>
+                    <button oncontextmenu="return false;" class="mc-btn" data-action="SPACE"
+                        aria-label="Throw">⦿</button>
                 </div>
             </div>
             <!-- Pause Overlay div -->
