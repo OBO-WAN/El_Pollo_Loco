@@ -1,0 +1,41 @@
+/* Base theme + globals */
+
+:root {
+  --font-title: "Smokum", cursive;
+  --font-ui: "Rye", serif;
+  --font-system: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+
+  --ui-bg: #111;
+  --ui-bg-hover: #a8b2b0;
+  --overlay-bg: rgba(0, 0, 0, 0.75);
+  --overlay-card: rgba(255, 255, 255, 0.08);
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 16px;
+
+  --pad-safe-top: env(safe-area-inset-top, 0px);
+  --pad-safe-right: env(safe-area-inset-right, 0px);
+  --pad-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --pad-safe-left: env(safe-area-inset-left, 0px);
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #0a490a;
+  background-image: url("../assets/img/5_background/complete_background.png");
+  background-size: cover;
+  background-position: center;
+  font-family: var(--font-ui);
+}

@@ -1,0 +1,217 @@
+/* =====================================================
+   MOBILE GLOBAL ADJUSTMENTS
+===================================================== */
+
+/* Touch devices */
+@media (pointer: coarse) {
+  body {
+    display: block;
+    background: #000;
+  }
+
+  h1,
+  h2 {
+    font-size: 1.6rem;
+  }
+
+  h1 {
+    display: none;
+  }
+
+  #fullscreenBtn {
+    display: none !important;
+  }
+
+  #fullscreen {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+  }
+
+  #gameContainer {
+    width: 100vw;
+    height: 100dvh;
+  }
+
+  canvas {
+    width: 100vw;
+    height: 100dvh;
+    display: block;
+  }
+
+  #controlsHint,
+  #legalBar {
+    display: none;
+  }
+
+  .startScreenActions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0;
+  }
+}
+
+/* Show mobile controls only on touch devices */
+@media (hover: none) and (pointer: coarse) and (max-width: 1366px) {
+  #mobileControls {
+    display: block;
+  }
+}
+
+/* Smaller HUD buttons (small screens) */
+@media (max-width: 520px) {
+  .fullscreen-btn,
+  .mute-btn,
+  .pause-btn,
+  .restart-btn {
+    top: calc(10px + var(--pad-safe-top));
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+
+  .restart-btn {
+    right: calc(10px + var(--pad-safe-right));
+  }
+
+  .mute-btn {
+    right: calc(66px + var(--pad-safe-right));
+  }
+
+  .pause-btn {
+    right: calc(122px + var(--pad-safe-right));
+  }
+}
+
+/* Touch devices: larger tap targets */
+@media (pointer: coarse) {
+  .fullscreen-btn,
+  .mute-btn,
+  .pause-btn,
+  .restart-btn {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+    top: calc(12px + var(--pad-safe-top));
+  }
+
+  .restart-btn {
+    right: calc(12px + var(--pad-safe-right));
+  }
+
+  .mute-btn {
+    right: calc(84px + var(--pad-safe-right));
+  }
+
+  .pause-btn {
+    right: calc(156px + var(--pad-safe-right));
+  }
+
+  .start-btn,
+  .start-screen-btn {
+    font-size: 1.4rem;
+    padding: 12px 32px;
+  }
+}
+
+/* Very small height devices */
+@media (max-height: 420px) {
+  .fullscreen-btn,
+  .mute-btn,
+  .pause-btn,
+  .restart-btn {
+    top: calc(6px + var(--pad-safe-top));
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+  }
+}
+
+
+/* =====================================================
+   MOBILE CONTROLS SECTION
+===================================================== */
+
+#mobileControls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 25;
+  display: none;
+  pointer-events: none;
+}
+
+#mobileControls .mc-left,
+#mobileControls .mc-right {
+  position: absolute;
+  bottom: calc(12px + var(--pad-safe-bottom));
+  display: flex;
+  gap: 12px;
+  pointer-events: none;
+}
+
+#mobileControls .mc-left {
+  left: calc(12px + var(--pad-safe-left));
+}
+
+#mobileControls .mc-right {
+  right: calc(12px + var(--pad-safe-right));
+}
+
+#mobileControls .mc-btn {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  pointer-events: auto;
+
+  font-family: var(--font-system);
+  font-size: 22px;
+  font-weight: 800;
+
+  background: linear-gradient(to bottom, #3b2a16, #2a1c0f);
+  border: 1px solid rgba(255, 200, 120, 0.4);
+  color: #f7e4b2;
+
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.7),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+#mobileControls .mc-btn[data-action="LEFT"],
+#mobileControls .mc-btn[data-action="RIGHT"] {
+  color: #f2c36b;
+  text-shadow: 0 0 4px rgba(242, 195, 107, 0.5);
+}
+
+#mobileControls .mc-btn[data-action="UP"] {
+  color: #7fc8ff;
+  text-shadow: 0 0 4px rgba(127, 200, 255, 0.5);
+}
+
+#mobileControls .mc-btn[data-action="SPACE"] {
+  color: #ff6b4a;
+  text-shadow: 0 0 4px rgba(255, 107, 74, 0.5);
+}
+
+#mobileControls .mc-btn:active {
+  transform: scale(0.94);
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.8),
+    inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}

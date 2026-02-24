@@ -1,0 +1,191 @@
+/* Buttons */
+
+.start-btn,
+.start-screen-btn {
+  font-family: var(--font-ui);
+  letter-spacing: 1px;
+  font-size: 1.5rem;
+  padding: 14px 32px;
+  border-radius: var(--radius-md);
+  border: 2px solid #3b1f0f;
+  color: #fff;
+  background: linear-gradient(to bottom, #8b4513, #5a2e0f);
+  cursor: pointer;
+  box-shadow: 0 6px 0 #3b1f0f, 0 8px 16px rgba(0, 0, 0, 0.4);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s ease;
+}
+
+.start-btn:hover,
+.start-screen-btn:hover {
+  background: linear-gradient(to bottom, #a0522d, #6b3a1e);
+}
+
+.start-btn:active,
+.start-screen-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #3b1f0f, 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* -------------------- Top / canvas buttons -------------------- */
+
+.fullscreen-btn,
+.mute-btn,
+.pause-btn,
+.restart-btn {
+  position: absolute;
+  top: calc(16px + var(--pad-safe-top));
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+  border: 1px solid rgba(247, 228, 178, 0.4);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.7));
+
+  color: #fff6dc;
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.overlayActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.fullscreen-btn-canvas {
+  bottom: auto;
+  left: 50%;
+  top: calc(60px + var(--pad-safe-top));
+  transform: translateX(-50%);
+  z-index: 25;
+  padding: 2px 6px;
+  font-size: 16px;
+  line-height: 1;
+  border-radius: 6px;
+  background: rgba(112, 104, 104, 0.597);
+  color: #fff;
+  opacity: 0.78;
+  backdrop-filter: blur(1px);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fullscreen-btn-canvas:hover {
+  opacity: 1;
+  background: rgba(114, 105, 105, 0.472);
+}
+
+.fullscreen-btn-canvas:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+/* Positioning (desktop) */
+.restart-btn {
+  right: calc(16px + var(--pad-safe-right));
+  z-index: 30;
+}
+
+.mute-btn {
+  right: calc(76px + var(--pad-safe-right));
+  z-index: 30;
+}
+
+.pause-btn {
+  right: calc(136px + var(--pad-safe-right));
+  z-index: 35;
+}
+
+.pause-btn:hover,
+.mute-btn:hover,
+.restart-btn:hover {
+  background: linear-gradient(to bottom, rgba(40, 25, 10, 0.95), rgba(20, 10, 5, 0.85));
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.8),
+    0 0 18px rgba(255, 200, 120, 0.35);
+}
+
+.pause-btn:active,
+.mute-btn:active,
+.restart-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8);
+}
+
+/* -------------------- Legal / Impressum -------------------- */
+
+.legal-btn {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  background: linear-gradient(to bottom, #f7e4b2, #e0c48a);
+  /* light sand */
+  border: 2px solid #5a2e0f;
+  color: #2a1408;
+  /* dark brown text */
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.legal-btn:hover {
+  background: linear-gradient(to bottom, #fff2c6, #f2d79c);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.8),
+    0 0 18px rgba(255, 220, 150, 0.4);
+}
+
+.legal-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8);
+}
+
+/* Start screen actions (mobile) */
+
+.startScreenActions {
+  display: none;
+  gap: 10px;
+}
+
+.mini-action-btn {
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, #f7e4b2, #e0c48a);
+  border: 2px solid #5a2e0f;
+  color: #2a1408;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.12s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.mini-action-btn:hover {
+  background: linear-gradient(to bottom, #fff2c6, #f2d79c);
+}
+
+.mini-action-btn:active {
+  transform: scale(0.97);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.7);
+}

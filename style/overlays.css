@@ -1,0 +1,293 @@
+/* Overlays */
+
+/* -------------------- START SCREEN (image overlay) -------------------- */
+
+#startScreen {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  text-align: center;
+  padding: 16px;
+}
+
+.start-screen-image {
+  max-width: 90%;
+  max-height: 64%;
+  object-fit: contain;
+}
+
+#startScreen p,
+#orientationOverlay p,
+#pauseOverlay p {
+  font-family: var(--font-ui);
+  color: red;
+  font-size: 1rem;
+  margin: 0.75rem 0 0;
+  line-height: 1.25;
+}
+
+/* -------------------- Orientation overlay -------------------- */
+
+#orientationOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  text-align: center;
+}
+
+#orientationOverlay .orientationCard {
+  max-width: 420px;
+  background: var(--overlay-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+}
+
+.western-rotate-icon {
+  width: 120px;
+  margin: 20px auto;
+}
+
+.rotate-svg {
+  width: 100%;
+  animation: rotateDevice 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 6px 0 #3e2a14);
+}
+
+@keyframes rotateDevice {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  40% {
+    transform: rotate(90deg);
+  }
+
+  60% {
+    transform: rotate(90deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+#gameContainer.portrait-blocked canvas,
+#gameContainer.portrait-blocked #startScreen,
+#gameContainer.portrait-blocked button {
+  pointer-events: none;
+}
+
+/* -------------------- Pause overlay -------------------- */
+
+#pauseOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--overlay-bg);
+  color: #fff;
+  text-align: center;
+  pointer-events: auto;
+}
+
+#pauseOverlay .pauseCard {
+  max-width: 420px;
+  background: var(--overlay-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+}
+
+#pauseOverlay button {
+  margin-top: 12px;
+  padding: 10px 18px;
+  font-size: 16px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.uiCard,
+#pauseOverlay .pauseCard,
+#winOverlay .winCard {
+  backdrop-filter: blur(6px);
+}
+
+/* -------------------- Game over overlay (image) -------------------- */
+
+#gameOverOverlay {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(45deg, black, transparent 100px);
+  display: none;
+  /* hidden until game over */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.game-over-image {
+  max-width: 90%;
+  max-height: 46vh;
+  margin: 10px 0 16px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+}
+
+/* -------------------- Win overlay -------------------- */
+
+#winOverlay {
+  position: absolute;
+  inset: 0;
+  background: repeating-radial-gradient(black, transparent 100px);
+  display: none;
+  /* hidden until win */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+  text-align: center;
+}
+
+#winOverlay .winCard {
+  max-width: 520px;
+  width: min(92%, 520px);
+  background: var(--overlay-card);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+#winOverlay .winTitle {
+  margin: 0 0 10px 0;
+  color: #f7e4b2;
+  text-shadow:
+    2px 2px 0 #5a2e0f,
+    4px 4px 0 #3b1f0f,
+    0 0 10px rgba(255, 200, 100, 0.35);
+}
+
+#winOverlay .winText {
+  margin: 0 0 14px 0;
+  color: #fff;
+  opacity: 0.95;
+  line-height: 1.3;
+}
+
+.win-image {
+  max-width: 90%;
+  max-height: 46vh;
+  margin: 10px 0 16px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+}
+
+/* -------------------- Loading overlay -------------------- */
+
+#loadingOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #f7e4b2;
+  font-family: var(--font-ui);
+  pointer-events: all;
+}
+
+#loadingOverlay p {
+  margin-top: 14px;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #f7e4b2;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#loadingOverlay.hidden {
+  display: none !important;
+  pointer-events: none;
+}
+
+/* -------------------- How-to overlay -------------------- */
+
+.uiOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.uiOverlay.show {
+  display: flex;
+}
+
+.uiCard {
+  width: min(92%, 420px);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.uiCard h2 {
+  margin: 0 0 12px 0;
+  color: #f7e4b2;
+  text-shadow:
+    2px 2px 0 #5a2e0f,
+    4px 4px 0 #3b1f0f,
+    0 0 10px rgba(255, 200, 100, 0.35);
+}
+
+.howToRows {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.howToRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: #fff6dc;
+  font-family: var(--font-ui);
+}

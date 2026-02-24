@@ -1,0 +1,44 @@
+/* Typography */
+
+/* -------------------- Typography -------------------- */
+
+h1,
+h2 {
+  font-family: var(--font-title);
+  letter-spacing: 1px;
+  font-size: 2rem;
+  margin: 0;
+  color: yellow;
+}
+
+h1 {
+  color: #211e1e;
+  text-align: center;
+}
+
+.title-western {
+  font-family: var(--font-title);
+  font-size: 3rem;
+  color: #f7e4b2;
+  text-align: center;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-shadow:
+    3px 3px 0 #5a2e0f,
+    6px 6px 0 #3b1f0f,
+    0 0 12px rgba(255, 200, 100, 0.6);
+  pointer-events: none;
+  animation: titlePop 0.8s ease-out;
+}
+
+@keyframes titlePop {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
