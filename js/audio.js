@@ -1,13 +1,26 @@
-// =====================================================
-// AUDIO (background music + mute)
-// =====================================================
+/* global world, isMuted, dom */
 
-// Keep compatibility with existing code (game1.js uses bgMusic + MUTE_STORAGE_KEY)
+/**
+ * @typedef {object} WorldAudio
+ * @property {HTMLAudioElement=} coinSound
+ * @property {HTMLAudioElement=} bottleSound
+ * @property {HTMLAudioElement=} throwBottleSound
+ * @property {HTMLAudioElement=} snoringSound
+ * @property {HTMLAudioElement=} winSound
+ * @property {HTMLAudioElement=} gameOverSound
+ */
+
+// Keep compatibility with legacy globals (old game scripts may also define these).
+/** @type {HTMLAudioElement|null} */
 if (typeof bgMusic === "undefined") var bgMusic = null;
+
+/** @type {string} */
 if (typeof MUTE_STORAGE_KEY === "undefined") var MUTE_STORAGE_KEY = "game_muted";
 
 /**
  * Creates and configures the looping background music audio element.
+ *
+ * @returns {void}
  */
 function setupBackgroundMusic() {
   bgMusic = new Audio("assets/audio/background_music.mp3");
@@ -16,56 +29,78 @@ function setupBackgroundMusic() {
 }
 
 /**
- * Starts background music playback (muted state is applied first).
+ * Starts background music playback.
+ * Applies the current mute state before attempting playback.
+ *
+ * @returns {void}
  */
 function startBackgroundMusic() {
   if (!bgMusic) return;
-  bgMusic.muted = !!isMuted;
+  bgMusic.muted = Boolean(isMuted);
   bgMusic.play().catch(() => {});
 }
 
 /**
- * Stops/pause background music playback.
+ * Stops (pauses) background music playback.
+ *
+ * @returns {void}
  */
 function stopBackgroundMusic() {
-  if (bgMusic) bgMusic.pause();
+  if (!bgMusic) return;
+  bgMusic.pause();
 }
 
 /**
- * Safely sets the `muted` flag on an audio element (no-op if missing).
+ * Safely sets the muted state on an audio element.
+ *
+ * @param {HTMLAudioElement|null|undefined} audio - Audio element to update (optional).
+ * @param {boolean} muted - Whether audio should be muted.
+ * @returns {void}
  */
 function setMuted(audio, muted) {
-  if (audio) audio.muted = muted;
+  if (!audio) return;
+  audio.muted = muted;
 }
 
 /**
- * Applies current mute state to all audio resources owned by the world.
+ * Applies the current mute state to audio resources owned by the world instance.
+ *
+ * @returns {void}
  */
 function syncWorldAudioMute() {
   if (!world) return;
 
-  setMuted(world.coinSound, isMuted);
-  setMuted(world.bottleSound, isMuted);
-  setMuted(world.throwBottleSound, isMuted);
-  setMuted(world.snoringSound, isMuted);
-  setMuted(world.winSound, isMuted);
-  setMuted(world.gameOverSound, isMuted);
+  /** @type {WorldAudio} */
+  const w = world;
+
+  setMuted(w.coinSound, isMuted);
+  setMuted(w.bottleSound, isMuted);
+  setMuted(w.throwBottleSound, isMuted);
+  setMuted(w.snoringSound, isMuted);
+  setMuted(w.winSound, isMuted);
+  setMuted(w.gameOverSound, isMuted);
 }
 
 /**
- * Toggles global mute state, applies it to all known audio sources, persists it,
- * and updates the mute button UI.
+ * Toggles the global mute state, applies it to known audio sources,
+ * persists it, and updates the mute button UI.
+ *
+ * @returns {void}
  */
 function toggleMute() {
   isMuted = !isMuted;
 
   if (bgMusic) bgMusic.muted = isMuted;
-  if (world?.snoringSound) world.snoringSound.muted = isMuted;
-  if (world?.coinSound) world.coinSound.muted = isMuted;
-  if (world?.bottleSound) world.bottleSound.muted = isMuted;
-  if (world?.throwBottleSound) world.throwBottleSound.muted = isMuted;
-  if (world?.winSound) world.winSound.muted = isMuted;
-  if (world?.gameOverSound) world.gameOverSound.muted = isMuted;
+
+  /** @type {WorldAudio|null} */
+  const w = world ?? null;
+
+  if (w?.snoringSound) w.snoringSound.muted = isMuted;
+  if (w?.coinSound) w.coinSound.muted = isMuted;
+  if (w?.bottleSound) w.bottleSound.muted = isMuted;
+  if (w?.throwBottleSound) w.throwBottleSound.muted = isMuted;
+  if (w?.winSound) w.winSound.muted = isMuted;
+  if (w?.gameOverSound) w.gameOverSound.muted = isMuted;
 
   localStorage.setItem(MUTE_STORAGE_KEY, String(isMuted));
   updateMuteBtn();
@@ -73,9 +108,11 @@ function toggleMute() {
 
 /**
  * Updates the mute button icon/title to reflect the current mute state.
+ *
+ * @returns {void}
  */
 function updateMuteBtn() {
-  // Compatible with both "dom.muteBtn" approach and direct lookup
+  /** @type {HTMLElement|null} */
   const btn =
     (typeof dom !== "undefined" && dom?.muteBtn) ||
     document.getElementById("muteBtn");

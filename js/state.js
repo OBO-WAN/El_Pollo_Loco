@@ -1,30 +1,72 @@
-// =====================================================
-// GLOBAL STATE
-// =====================================================
+/**
+ * Minimal World contract used across modules.
+ *
+ * This is intentionally partial — it only defines
+ * properties accessed by other modules.
+ *
+ * @typedef {Object} World
+ * @property {CanvasRenderingContext2D} ctx
+ * @property {boolean=} isGameOver
+ * @property {boolean=} isCharacterSleeping
+ * @property {Function=} pause
+ * @property {Function=} resume
+ * @property {Function=} stopSnoring
+ * @property {Function=} setHudPositions
+ * @property {number=} collisionInterval
+ * @property {HTMLAudioElement=} coinSound
+ * @property {HTMLAudioElement=} bottleSound
+ * @property {HTMLAudioElement=} throwBottleSound
+ * @property {HTMLAudioElement=} winSound
+ * @property {HTMLAudioElement=} gameOverSound
+ */
 
-// World / game instance
+/**
+ * Application settings stored in memory.
+ *
+ * @typedef {Object} GameSettings
+ * @property {boolean} musicMuted
+ */
+
+/** @type {World|null} */
 let world = null;
 
-// DOM references
+/** @type {HTMLCanvasElement|null} */
 let canvas = null;
+
+/** @type {HTMLElement|null} */
 let loadingOverlay = null;
+
+/** @type {HTMLElement|null} */
 let gameOverOverlay = null;
+
+/** @type {HTMLElement|null} */
 let winOverlay = null;
+
+/** @type {HTMLElement|null} */
 let startScreen = null;
+
+/** @type {HTMLElement|null} */
 let orientationOverlay = null;
+
+/** @type {HTMLElement|null} */
 let pauseOverlay = null;
 
-// View / rendering
+/**
+ * Current viewport transformation (defined in render layer).
+ * @type {import("./render.viewport.js").View|null}
+ */
 let currentView = null;
 
-// Audio
+/** @type {HTMLAudioElement|null} */
 let backgroundMusic = null;
+
+/** @type {boolean} */
 let isMuted = false;
 
-// Pause state
+/** @type {boolean} */
 let isPaused = false;
 
-// Settings
+/** @type {GameSettings} */
 let SETTINGS = {
   musicMuted: false,
 };

@@ -1,14 +1,39 @@
-// =====================================================
-// PAUSE SYSTEM (togglePause, setPaused, pause overlay, audio handling)
-// =====================================================
+/* global 
+  world, isPaused, isMuted, gameStarted,
+  isPortraitBlocked,
+  stopBackgroundMusic, startBackgroundMusic,
+  updateMobileControlsVisibility
+*/
 
-// game2.js uses these globals; keep compatible while old files still exist
+/**
+ * Indicates whether pause was triggered by orientation change.
+ * @type {boolean}
+ */
 if (typeof pausedByOrientation === "undefined") var pausedByOrientation = false;
+
+/**
+ * Stores the last focused element before an overlay was shown.
+ * @type {HTMLElement|null}
+ */
 if (typeof lastFocusBeforeOverlay === "undefined") var lastFocusBeforeOverlay = null;
+
+/**
+ * Indicates whether a game session has started.
+ * @type {boolean}
+ */
 if (typeof gameStarted === "undefined") var gameStarted = false;
 
 /**
- * Shows/hides pause overlay and pauses/resumes world + audio.
+ * Sets the paused state of the game.
+ *
+ * Responsibilities:
+ *  - Pause/resume world logic
+ *  - Show/hide pause overlay
+ *  - Manage audio state
+ *  - Sync mobile controls visibility
+ *
+ * @param {boolean} paused
+ * @returns {void}
  */
 function setPaused(paused) {
   isPaused = paused;
@@ -17,28 +42,49 @@ function setPaused(paused) {
   togglePauseOverlay(isPaused);
   handlePauseAudio(isPaused);
 
-  // Keep mobile controls in sync if that function exists (we’ll add it later)
   if (typeof updateMobileControlsVisibility === "function") {
     updateMobileControlsVisibility();
   }
 }
 
+/**
+ * Pauses or resumes the world instance.
+ *
+ * @param {boolean} paused
+ * @returns {void}
+ */
 function toggleWorldPause(paused) {
   if (!world) return;
   (paused ? world.pause : world.resume)?.call(world);
 }
 
+/**
+ * Shows or hides the pause overlay.
+ *
+ * Does not show overlay when portrait-blocked.
+ *
+ * @param {boolean} paused
+ * @returns {void}
+ */
 function togglePauseOverlay(paused) {
+  /** @type {HTMLElement|null} */
   const pauseOverlay = document.getElementById("pauseOverlay");
   if (!pauseOverlay) return;
 
-  if (typeof isPortraitBlocked !== "undefined" && isPortraitBlocked) {
+  if (isPortraitBlocked) {
     pauseOverlay.style.display = "none";
     return;
   }
+
   pauseOverlay.style.display = paused ? "flex" : "none";
 }
 
+/**
+ * Handles audio state transitions when pausing/resuming.
+ *
+ * @param {boolean} paused
+ * @returns {void}
+ */
 function handlePauseAudio(paused) {
   if (paused) {
     stopBackgroundMusic?.();
@@ -51,11 +97,17 @@ function handlePauseAudio(paused) {
   }
 }
 
+/**
+ * Stops all world-related audio and resets playback position.
+ *
+ * @returns {void}
+ */
 function stopWorldSounds() {
   if (!world) return;
 
   world.stopSnoring?.();
 
+  /** @type {Array<HTMLAudioElement|undefined>} */
   const sounds = [
     world.coinSound,
     world.bottleSound,
@@ -72,21 +124,37 @@ function stopWorldSounds() {
 }
 
 /**
- * Toggle pause (button + Escape/P from keyboard).
+ * Toggles pause state.
+ *
+ * Guard conditions:
+ *  - World must exist
+ *  - Not portrait-blocked
+ *  - Game must not be over
+ *
+ * @returns {void}
  */
 function togglePause() {
   if (!world) return;
-  if (typeof isPortraitBlocked !== "undefined" && isPortraitBlocked) return;
+  if (isPortraitBlocked) return;
   if (world.isGameOver) return;
 
   setPaused(!isPaused);
 }
 
 /**
- * Wire pause button + resume button.
+ * Binds pause and resume button controls.
+ *
+ * Expected DOM:
+ *  - #pauseBtn
+ *  - #resumeBtn
+ *
+ * @returns {void}
  */
 function setupPauseControls() {
+  /** @type {HTMLElement|null} */
   const pauseBtn = document.getElementById("pauseBtn");
+
+  /** @type {HTMLElement|null} */
   const resumeBtn = document.getElementById("resumeBtn");
 
   pauseBtn?.addEventListener("click", togglePause);

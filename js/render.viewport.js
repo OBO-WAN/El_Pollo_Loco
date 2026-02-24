@@ -1,14 +1,32 @@
-// =====================================================
-// VIEWPORT / CANVAS RESIZING
-// =====================================================
+/* global canvas, world */
 
-// Logical game resolution (matches your canvas default attributes)
+/**
+ * Logical game resolution (matches canvas default attributes).
+ * @type {number}
+ */
 const LOGICAL_W = 720;
+
+/**
+ * @type {number}
+ */
 const LOGICAL_H = 480;
 
 /**
- * Binds window/document events that should trigger a canvas resize recalculation.
- * Requires `canvas` (from state.js or cacheDom later) to be set.
+ * Represents the computed viewport transformation.
+ *
+ * @typedef {Object} View
+ * @property {number} dpr - Device pixel ratio.
+ * @property {number} scale - Scaling factor.
+ * @property {number} offsetX - Horizontal letterbox offset.
+ * @property {number} offsetY - Vertical letterbox offset.
+ * @property {number} logicalViewportW - Visible logical width.
+ * @property {number} logicalViewportH - Visible logical height.
+ */
+
+/**
+ * Binds resize-related events that trigger viewport recalculation.
+ *
+ * @returns {void}
  */
 function bindCanvasResizeEvents() {
   window.addEventListener("resize", resizeCanvasToDisplaySize, { passive: true });
@@ -19,11 +37,14 @@ function bindCanvasResizeEvents() {
 }
 
 /**
- * Resizes the canvas backing store to match CSS size * DPR and updates the
- * world's view transform accordingly. Safe to call before `world` exists.
+ * Resizes canvas backing store and applies view transform to world.
+ *
+ * Safe to call before world exists.
+ *
+ * @returns {void}
  */
 function resizeCanvasToDisplaySize() {
-  // Prefer the global `canvas` if already cached; fallback to DOM lookup.
+  /** @type {HTMLCanvasElement|null} */
   const canvasEl = canvas || document.getElementById("canvas");
   if (!canvasEl) return;
 
@@ -37,7 +58,15 @@ function resizeCanvasToDisplaySize() {
 }
 
 /**
- * Computes size metrics for the given canvas based on its CSS size and DPR.
+ * Computes canvas size metrics.
+ *
+ * @param {HTMLCanvasElement} canvasEl
+ * @returns {{
+ *   rect: DOMRect,
+ *   dpr: number,
+ *   displayWidth: number,
+ *   displayHeight: number
+ * }}
  */
 function getCanvasMetrics(canvasEl) {
   const rect = canvasEl.getBoundingClientRect();
@@ -52,7 +81,11 @@ function getCanvasMetrics(canvasEl) {
 }
 
 /**
- * Ensures the canvas backing store matches the provided device-pixel dimensions.
+ * Ensures canvas backing store matches device pixel size.
+ *
+ * @param {HTMLCanvasElement} canvasEl
+ * @param {{ displayWidth: number, displayHeight: number }} metrics
+ * @returns {void}
  */
 function resizeBackingStore(canvasEl, { displayWidth, displayHeight }) {
   if (canvasEl.width !== displayWidth) canvasEl.width = displayWidth;
@@ -60,8 +93,12 @@ function resizeBackingStore(canvasEl, { displayWidth, displayHeight }) {
 }
 
 /**
- * Computes logical viewport scale/offset values for letterboxing a logical
- * game resolution into the available CSS pixels.
+ * Computes viewport scale and offsets.
+ *
+ * @param {{ rect: DOMRect, dpr: number }} metrics
+ * @param {number} logicalW
+ * @param {number} logicalH
+ * @returns {View}
  */
 function computeView({ rect, dpr }, logicalW, logicalH) {
   const scale = Math.min(rect.width / logicalW, rect.height / logicalH);
@@ -80,10 +117,13 @@ function computeView({ rect, dpr }, logicalW, logicalH) {
 }
 
 /**
- * Applies the computed view to the world (stores it and sets the canvas transform).
+ * Applies viewport transform to world rendering context.
+ *
+ * @param {{ ctx: CanvasRenderingContext2D, setHudPositions?: Function, view?: View }} worldInstance
+ * @param {View} view
+ * @returns {void}
  */
 function applyView(worldInstance, view) {
-  // store it (some code may read it)
   worldInstance.view = view;
 
   worldInstance.ctx.setTransform(

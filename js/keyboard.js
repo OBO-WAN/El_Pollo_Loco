@@ -1,21 +1,33 @@
-// =====================================================
-// KEYBOARD INPUT (gameplay keys + pause hotkeys)
-// =====================================================
+/* global keyboard, world, isPaused, isPortraitBlocked, togglePause */
 
+/**
+ * Handles keydown events for gameplay and pause controls.
+ *
+ * Responsibilities:
+ *  - Toggle pause on Escape / P
+ *  - Update keyboard state flags (LEFT, RIGHT, UP, SPACE)
+ *  - Prevent default browser behavior for movement keys
+ *  - Wake sleeping character instead of throwing
+ *
+ * @param {KeyboardEvent} e - Native keyboard event
+ * @returns {void}
+ */
 function onKeydown(e) {
+  // Pause hotkeys
   if (e.code === "Escape" || e.code === "KeyP") {
     e.preventDefault();
     togglePause?.();
     return;
   }
 
-  if (typeof isPortraitBlocked !== "undefined" && isPortraitBlocked) return;
-  if (typeof isPaused !== "undefined" && isPaused) return;
+  if (isPortraitBlocked) return;
+  if (isPaused) return;
 
   if (["ArrowRight", "ArrowLeft", "ArrowUp", "Space"].includes(e.code)) {
     e.preventDefault();
   }
 
+  // Prevent throwing while character is sleeping
   if (e.code === "Space" && world?.isCharacterSleeping) {
     world.resetIdleTimer?.();
     keyboard.SPACE = false;
@@ -28,9 +40,15 @@ function onKeydown(e) {
   if (e.code === "Space") keyboard.SPACE = true;
 }
 
+/**
+ * Handles keyup events for gameplay controls.
+ *
+ * @param {KeyboardEvent} e - Native keyboard event
+ * @returns {void}
+ */
 function onKeyup(e) {
-  if (typeof isPortraitBlocked !== "undefined" && isPortraitBlocked) return;
-  if (typeof isPaused !== "undefined" && isPaused) return;
+  if (isPortraitBlocked) return;
+  if (isPaused) return;
 
   if (["ArrowRight", "ArrowLeft", "ArrowUp", "Space"].includes(e.code)) {
     e.preventDefault();
@@ -42,6 +60,13 @@ function onKeyup(e) {
   if (e.code === "Space") keyboard.SPACE = false;
 }
 
+/**
+ * Binds global keyboard listeners to the window.
+ *
+ * Should be called once during application initialization.
+ *
+ * @returns {void}
+ */
 function bindKeyboard() {
   window.addEventListener("keydown", onKeydown, { passive: false });
   window.addEventListener("keyup", onKeyup, { passive: false });
