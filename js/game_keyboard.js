@@ -13,7 +13,6 @@
  * @returns {void}
  */
 function onKeydown(e) {
-  // Pause hotkeys
   if (e.code === "Escape" || e.code === "KeyP") {
     e.preventDefault();
     togglePause?.();
@@ -27,7 +26,6 @@ function onKeydown(e) {
     e.preventDefault();
   }
 
-  // Prevent throwing while character is sleeping
   if (e.code === "Space" && world?.isCharacterSleeping) {
     world.resetIdleTimer?.();
     keyboard.SPACE = false;

@@ -69,8 +69,6 @@ function setMuted(audio, muted) {
  */
 function syncWorldAudioMute() {
   if (!world) return;
-
-  /** @type {WorldAudio} */
   const w = world;
 
   setMuted(w.coinSound, isMuted);
@@ -92,7 +90,6 @@ function toggleMute() {
 
   if (bgMusic) bgMusic.muted = isMuted;
 
-  /** @type {WorldAudio|null} */
   const w = world ?? null;
 
   if (w?.snoringSound) w.snoringSound.muted = isMuted;
@@ -112,7 +109,6 @@ function toggleMute() {
  * @returns {void}
  */
 function updateMuteBtn() {
-  /** @type {HTMLElement|null} */
   const btn =
     (typeof dom !== "undefined" && dom?.muteBtn) ||
     document.getElementById("muteBtn");

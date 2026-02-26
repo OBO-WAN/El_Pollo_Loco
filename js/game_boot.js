@@ -16,13 +16,8 @@
  * @returns {Promise<void>}
  */
 async function init() {
-  /** @type {HTMLElement|null} */
   const loader = document.getElementById("loadingOverlay");
-
-  /** @type {HTMLElement|null} */
   const startScreen = document.getElementById("startScreen");
-
-  /** @type {HTMLElement|null} */
   const loadingText = document.getElementById("loadingText");
 
   if (startScreen) startScreen.style.display = "none";
@@ -31,9 +26,7 @@ async function init() {
   try {
     await preloadImagesWithProgress(
       GAME_IMAGES,
-      /**
-       * @param {number} percent - Loading progress (0–100)
-       */
+   
       (percent) => {
         if (loadingText) {
           loadingText.textContent = `Loading game… ${percent}%`;
