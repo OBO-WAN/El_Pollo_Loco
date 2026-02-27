@@ -46,7 +46,6 @@ class ThrowableObject extends movableObject {
    * - Activates gravity
    * - Moves horizontally until hitting the ground
    *
-   * @returns {void}
    */
   throw() {
     this.speedY = 20;
@@ -65,7 +64,6 @@ class ThrowableObject extends movableObject {
   /**
    * Stops horizontal movement of the throwable object.
    *
-   * @returns {void}
    */
   stop() {
     clearInterval(this.moveInterval);

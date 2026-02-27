@@ -96,7 +96,6 @@ class StatusBar extends DrawableObject {
      * according to the current percentage.
      *
      * @param {string[]} images - Array of image paths.
-     * @returns {void}
      */
     setImages(images) {
         this.images = images;
@@ -108,7 +107,6 @@ class StatusBar extends DrawableObject {
      * Updates the percentage value and changes the displayed image.
      *
      * @param {number} percentage - New percentage value (0–100).
-     * @returns {void}
      */
     setPercentage(percentage) {
         this.percentage = percentage;

@@ -25,7 +25,6 @@ class movableObject extends DrawableObject {
      * Updates vertical position 25 times per second.
      * Stops falling when ground level is reached.
      *
-     * @returns {void}
      */
     applyGravity() {
         setInterval(() => {
@@ -87,7 +86,6 @@ class movableObject extends DrawableObject {
      * - Reduces energy by 5
      * - Updates last hit timestamp
      *
-     * @returns {void}
      */
     hit() {
         if (typeof this.isInvincible === 'function' && this.isInvincible()) {
@@ -128,7 +126,6 @@ class movableObject extends DrawableObject {
      * Uses cached images from {@link DrawableObject#imageCache}.
      *
      * @param {string[]} images - Array of image paths.
-     * @returns {void}
      */
     playAnimation(images) {
         let i = this.currentImage % images.length;
@@ -139,7 +136,6 @@ class movableObject extends DrawableObject {
     /**
      * Moves the object to the right.
      *
-     * @returns {void}
      */
     moveRight() {
         this.x += this.speed;
@@ -148,7 +144,6 @@ class movableObject extends DrawableObject {
     /**
      * Moves the object to the left.
      *
-     * @returns {void}
      */
     moveLeft() {
         this.x -= this.speed;

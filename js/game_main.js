@@ -30,7 +30,6 @@ const dom = {
   startScreen: null,
 };
 
-// Ensure keyboard exists (Keyboard class is loaded via models/keyboard.class.js)
 /** @type {Keyboard} */
 if (typeof keyboard === "undefined") {
   var keyboard = new Keyboard();
@@ -48,7 +47,6 @@ if (typeof gameStarted === "undefined") {
 
 /**
  * Cache important DOM elements and publish shared globals.
- * @returns {void}
  */
 function cacheDom() {
   dom.canvas = /** @type {HTMLCanvasElement|null} */ (document.getElementById("canvas"));
@@ -248,7 +246,7 @@ function bindTopRestartButton() {
   dom.restartBtn?.addEventListener("click", () => {
     if (world) {
       world.isPaused = true;
-      world.stopSnoring?.();
+      world.audio?.stopSnoring();
     }
     setPaused?.(false);
     window.location.reload();

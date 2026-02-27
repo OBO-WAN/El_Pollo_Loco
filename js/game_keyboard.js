@@ -63,7 +63,6 @@ function onKeyup(e) {
  *
  * Should be called once during application initialization.
  *
- * @returns {void}
  */
 function bindKeyboard() {
   window.addEventListener("keydown", onKeydown, { passive: false });

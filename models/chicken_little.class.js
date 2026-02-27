@@ -76,7 +76,6 @@ class Chicken2 extends movableObject {
      * The animation updates every 120 milliseconds
      * while the chicken is alive.
      *
-     * @returns {void}
      */
     animate() {
         this.animationInterval = setInterval(() => {
@@ -94,7 +93,6 @@ class Chicken2 extends movableObject {
      * - Displays the dead image
      * - Clears the animation interval
      *
-     * @returns {void}
      */
     die() {
         if (this.dead) return;

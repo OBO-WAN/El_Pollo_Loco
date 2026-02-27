@@ -33,7 +33,6 @@ if (typeof gameStarted === "undefined") var gameStarted = false;
  *  - Sync mobile controls visibility
  *
  * @param {boolean} paused
- * @returns {void}
  */
 function setPaused(paused) {
   isPaused = paused;
@@ -51,7 +50,6 @@ function setPaused(paused) {
  * Pauses or resumes the world instance.
  *
  * @param {boolean} paused
- * @returns {void}
  */
 function toggleWorldPause(paused) {
   if (!world) return;
@@ -64,7 +62,6 @@ function toggleWorldPause(paused) {
  * Does not show overlay when portrait-blocked.
  *
  * @param {boolean} paused
- * @returns {void}
  */
 function togglePauseOverlay(paused) {
   /** @type {HTMLElement|null} */
@@ -83,7 +80,6 @@ function togglePauseOverlay(paused) {
  * Handles audio state transitions when pausing/resuming.
  *
  * @param {boolean} paused
- * @returns {void}
  */
 function handlePauseAudio(paused) {
   if (paused) {
@@ -97,23 +93,20 @@ function handlePauseAudio(paused) {
   }
 }
 
+
 /**
  * Stops all world-related audio and resets playback position.
- *
- * @returns {void}
  */
 function stopWorldSounds() {
   if (!world) return;
 
-  world.stopSnoring?.();
-
-  /** @type {Array<HTMLAudioElement|undefined>} */
+  world.audio?.stopSnoring();
   const sounds = [
-    world.coinSound,
-    world.bottleSound,
-    world.throwBottleSound,
-    world.winSound,
-    world.gameOverSound,
+    world.audio?.coinSound,
+    world.audio?.bottleSound,
+    world.audio?.throwBottleSound,
+    world.audio?.winSound,
+    world.audio?.gameOverSound,
   ];
 
   sounds.forEach((sound) => {
@@ -131,7 +124,6 @@ function stopWorldSounds() {
  *  - Not portrait-blocked
  *  - Game must not be over
  *
- * @returns {void}
  */
 function togglePause() {
   if (!world) return;
@@ -148,7 +140,6 @@ function togglePause() {
  *  - #pauseBtn
  *  - #resumeBtn
  *
- * @returns {void}
  */
 function setupPauseControls() {
   /** @type {HTMLElement|null} */

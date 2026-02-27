@@ -10,7 +10,7 @@
  */
 function createRandomBottles(amount, minX, maxX) {
     const bottles = [];
-    const minDistance = 250; // Prevent boring clusters
+    const minDistance = 250; 
 
     let lastX = minX - minDistance;
 

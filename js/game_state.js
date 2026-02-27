@@ -27,46 +27,18 @@
  * @property {boolean} musicMuted
  */
 
-/** @type {World|null} */
 let world = null;
-
-/** @type {HTMLCanvasElement|null} */
 let canvas = null;
-
-/** @type {HTMLElement|null} */
 let loadingOverlay = null;
-
-/** @type {HTMLElement|null} */
 let gameOverOverlay = null;
-
-/** @type {HTMLElement|null} */
 let winOverlay = null;
-
-/** @type {HTMLElement|null} */
 let startScreen = null;
-
-/** @type {HTMLElement|null} */
 let orientationOverlay = null;
-
-/** @type {HTMLElement|null} */
 let pauseOverlay = null;
-
-/**
- * Current viewport transformation (defined in render layer).
- * @type {import("./render.viewport.js").View|null}
- */
 let currentView = null;
-
-/** @type {HTMLAudioElement|null} */
 let backgroundMusic = null;
-
-/** @type {boolean} */
 let isMuted = false;
-
-/** @type {boolean} */
 let isPaused = false;
-
-/** @type {GameSettings} */
 let SETTINGS = {
   musicMuted: false,
 };

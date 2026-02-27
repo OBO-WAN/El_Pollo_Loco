@@ -4,7 +4,6 @@
  * Safe to call with null/undefined.
  *
  * @param {HTMLElement|null|undefined} el - Overlay element to display.
- * @returns {void}
  */
 function showOverlay(el) {
   if (!el) return;
@@ -17,7 +16,6 @@ function showOverlay(el) {
  * Safe to call with null/undefined.
  *
  * @param {HTMLElement|null|undefined} el - Overlay element to hide.
- * @returns {void}
  */
 function hideOverlay(el) {
   if (!el) return;

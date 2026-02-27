@@ -42,7 +42,6 @@ class Bottle extends movableObject {
    * The animation loops through {@link IMAGES_BOTTLE}
    * every 400 milliseconds.
    *
-   * @returns {void}
    */
   animate() {
     this.animationInterval = setInterval(() => {

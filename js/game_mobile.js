@@ -27,7 +27,6 @@ function isTouchDevice() {
  *  - #gameContainer
  *  - #orientationOverlay
  *
- * @returns {void}
  */
 function setupOrientationGuard() {
   /** @type {HTMLElement|null} */
@@ -40,7 +39,6 @@ function setupOrientationGuard() {
 
   /**
    * Evaluates current orientation and updates UI state.
-   * @returns {void}
    */
   function evaluate() {
     if (!isTouchDevice()) {
@@ -75,7 +73,6 @@ function setupOrientationGuard() {
  *
  * @param {"LEFT"|"RIGHT"|"UP"|"SPACE"} action
  * @param {boolean} pressed
- * @returns {void}
  */
 function setKey(action, pressed) {
   if (!keyboard) return;
@@ -103,7 +100,6 @@ function setKey(action, pressed) {
  *
  * Safe to call on desktop (no-op).
  *
- * @returns {void}
  */
 function setupMobileControls() {
   /** @type {HTMLElement|null} */
@@ -172,7 +168,6 @@ function setupMobileControls() {
  * Initializes mobile-related systems.
  * Should be called once during app initialization.
  *
- * @returns {void}
  */
 function bindMobile() {
   setupOrientationGuard();

@@ -27,7 +27,6 @@ class DrawableObject {
      * Loads a single image.
      *
      * @param {string} path - Path to the image file.
-     * @returns {void}
      */
     loadImage(path) {
         this.img = new Image();
@@ -42,7 +41,6 @@ class DrawableObject {
      * its width is slightly increased to prevent visual gaps.
      *
      * @param {CanvasRenderingContext2D} ctx - The rendering context.
-     * @returns {void}
      */
     draw(ctx) {
         if (!this.img) return;
@@ -62,7 +60,6 @@ class DrawableObject {
      * Used for animation sequences.
      *
      * @param {string[]} arr - Array of image paths.
-     * @returns {void}
      */
     loadImages(arr) {
         arr.forEach(path => {

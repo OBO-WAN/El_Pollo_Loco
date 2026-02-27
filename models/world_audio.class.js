@@ -68,10 +68,10 @@ class WorldAudio {
      */
     startIdleCountdownIfNeeded() {
         const w = this.world;
-
         if (w.idleTimeout || w.isSnoring) return;
 
         w.idleTimeout = setTimeout(() => {
+            if (this.shouldSkipIdleCheck()) return;
             this.startSnoring();
         }, 3000);
     }

@@ -33,7 +33,6 @@ class Cloud extends movableObject {
     /**
      * Initializes the cloud movement animation.
      *
-     * @returns {void}
      */
     animateClouds() {
         this.moveLeft();
@@ -45,7 +44,6 @@ class Cloud extends movableObject {
      * The movement runs at approximately 60 FPS.
      * Speed: 0.15 pixels per frame.
      *
-     * @returns {void}
      */
     moveLeft() {
         setInterval(() => {

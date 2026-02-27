@@ -26,7 +26,6 @@ const LOGICAL_H = 480;
 /**
  * Binds resize-related events that trigger viewport recalculation.
  *
- * @returns {void}
  */
 function bindCanvasResizeEvents() {
   window.addEventListener("resize", resizeCanvasToDisplaySize, { passive: true });
@@ -41,10 +40,8 @@ function bindCanvasResizeEvents() {
  *
  * Safe to call before world exists.
  *
- * @returns {void}
  */
 function resizeCanvasToDisplaySize() {
-  /** @type {HTMLCanvasElement|null} */
   const canvasEl = canvas || document.getElementById("canvas");
   if (!canvasEl) return;
 
@@ -85,7 +82,6 @@ function getCanvasMetrics(canvasEl) {
  *
  * @param {HTMLCanvasElement} canvasEl
  * @param {{ displayWidth: number, displayHeight: number }} metrics
- * @returns {void}
  */
 function resizeBackingStore(canvasEl, { displayWidth, displayHeight }) {
   if (canvasEl.width !== displayWidth) canvasEl.width = displayWidth;
@@ -121,7 +117,6 @@ function computeView({ rect, dpr }, logicalW, logicalH) {
  *
  * @param {{ ctx: CanvasRenderingContext2D, setHudPositions?: Function, view?: View }} worldInstance
  * @param {View} view
- * @returns {void}
  */
 function applyView(worldInstance, view) {
   worldInstance.view = view;

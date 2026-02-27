@@ -1,6 +1,5 @@
 /* Desktop / widescreen scaling (Full HD+) */
 
-/* Full HD (1920x1080) */
 @media (min-width: 1920px) {
   #gameContainer { width: min(92vw, 1200px); }
 
@@ -62,4 +61,65 @@
   .howToRow { font-size: 1.4rem; }
   .howToRow .key { font-size: 1.8rem; min-width: 54px; height: 52px; }
   #closeHowToBtn { font-size: 2rem; padding: 22px 56px; }
+}
+
+/* =====================================================
+   FULLSCREEN ONLY: scale HUD buttons on widescreens
+   Applies only when #fullscreen is in Fullscreen API mode
+===================================================== */
+
+@media (min-width: 1920px) {
+  #fullscreen:fullscreen .pause-btn,
+  #fullscreen:fullscreen .mute-btn,
+  #fullscreen:fullscreen .restart-btn {
+    top: calc(18px + var(--pad-safe-top));
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  #fullscreen:fullscreen .restart-btn {
+    right: calc(18px + var(--pad-safe-right));
+  }
+
+  #fullscreen:fullscreen .mute-btn {
+    right: calc(18px + var(--pad-safe-right) + 56px + 12px);
+  }
+
+  #fullscreen:fullscreen .pause-btn {
+    right: calc(18px + var(--pad-safe-right) + (56px + 12px) * 2);
+  }
+}
+
+@media (min-width: 2560px) {
+  #fullscreen:fullscreen .pause-btn,
+  #fullscreen:fullscreen .mute-btn,
+  #fullscreen:fullscreen .restart-btn {
+    top: calc(20px + var(--pad-safe-top));
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
+  }
+
+  #fullscreen:fullscreen .restart-btn {
+    right: calc(20px + var(--pad-safe-right));
+  }
+
+  #fullscreen:fullscreen .mute-btn {
+    right: calc(20px + var(--pad-safe-right) + 64px + 14px);
+  }
+
+  #fullscreen:fullscreen .pause-btn {
+    right: calc(20px + var(--pad-safe-right) + (64px + 14px) * 2);
+  }
+}
+
+@media (min-width: 3200px) {
+  #fullscreen:fullscreen .pause-btn,
+  #fullscreen:fullscreen .mute-btn,
+  #fullscreen:fullscreen .restart-btn {
+    width: 72px;
+    height: 72px;
+    font-size: 32px;
+  }
 }

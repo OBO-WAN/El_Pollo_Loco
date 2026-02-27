@@ -37,7 +37,6 @@ function createProgressTracker(total, onProgress) {
   return {
     /**
      * Increments loaded count and emits progress.
-     * @returns {void}
      */
     tick() {
       loaded++;
