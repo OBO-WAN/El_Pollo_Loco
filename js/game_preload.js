@@ -35,9 +35,6 @@ function createProgressTracker(total, onProgress) {
   let loaded = 0;
 
   return {
-    /**
-     * Increments loaded count and emits progress.
-     */
     tick() {
       loaded++;
       if (typeof onProgress === "function") {

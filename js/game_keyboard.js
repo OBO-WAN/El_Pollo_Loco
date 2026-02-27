@@ -1,20 +1,15 @@
 /* global keyboard, world, isPaused, isPortraitBlocked, togglePause */
 
+const movementKeys = ["ArrowRight", "ArrowLeft", "ArrowUp", "Space"];
+
 /**
- * Handles keydown events for gameplay and pause controls.
- *
- * Responsibilities:
- *  - Toggle pause on Escape / P
- *  - Update keyboard state flags (LEFT, RIGHT, UP, SPACE)
- *  - Prevent default browser behavior for movement keys
- *  - Wake sleeping character instead of throwing
- *
- * @param {KeyboardEvent} e - Native keyboard event
+ * Handles keydown input for movement and pause.
+ * @param {KeyboardEvent} event Native keyboard event.
  * @returns {void}
  */
-function onKeydown(e) {
-  if (e.code === "Escape" || e.code === "KeyP") {
-    e.preventDefault();
+function onKeydown(event) {
+  if (event.code === "Escape" || event.code === "KeyP") {
+    event.preventDefault();
     togglePause?.();
     return;
   }
@@ -22,47 +17,45 @@ function onKeydown(e) {
   if (isPortraitBlocked) return;
   if (isPaused) return;
 
-  if (["ArrowRight", "ArrowLeft", "ArrowUp", "Space"].includes(e.code)) {
-    e.preventDefault();
+  if (movementKeys.includes(event.code)) {
+    event.preventDefault();
   }
 
-  if (e.code === "Space" && world?.isCharacterSleeping) {
+  // If the character is sleeping, Space wakes them instead of triggering an action.
+  if (event.code === "Space" && world?.isCharacterSleeping) {
     world.resetIdleTimer?.();
     keyboard.SPACE = false;
     return;
   }
 
-  if (e.code === "ArrowRight") keyboard.RIGHT = true;
-  if (e.code === "ArrowLeft") keyboard.LEFT = true;
-  if (e.code === "ArrowUp") keyboard.UP = true;
-  if (e.code === "Space") keyboard.SPACE = true;
+  if (event.code === "ArrowRight") keyboard.RIGHT = true;
+  if (event.code === "ArrowLeft") keyboard.LEFT = true;
+  if (event.code === "ArrowUp") keyboard.UP = true;
+  if (event.code === "Space") keyboard.SPACE = true;
 }
 
 /**
- * Handles keyup events for gameplay controls.
- *
- * @param {KeyboardEvent} e - Native keyboard event
+ * Handles keyup input for movement.
+ * @param {KeyboardEvent} event Native keyboard event.
  * @returns {void}
  */
-function onKeyup(e) {
+function onKeyup(event) {
   if (isPortraitBlocked) return;
   if (isPaused) return;
 
-  if (["ArrowRight", "ArrowLeft", "ArrowUp", "Space"].includes(e.code)) {
-    e.preventDefault();
+  if (movementKeys.includes(event.code)) {
+    event.preventDefault();
   }
 
-  if (e.code === "ArrowRight") keyboard.RIGHT = false;
-  if (e.code === "ArrowLeft") keyboard.LEFT = false;
-  if (e.code === "ArrowUp") keyboard.UP = false;
-  if (e.code === "Space") keyboard.SPACE = false;
+  if (event.code === "ArrowRight") keyboard.RIGHT = false;
+  if (event.code === "ArrowLeft") keyboard.LEFT = false;
+  if (event.code === "ArrowUp") keyboard.UP = false;
+  if (event.code === "Space") keyboard.SPACE = false;
 }
 
 /**
- * Binds global keyboard listeners to the window.
- *
- * Should be called once during application initialization.
- *
+ * Binds global keyboard listeners.
+ * @returns {void}
  */
 function bindKeyboard() {
   window.addEventListener("keydown", onKeydown, { passive: false });

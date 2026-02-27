@@ -1,15 +1,14 @@
 /* global keyboard, world, isPaused */
 
 /**
- * Indicates whether gameplay is currently blocked due to portrait orientation.
+ * Indicates whether gameplay input is blocked due to portrait orientation.
  * Used by keyboard and pause modules.
  * @type {boolean}
  */
 if (typeof isPortraitBlocked === "undefined") var isPortraitBlocked = false;
 
 /**
- * Determines whether the current device likely uses touch input.
- *
+ * Detects whether the device likely uses touch input.
  * @returns {boolean}
  */
 function isTouchDevice() {
@@ -17,62 +16,70 @@ function isTouchDevice() {
 }
 
 /**
- * Sets up orientation handling for mobile devices.
- *
- * - Shows rotate overlay in portrait mode
- * - Blocks gameplay input when portrait
- * - Removes restriction on desktop
- *
- * Requires:
- *  - #gameContainer
- *  - #orientationOverlay
- *
+ * Checks if the current orientation is portrait.
+ * @returns {boolean}
  */
-function setupOrientationGuard() {
-  /** @type {HTMLElement|null} */
-  const gameContainer = document.getElementById("gameContainer");
-
-  /** @type {HTMLElement|null} */
-  const overlay = document.getElementById("orientationOverlay");
-
-  if (!gameContainer || !overlay) return;
-
-  /**
-   * Evaluates current orientation and updates UI state.
-   */
-  function evaluate() {
-    if (!isTouchDevice()) {
-      isPortraitBlocked = false;
-      gameContainer.classList.remove("portrait-blocked");
-      overlay.style.display = "none";
-      return;
-    }
-
-    const portrait = window.matchMedia("(orientation: portrait)").matches;
-
-    isPortraitBlocked = portrait;
-
-    if (portrait) {
-      gameContainer.classList.add("portrait-blocked");
-      overlay.style.display = "flex";
-    } else {
-      gameContainer.classList.remove("portrait-blocked");
-      overlay.style.display = "none";
-    }
-  }
-
-  evaluate();
-  window.addEventListener("resize", evaluate, { passive: true });
-  window.addEventListener("orientationchange", () =>
-    setTimeout(evaluate, 50)
-  );
+function isPortraitOrientation() {
+  return window.matchMedia?.("(orientation: portrait)")?.matches ?? false;
 }
 
 /**
- * Updates keyboard state flags based on mobile button input.
- *
+ * Shows/hides portrait overlay and updates the blocked flag.
+ * @param {HTMLElement} gameContainer
+ * @param {HTMLElement} orientationOverlay
+ * @param {boolean} blocked
+ * @returns {void}
+ */
+function applyPortraitBlockedState(gameContainer, orientationOverlay, blocked) {
+  isPortraitBlocked = blocked;
+  gameContainer.classList.toggle("portrait-blocked", blocked);
+  orientationOverlay.style.display = blocked ? "flex" : "none";
+}
+
+/**
+ * Updates UI for the current device + orientation state.
+ * @param {HTMLElement} gameContainer
+ * @param {HTMLElement} orientationOverlay
+ * @returns {void}
+ */
+function updateOrientationGuardUi(gameContainer, orientationOverlay) {
+  if (!isTouchDevice()) {
+    applyPortraitBlockedState(gameContainer, orientationOverlay, false);
+    return;
+  }
+  applyPortraitBlockedState(gameContainer, orientationOverlay, isPortraitOrientation());
+}
+
+/**
+ * Schedules a short delayed orientation refresh (mobile browsers can lag).
+ * @param {HTMLElement} gameContainer
+ * @param {HTMLElement} orientationOverlay
+ * @returns {void}
+ */
+function scheduleOrientationRefresh(gameContainer, orientationOverlay) {
+  setTimeout(() => updateOrientationGuardUi(gameContainer, orientationOverlay), 50);
+}
+
+/**
+ * Enables portrait-orientation guarding for touch devices.
+ * Requires #gameContainer and #orientationOverlay elements.
+ * @returns {void}
+ */
+function setupOrientationGuard() {
+  const gameContainer = document.getElementById("gameContainer");
+  const orientationOverlay = document.getElementById("orientationOverlay");
+  if (!gameContainer || !orientationOverlay) return;
+
+  updateOrientationGuardUi(gameContainer, orientationOverlay);
+  window.addEventListener("resize", () => updateOrientationGuardUi(gameContainer, orientationOverlay), { passive: true });
+  window.addEventListener("orientationchange", () => scheduleOrientationRefresh(gameContainer, orientationOverlay));
+}
+
+/**
+ * Updates keyboard state from a mobile action.
  * @param {"LEFT"|"RIGHT"|"UP"|"SPACE"} action
  * @param {boolean} pressed
+ * @returns {void}
  */
 function setKey(action, pressed) {
   if (!keyboard) return;
@@ -81,93 +88,102 @@ function setKey(action, pressed) {
   if (action === "RIGHT") keyboard.RIGHT = pressed;
   if (action === "UP") keyboard.UP = pressed;
 
-  if (action === "SPACE") {
-    if (pressed && world?.isCharacterSleeping) {
-      world.resetIdleTimer?.();
-      keyboard.SPACE = false;
-      return;
-    }
-    keyboard.SPACE = pressed;
+  if (action !== "SPACE") return;
+  if (pressed && world?.isCharacterSleeping) {
+    world.resetIdleTimer?.();
+    keyboard.SPACE = false;
+    return;
   }
+  keyboard.SPACE = pressed;
+}
+
+/**
+ * Gets the configured action from a control button.
+ * @param {HTMLElement} button
+ * @returns {"LEFT"|"RIGHT"|"UP"|"SPACE"|null}
+ */
+function getButtonAction(button) {
+  const action = button.dataset.action;
+  if (action === "LEFT" || action === "RIGHT" || action === "UP" || action === "SPACE") return action;
+  return null;
+}
+
+/**
+ * Applies a press event to the given control.
+ * @param {HTMLElement} button
+ * @returns {void}
+ */
+function handleControlPress(button) {
+  if (isPortraitBlocked || isPaused) return;
+  const action = getButtonAction(button);
+  if (!action) return;
+  setKey(action, true);
+}
+
+/**
+ * Applies a release event to the given control.
+ * @param {HTMLElement} button
+ * @returns {void}
+ */
+function handleControlRelease(button) {
+  const action = getButtonAction(button);
+  if (!action) return;
+  setKey(action, false);
+}
+
+/**
+ * Binds pointer events to a single mobile control button.
+ * @param {HTMLElement} button
+ * @returns {void}
+ */
+
+/**
+ * Adds a pointer listener with options.
+ * @param {HTMLElement} button
+ * @param {string} type
+ * @param {(event: PointerEvent) => void} handler
+ * @param {AddEventListenerOptions|boolean} options
+ * @returns {void}
+ */
+function addControlListener(button, type, handler, options) {
+  button.addEventListener(type, handler, options);
+}
+
+/**
+ * Binds pointer events to a single mobile control button.
+ * @param {HTMLElement} button
+ * @returns {void}
+ */
+function bindMobileControlButton(button) {
+  addControlListener(button, "pointerdown", (event) => {
+    event.preventDefault();
+    button.setPointerCapture?.(event.pointerId);
+    handleControlPress(button);
+  }, { passive: false });
+
+  addControlListener(button, "pointerup", (event) => { event.preventDefault(); handleControlRelease(button); }, { passive: false });
+  addControlListener(button, "pointercancel", (event) => { event.preventDefault(); handleControlRelease(button); }, { passive: false });
+  addControlListener(button, "pointerleave", () => handleControlRelease(button), { passive: true });
 }
 
 /**
  * Binds mobile control buttons to keyboard state.
- *
- * Expects buttons with:
- *  - class ".mc-btn"
- *  - data-action attribute
- *
- * Safe to call on desktop (no-op).
- *
+ * Expects #mobileControls with buttons using .mc-btn and data-action.
+ * @returns {void}
  */
 function setupMobileControls() {
-  /** @type {HTMLElement|null} */
-  const root = document.getElementById("mobileControls");
-  if (!root) return;
+  const mobileControlsRoot = document.getElementById("mobileControls");
+  if (!mobileControlsRoot) return;
 
-  /** @type {NodeListOf<HTMLElement>} */
-  const buttons = root.querySelectorAll(".mc-btn");
-  if (!buttons.length) return;
+  const controlButtons = mobileControlsRoot.querySelectorAll(".mc-btn");
+  if (!controlButtons.length) return;
 
-  /**
-   * @param {HTMLElement} btn
-   */
-  const press = (btn) => {
-    if (isPortraitBlocked || isPaused) return;
-    const action = /** @type {"LEFT"|"RIGHT"|"UP"|"SPACE"} */ (btn.dataset.action);
-    setKey(action, true);
-  };
-
-  /**
-   * @param {HTMLElement} btn
-   */
-  const release = (btn) => {
-    const action = /** @type {"LEFT"|"RIGHT"|"UP"|"SPACE"} */ (btn.dataset.action);
-    setKey(action, false);
-  };
-
-  buttons.forEach((btn) => {
-    btn.addEventListener(
-      "pointerdown",
-      (e) => {
-        e.preventDefault();
-        btn.setPointerCapture?.(e.pointerId);
-        press(btn);
-      },
-      { passive: false }
-    );
-
-    btn.addEventListener(
-      "pointerup",
-      (e) => {
-        e.preventDefault();
-        release(btn);
-      },
-      { passive: false }
-    );
-
-    btn.addEventListener(
-      "pointercancel",
-      (e) => {
-        e.preventDefault();
-        release(btn);
-      },
-      { passive: false }
-    );
-
-    btn.addEventListener(
-      "pointerleave",
-      () => release(btn),
-      { passive: true }
-    );
-  });
+  controlButtons.forEach((button) => bindMobileControlButton(button));
 }
 
 /**
- * Initializes mobile-related systems.
- * Should be called once during app initialization.
- *
+ * Initializes mobile-related systems (orientation guard + controls).
+ * @returns {void}
  */
 function bindMobile() {
   setupOrientationGuard();

@@ -1,9 +1,12 @@
 /**
- * Handles all world-related audio and idle/sleep sound behavior.
+ * Manages all world-related audio including effects,
+ * idle detection and endgame sounds.
  */
 class WorldAudio {
+
     /**
-     * @param {World} world
+     * Creates a new audio manager.
+     * @param {World} world Reference to the active world instance.
      */
     constructor(world) {
         this.world = world;
@@ -16,20 +19,23 @@ class WorldAudio {
     }
 
     /**
-     * Plays an audio clip (respects the global `isMuted` flag if present).
-     * @param {HTMLAudioElement} audio
-     * @param {{restart?: boolean}=} options
+     * Plays an audio element.
+     * @param {HTMLAudioElement} audio Audio instance to play.
+     * @param {{restart?: boolean}} [options] Playback options.
+     * @param {boolean} [options.restart=true] Restart audio from beginning.
+     * @returns {void}
      */
     playSound(audio, { restart = true } = {}) {
         if (typeof isMuted !== 'undefined' && isMuted) return;
         if (!audio) return;
 
         if (restart) audio.currentTime = 0;
-        audio.play().catch(() => { });
+        audio.play().catch(() => {});
     }
 
     /**
-     * Checks for idle/sleep state and starts/stops snoring accordingly.
+     * Evaluates idle state and handles snoring logic.
+     * @returns {void}
      */
     checkIdleState() {
         if (this.shouldSkipIdleCheck()) return;
@@ -43,12 +49,13 @@ class WorldAudio {
     }
 
     /**
-     * @returns {boolean}
+     * Determines if idle check should be skipped.
+     * @returns {boolean} True if paused or character is dead.
      */
     shouldSkipIdleCheck() {
-        const w = this.world;
+        const world = this.world;
 
-        if (w.isPaused || w.character.isDead()) {
+        if (world.isPaused || world.character.isDead()) {
             this.stopSnoring();
             return true;
         }
@@ -56,80 +63,87 @@ class WorldAudio {
     }
 
     /**
+     * Checks whether the character is currently moving.
      * @returns {boolean}
      */
     isCharacterMoving() {
-        const k = this.world.keyboard;
-        return !!(k.LEFT || k.RIGHT || k.UP || k.SPACE);
+        const keyboard = this.world.keyboard;
+        return !!(keyboard.LEFT || keyboard.RIGHT || keyboard.UP || keyboard.SPACE);
     }
 
     /**
-     * Starts the idle countdown which, after a delay, triggers snoring.
+     * Starts idle timeout that triggers snoring.
+     * @returns {void}
      */
     startIdleCountdownIfNeeded() {
-        const w = this.world;
-        if (w.idleTimeout || w.isSnoring) return;
+        const world = this.world;
 
-        w.idleTimeout = setTimeout(() => {
+        if (world.idleTimeout || world.isSnoring) return;
+
+        world.idleTimeout = setTimeout(() => {
             if (this.shouldSkipIdleCheck()) return;
             this.startSnoring();
         }, 3000);
     }
 
     /**
-     * Resets idle timer and stops snoring if the player interacts.
+     * Clears idle timeout and stops snoring.
+     * @returns {void}
      */
     resetIdleTimer() {
-        const w = this.world;
+        const world = this.world;
 
-        if (w.idleTimeout) {
-            clearTimeout(w.idleTimeout);
-            w.idleTimeout = null;
+        if (world.idleTimeout) {
+            clearTimeout(world.idleTimeout);
+            world.idleTimeout = null;
         }
 
-        w.isCharacterSleeping = false;
+        world.isCharacterSleeping = false;
         this.stopSnoring();
     }
 
     /**
-     * Starts the snoring loop and marks the character as sleeping.
+     * Starts looping snoring sound and marks sleeping state.
+     * @returns {void}
      */
     startSnoring() {
-        const w = this.world;
+        const world = this.world;
 
-        if (w.isSnoring) return;
+        if (world.isSnoring) return;
 
-        w.isCharacterSleeping = true;
+        world.isCharacterSleeping = true;
 
         this.snoringSound.loop = true;
         this.snoringSound.volume = 0.4;
         this.snoringSound.muted = typeof isMuted !== 'undefined' ? isMuted : false;
         this.snoringSound.currentTime = 0;
-        this.snoringSound.play().catch(() => { });
+        this.snoringSound.play().catch(() => {});
 
-        w.isSnoring = true;
+        world.isSnoring = true;
     }
 
     /**
-     * Stops snoring and clears idle state flags/timers.
+     * Stops snoring and resets idle state.
+     * @returns {void}
      */
     stopSnoring() {
-        const w = this.world;
+        const world = this.world;
 
         this.snoringSound.pause();
         this.snoringSound.currentTime = 0;
 
-        w.isSnoring = false;
-        w.isCharacterSleeping = false;
+        world.isSnoring = false;
+        world.isCharacterSleeping = false;
 
-        if (w.idleTimeout) {
-            clearTimeout(w.idleTimeout);
-            w.idleTimeout = null;
+        if (world.idleTimeout) {
+            clearTimeout(world.idleTimeout);
+            world.idleTimeout = null;
         }
     }
 
     /**
-     * Triggers the game over sequence once.
+     * Triggers game-over sequence.
+     * @returns {void}
      */
     gameOver() {
         this.finishGame({
@@ -139,7 +153,8 @@ class WorldAudio {
     }
 
     /**
-     * Triggers the win sequence once.
+     * Triggers win sequence.
+     * @returns {void}
      */
     win() {
         this.finishGame({
@@ -149,19 +164,22 @@ class WorldAudio {
     }
 
     /**
-     * Finishes the game: stops loops, background music and plays a sound + shows overlay.
+     * Finalizes the game state and shows result overlay.
      * @param {{overlayId: string, sound: HTMLAudioElement}} params
+     * @param {string} params.overlayId DOM id of overlay element.
+     * @param {HTMLAudioElement} params.sound Endgame sound to play.
+     * @returns {void}
      */
     finishGame({ overlayId, sound }) {
-        const w = this.world;
+        const world = this.world;
 
-        if (w.isGameOver) return;
+        if (world.isGameOver) return;
 
-        w.isGameOver = true;
-        w.isPaused = true;
-        w.endbossAttackStarted = false;
+        world.isGameOver = true;
+        world.isPaused = true;
+        world.endbossAttackStarted = false;
 
-        w.stopLoops();
+        world.stopLoops();
         this.stopSnoring();
 
         if (typeof stopBackgroundMusic === 'function') {

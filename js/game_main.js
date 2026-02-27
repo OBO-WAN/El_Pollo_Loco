@@ -1,8 +1,49 @@
-/* global Keyboard, World, canvas, world, isMuted, isPaused, isPortraitBlocked
-          setupBackgroundMusic, setupPauseControls, bindKeyboard, bindMobile
-          bindCanvasResizeEvents, resizeCanvasToDisplaySize, syncWorldAudioMute
-          startBackgroundMusic, stopBackgroundMusic, toggleMute, updateMuteBtn
-          setPaused, lastFocusBeforeOverlay */
+/**
+ * Minimal World contract used across modules.
+ *
+ * This is intentionally partial — it only defines
+ * properties accessed by other modules.
+ *
+ * @typedef {Object} World
+ * @property {CanvasRenderingContext2D} ctx
+ * @property {boolean=} isGameOver
+ * @property {boolean=} isCharacterSleeping
+ * @property {Function=} pause
+ * @property {Function=} resume
+ * @property {Function=} stopSnoring
+ * @property {Function=} setHudPositions
+ * @property {number=} collisionInterval
+ * @property {HTMLAudioElement=} coinSound
+ * @property {HTMLAudioElement=} bottleSound
+ * @property {HTMLAudioElement=} throwBottleSound
+ * @property {HTMLAudioElement=} winSound
+ * @property {HTMLAudioElement=} gameOverSound
+ */
+
+/**
+ * Application settings stored in memory.
+ *
+ * @typedef {Object} GameSettings
+ * @property {boolean} musicMuted
+ */
+
+let world = null;
+let canvas = null;
+let loadingOverlay = null;
+let gameOverOverlay = null;
+let winOverlay = null;
+let startScreen = null;
+let orientationOverlay = null;
+let pauseOverlay = null;
+let currentView = null;
+let backgroundMusic = null;
+let isMuted = false;
+let isPaused = false;
+let SETTINGS = {
+  musicMuted: false,
+};
+
+window.gameUI = window.gameUI || {};
 
 /**
  * Cached DOM references used by the application.
@@ -93,7 +134,7 @@ function initGame() {
   bindCanvasResizeEvents?.();
   resizeCanvasToDisplaySize?.();
 
-  updateMobileControlsVisibility();
+  window.gameUI?.updateMobileControlsVisibility?.();
 }
 
 /**
@@ -110,10 +151,6 @@ function canStartGame() {
  * Hides the start screen overlay.
  * @returns {void}
  */
-function hideStartScreen() {
-  if (dom.startScreen) dom.startScreen.style.display = "none";
-}
-
 /**
  * Creates the World instance and applies initial view/audio state.
  * @returns {void}
@@ -130,7 +167,7 @@ function createWorld() {
  */
 function markGameStarted() {
   gameStarted = true;
-  updateMobileControlsVisibility();
+  window.gameUI.updateMobileControlsVisibility();
 }
 
 /**
@@ -140,7 +177,7 @@ function markGameStarted() {
 function startGame() {
   if (!canStartGame()) return;
 
-  hideStartScreen();
+  window.gameUI?.hideStartScreen?.();
 
   if (!isMuted) startBackgroundMusic?.();
 
@@ -188,7 +225,7 @@ function goToMainMenu() {
   gameStarted = false;
 
   if (dom.startScreen) dom.startScreen.style.display = "flex";
-  updateMobileControlsVisibility();
+  window.gameUI.updateMobileControlsVisibility();
 }
 
 /**
@@ -214,17 +251,22 @@ function onStartKeydown(e) {
  * @returns {void}
  */
 function bindUiControls() {
-  dom.fullscreenBtn?.addEventListener("click", toggleFullscreen);
+  if (window.gameUI?.toggleFullscreen) {
+    dom.fullscreenBtn?.addEventListener("click", window.gameUI.toggleFullscreen);
+  }
+
   document.addEventListener("fullscreenchange", () => {
-    updateFullscreenBtn();
+    window.gameUI?.updateFullscreenBtn?.();
     resizeCanvasToDisplaySize?.();
   });
-  updateFullscreenBtn();
+
+  window.gameUI?.updateFullscreenBtn?.();
 
   dom.muteBtn?.addEventListener("click", () => {
     toggleMute?.();
-    updateMobileControlsVisibility();
+    window.gameUI?.updateMobileControlsVisibility?.();
   });
+
   updateMuteBtn?.();
 }
 
@@ -258,8 +300,8 @@ function bindTopRestartButton() {
  * @returns {void}
  */
 function bindOverlayRestartButtons() {
-  onClick("gameOverRestartBtn", restartGame);
-  onClick("winRestartBtn", restartGame);
+  window.gameUI?.onClick?.("gameOverRestartBtn", restartGame);
+  window.gameUI?.onClick?.("winRestartBtn", restartGame);
 }
 
 /**
@@ -267,8 +309,8 @@ function bindOverlayRestartButtons() {
  * @returns {void}
  */
 function bindOverlayMenuButtons() {
-  onClick("gameOverMenuBtn", goToMainMenu);
-  onClick("winMenuBtn", goToMainMenu);
+  window.gameUI?.onClick?.("gameOverMenuBtn", goToMainMenu);
+  window.gameUI?.onClick?.("winMenuBtn", goToMainMenu);
 }
 
 /**
@@ -277,10 +319,6 @@ function bindOverlayMenuButtons() {
  * @param {Function} handler
  * @returns {void}
  */
-function onClick(id, handler) {
-  document.getElementById(id)?.addEventListener("click", handler);
-}
-
 /**
  * Binds legal notice button.
  * @returns {void}
@@ -297,7 +335,7 @@ function bindLegal() {
  */
 function bindStartScreenExtras() {
   bindMobileImpressum();
-  setupHowToOverlay();
+  window.gameUI?.setupHowToOverlay?.();
 }
 
 /**
@@ -309,126 +347,3 @@ function bindMobileImpressum() {
     window.location.href = "impressum.html";
   });
 }
-
-/**
- * Toggles fullscreen for #fullscreen container.
- * @returns {void}
- */
-function toggleFullscreen() {
-  const container = dom.fullscreenContainer || document.getElementById("fullscreen");
-
-  if (!document.fullscreenElement) {
-    container?.requestFullscreen?.().catch((err) => console.warn("Fullscreen failed:", err));
-  } else {
-    document.exitFullscreen();
-  }
-}
-
-/**
- * Updates fullscreen button UI text and title.
- * @returns {void}
- */
-function updateFullscreenBtn() {
-  const btn = dom.fullscreenBtn || document.getElementById("fullscreenBtn");
-  if (!btn) return;
-
-  const isFs = !!document.fullscreenElement;
-  btn.textContent = isFs ? "⤫" : "⤢";
-  btn.title = isFs ? "Exit fullscreen" : "Enter fullscreen";
-}
-
-/**
- * Wires up the How-To overlay open/close logic and focus management.
- * @returns {void}
- */
-function setupHowToOverlay() {
-  const overlay = document.getElementById("howToOverlay");
-  if (!overlay) return;
-
-  overlay.classList.remove("show");
-  overlay.inert = true;
-  overlay.setAttribute("aria-hidden", "true");
-
-  document.getElementById("howToBtn")?.addEventListener("click", () => {
-    showHowToOverlay(overlay);
-  });
-
-  overlay.addEventListener("click", (e) => {
-    if (e.target === overlay || e.target.closest("#closeHowToBtn")) {
-      hideHowToOverlay(overlay);
-    }
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.classList.contains("show")) {
-      hideHowToOverlay(overlay);
-    }
-  });
-}
-
-/**
- * Opens How-To overlay and moves focus inside.
- * @param {HTMLElement} overlayEl
- * @returns {void}
- */
-function showHowToOverlay(overlayEl) {
-  if (typeof lastFocusBeforeOverlay !== "undefined") {
-    lastFocusBeforeOverlay = document.activeElement;
-  }
-
-  overlayEl.classList.add("show");
-  overlayEl.inert = false;
-  overlayEl.setAttribute("aria-hidden", "false");
-
-  overlayEl
-    .querySelector("button, [href], input, select, textarea, [tabindex]:not([tabindex='-1'])")
-    ?.focus();
-}
-
-/**
- * Closes How-To overlay and restores previous focus.
- * @param {HTMLElement} overlayEl
- * @returns {void}
- */
-function hideHowToOverlay(overlayEl) {
-  if (typeof lastFocusBeforeOverlay !== "undefined" && lastFocusBeforeOverlay?.focus) {
-    lastFocusBeforeOverlay.focus();
-  }
-
-  overlayEl.classList.remove("show");
-  overlayEl.inert = true;
-  overlayEl.setAttribute("aria-hidden", "true");
-}
-
-/**
- * Checks whether environment is touch-like (coarse pointer).
- * @returns {boolean}
- */
-function isMobileLike() {
-  return window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
-}
-
-/**
- * Shows/hides mobile controls depending on session + device state.
- * @returns {void}
- */
-function updateMobileControlsVisibility() {
-  const controls = document.getElementById("mobileControls");
-  if (!controls) return;
-
-  const isTouch = isMobileLike();
-  const isLandscape = window.innerWidth > window.innerHeight;
-  const isTabletOrSmaller = window.innerWidth <= 1366;
-
-  controls.style.display =
-    gameStarted &&
-    isTouch &&
-    isLandscape &&
-    isTabletOrSmaller &&
-    !(typeof isPortraitBlocked !== "undefined" && isPortraitBlocked)
-      ? "block"
-      : "none";
-}
-
-window.addEventListener("resize", () => updateMobileControlsVisibility(), { passive: true });
-window.addEventListener("orientationchange", () => setTimeout(updateMobileControlsVisibility, 50));

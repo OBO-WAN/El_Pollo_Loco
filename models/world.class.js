@@ -1,6 +1,6 @@
 /**
- * Main game world controller.
- * Owns game state, ticking, and delegates rendering, audio, and collision handling.
+ * Main world controller (state, ticking, and orchestration).
+ * Delegates rendering, audio, and collision handling.
  */
 class World {
     character = new Character();
@@ -66,7 +66,7 @@ class World {
     }
 
     /**
-     * Initializes the level and stores a reference to the endboss (if present).
+     * Initializes the level and caches the endboss reference (if present).
      */
     initLevelAndBoss() {
         this.level = initLevel1();
@@ -91,7 +91,7 @@ class World {
     }
 
     /**
-     * Starts render loop and logic tick loop.
+     * Starts render and tick loops.
      */
     start() {
         this.draw();
@@ -99,7 +99,7 @@ class World {
     }
 
     /**
-     * Links entities back to this world instance.
+     * Links entities to this world.
      */
     setWorld() {
         this.character.world = this;
@@ -107,7 +107,7 @@ class World {
     }
 
     /**
-     * Starts the collision/logic tick interval.
+     * Starts the logic tick interval.
      */
     run() {
         this.collisionInterval = setInterval(() => {
@@ -117,7 +117,7 @@ class World {
     }
 
     /**
-     * Performs one logical tick.
+     * Runs one logic tick.
      */
     tick() {
         this.collisions.tickCollisionsAndCollectibles();
@@ -126,14 +126,14 @@ class World {
     }
 
     /**
-     * Handles bottle throwing input and spawning throwable objects.
+     * Handles throw input/spawning.
      */
     tickThrowing() {
         this.checkThrowObjects();
     }
 
     /**
-     * Checks win/lose state.
+     * Checks win/lose conditions.
      */
     tickWinLose() {
         if (this.character.isDead()) {
@@ -172,7 +172,7 @@ class World {
     }
 
     /**
-     * Prevents throwing while sleeping (and clears the SPACE key once).
+     * Blocks throwing while sleeping and clears SPACE once.
      * @returns {boolean}
      */
     shouldBlockThrowing() {
@@ -201,28 +201,28 @@ class World {
     }
 
     /**
-     * Creates a ThrowableObject in front of the character, respecting facing direction.
+     * Creates a ThrowableObject in front of the character, respecting facing throwDirection.
      * @returns {ThrowableObject}
      */
     createThrowableBottle() {
-        const direction = this.character.otherDirection ? -1 : 1;
+        const throwDirection = this.character.otherDirection ? -1 : 1;
         return new ThrowableObject(
-            this.character.x + (direction === 1 ? 100 : -20),
+            this.character.x + (throwDirection === 1 ? 100 : -20),
             this.character.y + 100,
-            direction
+            throwDirection
         );
     }
 
     /**
-     * Updates the bottle HUD based on the current bottle count.
+     * Updates bottle HUD percentage.
      */
     updateBottleHud() {
-        const bottlePercent = Math.min(100, this.bottles * 20);
-        this.statusBarBottles.setPercentage(bottlePercent);
+        const bottlePercentage = Math.min(100, this.bottles * 20);
+        this.statusBarBottles.setPercentage(bottlePercentage);
     }
 
     /**
-     * Main render loop (requestAnimationFrame).
+     * Main render loop (rAF).
      */
     draw() {
         if (this.isPaused) {
@@ -250,7 +250,7 @@ class World {
     }
 
     /**
-     * Updates boss-related phase triggers.
+     * Updates boss phase triggers.
      */
     updateBossPhase() {
         this.checkEndbossBarTrigger();
@@ -270,7 +270,7 @@ class World {
     }
 
     /**
-     * Updates character movement and boss wall resolution.
+     * Updates character and boss wall constraints.
      */
     updateCharacter() {
         this.handleCharacterMovement();
@@ -279,7 +279,7 @@ class World {
     }
 
     /**
-     * Updates camera and enemy movement.
+     * Updates camera and enemies.
      */
     updateWorld() {
         this.updateCamera();
@@ -287,7 +287,7 @@ class World {
     }
 
     /**
-     * Updates ambient state (idle/sleep).
+     * Updates ambient idle/sleep state.
      */
     updateAmbientState() {
         this.audio.checkIdleState();
@@ -314,7 +314,7 @@ class World {
     }
 
     /**
-     * Moves enemies; endboss can optionally follow the character when active.
+     * Moves enemies; endboss may follow the character when active.
      */
     moveEnemies() {
         this.level.enemies.forEach(enemy => {
@@ -327,13 +327,13 @@ class World {
     }
 
     /**
-     * Triggers endboss bar visibility once the player is close enough.
+     * Shows endboss bar when the player is close enough.
      */
     checkEndbossBarTrigger() {
         if (!this.endboss || this.endbossBarVisible) return;
 
-        const triggerDistance = 600;
-        if (this.character.x >= this.endboss.x - triggerDistance) {
+        const endbossTriggerDistance = 600;
+        if (this.character.x >= this.endboss.x - endbossTriggerDistance) {
             this.endbossBarVisible = true;
         }
     }
@@ -350,7 +350,7 @@ class World {
     }
 
     /**
-     * Pauses rendering/ticking.
+     * Pauses ticking/rendering.
      */
     pause() {
         this.isPaused = true;
@@ -361,7 +361,7 @@ class World {
     }
 
     /**
-     * Resumes rendering/ticking.
+     * Resumes ticking/rendering.
      */
     resume() {
         if (!this.isPaused) return;
@@ -373,21 +373,21 @@ class World {
     }
 
     /**
-     * Places HUD elements relative to the viewport.
+     * Positions HUD relative to the viewport.
      */
     setHudPositions() {
-        const PAD = 20;
-        const viewportW = this.view?.logicalViewportW ?? 720;
-        const coinY = this.statusBarCoins?.y ?? 60;
+        const padding = 20;
+        const viewportWidth = this.view?.logicalViewportW ?? 720;
+        const coinBarY = this.statusBarCoins?.y ?? 60;
 
         if (this.statusBarEndboss) {
-            this.statusBarEndboss.x = viewportW - PAD - this.statusBarEndboss.width;
-            this.statusBarEndboss.y = coinY;
+            this.statusBarEndboss.x = viewportWidth - padding - this.statusBarEndboss.width;
+            this.statusBarEndboss.y = coinBarY;
         }
     }
 
     /**
-     * Initializes default status bars (health/coins/bottles).
+     * Initializes status bars (health/coins/bottles).
      */
     initStatusBars() {
         // Health
@@ -410,7 +410,7 @@ class World {
     }
 
     /**
-     * Prevents the character from leaving the world bounds.
+     * Clamps character to world bounds.
      */
     clampCharacterToWorld() {
         if (this.character.x < 0) this.character.x = 0;

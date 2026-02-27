@@ -1,41 +1,46 @@
 /**
- * Handles all canvas drawing responsibilities for a {@link World} instance.
- * Keeps rendering concerns out of the main game/logic loop.
+ * Renders a {@link World} onto its canvas.
+ * Keeps drawing separate from game logic.
  */
 class WorldRender {
     /**
-     * @param {World} world
+     * @param {World} world Active world instance.
      */
     constructor(world) {
+        /** @type {World} */
         this.world = world;
     }
 
     /**
-     * Clears the full canvas (independent of camera transform).
+     * Clears the full canvas in screen space (ignores camera transform).
+     * @returns {void}
      */
     clearCanvas() {
-        const w = this.world;
-        w.ctx.save();
-        w.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        w.ctx.clearRect(0, 0, w.canvas.width, w.canvas.height);
-        w.ctx.restore();
+        const world = this.world;
+
+        world.ctx.save();
+        world.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        world.ctx.clearRect(0, 0, world.canvas.width, world.canvas.height);
+        world.ctx.restore();
     }
 
     /**
-     * Renders the current world frame (background, entities, UI, overlay).
+     * Renders the current frame (world, UI and overlays).
+     * @returns {void}
      */
     render() {
-        const aboveUi = this.shouldCharacterDrawAboveUi();
-        this.drawWorldLayer(aboveUi);
+        const drawCharacterAboveUi = this.shouldCharacterDrawAboveUi();
+        this.drawWorldLayer(drawCharacterAboveUi);
         this.drawUiLayer();
-        this.drawOverlayLayer(aboveUi);
+        this.drawOverlayLayer(drawCharacterAboveUi);
     }
 
     /**
-     * Draws the non-UI world content, applying the camera transform.
-     * @param {boolean} aboveUi
+     * Draws non-UI world content with camera transform applied.
+     * @param {boolean} drawCharacterAboveUi Whether character should be drawn above UI.
+     * @returns {void}
      */
-    drawWorldLayer(aboveUi) {
+    drawWorldLayer(drawCharacterAboveUi) {
         this.drawBackground();
 
         this.withCamera(() => {
@@ -44,7 +49,8 @@ class WorldRender {
             this.drawBottles();
             this.drawCoins();
             this.drawBottlesOnGround();
-            if (!aboveUi) {
+
+            if (!drawCharacterAboveUi) {
                 this.drawCharacter();
             }
         });
@@ -52,72 +58,78 @@ class WorldRender {
 
     /**
      * Draws HUD/UI elements in screen space (no camera translation).
+     * @returns {void}
      */
     drawUiLayer() {
-        const w = this.world;
-        const v = w.view;
-        if (!v) return;
+        const world = this.world;
+        const view = world.view;
+        if (!view) return;
 
-        w.ctx.save();
-        w.ctx.setTransform(v.dpr * v.scale, 0, 0, v.dpr * v.scale, 0, 0);
+        world.ctx.save();
+        world.ctx.setTransform(view.dpr * view.scale, 0, 0, view.dpr * view.scale, 0, 0);
         this.drawStatusBar();
-        w.ctx.restore();
+        world.ctx.restore();
     }
 
     /**
-     * Draws any overlays that should appear above the UI (e.g. character while in air).
-     * @param {boolean} aboveUi
+     * Draws overlays that must appear above the UI (e.g. character while in air).
+     * @param {boolean} drawCharacterAboveUi Whether character should be drawn above UI.
+     * @returns {void}
      */
-    drawOverlayLayer(aboveUi) {
-        if (!aboveUi) return;
+    drawOverlayLayer(drawCharacterAboveUi) {
+        if (!drawCharacterAboveUi) return;
         this.withCamera(() => this.drawCharacter());
     }
 
     /**
-     * Determines if the character should render above the UI layer.
+     * Checks if the character should render above the UI layer.
      * @returns {boolean}
      */
     shouldCharacterDrawAboveUi() {
-        const w = this.world;
-        return w.character?.isInAir?.() === true;
+        const world = this.world;
+        return world.character?.isInAir?.() === true;
     }
 
     /**
-     * Runs a drawing callback with the camera translation applied.
-     * @param {Function} fn
+     * Runs a draw callback with camera translation applied.
+     * @param {Function} callback Drawing function.
+     * @returns {void}
      */
-    withCamera(fn) {
-        const w = this.world;
-        w.ctx.save();
-        w.ctx.translate(Math.floor(w.camera_x), 0);
-        fn();
-        w.ctx.restore();
+    withCamera(callback) {
+        const world = this.world;
+
+        world.ctx.save();
+        world.ctx.translate(Math.floor(world.camera_x), 0);
+        callback();
+        world.ctx.restore();
     }
 
     /**
-     * Draws background objects with optional parallax grouping.
+     * Draws background objects with parallax grouping.
+     * @returns {void}
      */
     drawBackground() {
-        const w = this.world;
-        const groups = new Map();
+        const world = this.world;
+        const groupsByFactor = new Map();
 
-        w.level.backgroundObjects.forEach(obj => {
-            const factor = obj.parallaxFactor ?? 1;
-            if (!groups.has(factor)) groups.set(factor, []);
-            groups.get(factor).push(obj);
+        world.level.backgroundObjects.forEach(backgroundObject => {
+            const parallaxFactor = backgroundObject.parallaxFactor ?? 1;
+            if (!groupsByFactor.has(parallaxFactor)) groupsByFactor.set(parallaxFactor, []);
+            groupsByFactor.get(parallaxFactor).push(backgroundObject);
         });
 
-        for (const [factor, objects] of groups.entries()) {
-            w.ctx.save();
-            const tx = Math.floor(w.camera_x * factor);
-            w.ctx.translate(tx, 0);
+        for (const [parallaxFactor, objects] of groupsByFactor.entries()) {
+            world.ctx.save();
+            const translateX = Math.floor(world.camera_x * parallaxFactor);
+            world.ctx.translate(translateX, 0);
             this.addObjectsToMap(objects);
-            w.ctx.restore();
+            world.ctx.restore();
         }
     }
 
     /**
      * Draws the main character.
+     * @returns {void}
      */
     drawCharacter() {
         this.addToMap(this.world.character);
@@ -125,6 +137,7 @@ class WorldRender {
 
     /**
      * Draws the cloud layer.
+     * @returns {void}
      */
     drawClouds() {
         this.addObjectsToMap(this.world.level.clouds);
@@ -132,6 +145,7 @@ class WorldRender {
 
     /**
      * Draws enemies.
+     * @returns {void}
      */
     drawEnemies() {
         this.addObjectsToMap(this.world.level.enemies);
@@ -139,20 +153,23 @@ class WorldRender {
 
     /**
      * Draws status bars and (optionally) the endboss bar.
+     * @returns {void}
      */
     drawStatusBar() {
-        const w = this.world;
-        this.addToMap(w.statusBarHealth);
-        this.addToMap(w.statusBarCoins);
-        this.addToMap(w.statusBarBottles);
+        const world = this.world;
 
-        if (w.endbossBarVisible && w.endboss && !w.endboss.dead) {
-            this.addToMap(w.statusBarEndboss);
+        this.addToMap(world.statusBarHealth);
+        this.addToMap(world.statusBarCoins);
+        this.addToMap(world.statusBarBottles);
+
+        if (world.endbossBarVisible && world.endboss && !world.endboss.dead) {
+            this.addToMap(world.statusBarEndboss);
         }
     }
 
     /**
      * Draws throwable bottles currently in flight.
+     * @returns {void}
      */
     drawBottles() {
         this.addObjectsToMap(this.world.throwableObjects);
@@ -160,6 +177,7 @@ class WorldRender {
 
     /**
      * Draws coins.
+     * @returns {void}
      */
     drawCoins() {
         this.addObjectsToMap(this.world.level.coins);
@@ -167,6 +185,7 @@ class WorldRender {
 
     /**
      * Draws bottles placed on the ground in the level.
+     * @returns {void}
      */
     drawBottlesOnGround() {
         this.addObjectsToMap(this.world.level.bottles);
@@ -174,43 +193,48 @@ class WorldRender {
 
     /**
      * Draws a list of drawable objects.
-     * @param {Array<any>} objects
+     * @param {Array<any>} objects Objects to draw.
+     * @returns {void}
      */
     addObjectsToMap(objects) {
-        objects.forEach(o => this.addToMap(o));
+        objects.forEach(drawable => this.addToMap(drawable));
     }
 
     /**
-     * Draws a single drawable object, handling horizontal flipping when needed.
-     * @param {any} mo
+     * Draws a single object and its debug frame, handling horizontal flipping.
+     * @param {any} drawable Object to draw.
+     * @returns {void}
      */
-    addToMap(mo) {
-        const w = this.world;
-        if (mo.otherDirection) {
-            this.flipImage(mo);
+    addToMap(drawable) {
+        const world = this.world;
+
+        if (drawable.otherDirection) {
+            this.flipImage(drawable);
         } else {
-            mo.draw(w.ctx);
+            drawable.draw(world.ctx);
         }
-        if (mo.drawFrame) mo.drawFrame(w.ctx);
+
+        if (drawable.drawFrame) drawable.drawFrame(world.ctx);
     }
 
     /**
      * Draws an object flipped horizontally (used when otherDirection is true).
-     * @param {any} mo
+     * @param {any} drawable Object to draw.
+     * @returns {void}
      */
-    flipImage(mo) {
-        const w = this.world;
-        if (!mo.img) return;
+    flipImage(drawable) {
+        const world = this.world;
+        if (!drawable.img) return;
 
-        w.ctx.save();
-        w.ctx.translate(mo.x + mo.width, 0);
-        w.ctx.scale(-1, 1);
+        world.ctx.save();
+        world.ctx.translate(drawable.x + drawable.width, 0);
+        world.ctx.scale(-1, 1);
 
-        const oldX = mo.x;
-        mo.x = 0;
-        mo.draw(w.ctx);
-        mo.x = oldX;
+        const previousX = drawable.x;
+        drawable.x = 0;
+        drawable.draw(world.ctx);
+        drawable.x = previousX;
 
-        w.ctx.restore();
+        world.ctx.restore();
     }
 }
