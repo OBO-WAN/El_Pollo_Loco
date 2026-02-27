@@ -44,13 +44,10 @@ class DrawableObject {
      */
     draw(ctx) {
         if (!this.img) return;
-
         let width = this.width;
-
         if (this.isBackground) {
             width += 1; 
         }
-
         ctx.drawImage(this.img, this.x, this.y, width, this.height);
     }
 

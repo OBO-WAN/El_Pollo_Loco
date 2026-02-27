@@ -343,9 +343,7 @@ class EndbossAttackController {
     */
     handleDashCompletion() {
         const boss = this.boss;
-
         if (boss.dashChainRemaining > 0) return this.queueNextChainedDash();
-
         boss.isDashing = false;
     }
 

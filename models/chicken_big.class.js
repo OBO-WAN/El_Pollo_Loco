@@ -10,7 +10,6 @@
  * @extends movableObject
  */
 class Chicken extends movableObject {
-
     dead = false;
     height = 80;
     width = 80;
@@ -39,7 +38,6 @@ class Chicken extends movableObject {
      * @default 0
      */
     currentImage = 0;
-  
     animationInterval = null;
 
     /**
@@ -52,15 +50,12 @@ class Chicken extends movableObject {
      */
     constructor(x = null) {
         super();
-
         this.loadImage(this.animatedChickens[0]);
         this.loadImages(this.animatedChickens);
         this.loadImage(this.IMAGE_DEAD);
- 
         this.x = (x !== null) ? x : (600 + Math.random() * 1200);
-    
         this.speed = 0.15 + Math.random() * 0.5;
-
+        
         this.animate();
     }
 

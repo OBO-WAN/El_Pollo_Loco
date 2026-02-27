@@ -15,7 +15,6 @@ function preloadImagesWithProgress(imagePaths, onProgress) {
     }
 
     const tracker = createProgressTracker(imagePaths.length, onProgress);
-
     const promises = imagePaths.map((path) =>
       loadImage(path).then(tracker.tick)
     );
@@ -33,7 +32,6 @@ function preloadImagesWithProgress(imagePaths, onProgress) {
  */
 function createProgressTracker(total, onProgress) {
   let loaded = 0;
-
   return {
     tick() {
       loaded++;
