@@ -70,6 +70,7 @@ class Endboss extends movableObject {
  */
     constructor() {
         super();
+        this.attack = new EndbossAttackController(this);
         this.loadImage(this.IMAGES_WALKING[0]);
         this.loadImages(this.IMAGES_WALKING);
         this.loadImages(this.IMAGES_ATTACK);
@@ -96,7 +97,7 @@ class Endboss extends movableObject {
 
             if (this.isAttacking) {
                 this.playAnimation(this.IMAGES_ATTACK);
-                if (this.isDashing) this.performDash();
+                if (this.isDashing) this.attack.performDash();
                 return;
             }
 
@@ -139,6 +140,21 @@ class Endboss extends movableObject {
     }
 
 /**
+ * Starts the repeating attack cycle (delegated to EndbossAttackController).
+ */
+    startAttackCycle() {
+        this.attack.startAttackCycle();
+    }
+
+/**
+ * Delegated: ends the current attack and resets attack-related state.
+ */
+    endAttack() {
+        this.attack.endAttack();
+    }
+
+
+/**
  * Temporarily marks the boss as hurt, playing the hurt animation for a short duration.
  */
     triggerHurtAnimation() {
@@ -153,285 +169,50 @@ class Endboss extends movableObject {
  * Starts the repeating attack cycle with an initial delay.
  * No-ops if an attack cycle is already scheduled or the boss is dead.
  */
-    startAttackCycle() {
-        if (this.dead || this.attackStartTimeout || this.attackInterval) return;
 
-        this.attackStartTimeout = setTimeout(() => {
-            if (this.dead) return;
-            this.triggerAttack();
-            this.scheduleNextAttack();
-            this.attackStartTimeout = null;
-        }, 1500);
-    }
+followCharacter(character, { active = true } = {}) {
+            if (!this.shouldFollowCharacter(active, character)) return;
 
-/**
- * Schedules the next attack based on the current health-dependent delay.
- */
-    scheduleNextAttack() {
-        if (this.dead) return;
+            const dx = this.getDirectionDeltaTo(character);
+            this.updateFacingFromDelta(dx);
 
-        const delay = this.getNextAttackDelay();
-        this.attackInterval = setTimeout(() => {
-            if (this.dead) return;
-            this.triggerAttack();
-            this.scheduleNextAttack();
-        }, delay);
-    }
+            if (this.isAttacking || this.isHurt) return;
+            if (this.isWithinFollowStopDistance(dx)) return;
 
-/**
- * Computes the delay (ms) until the next attack based on remaining energy.
- * @returns {number} Delay in milliseconds.
- */
-    getNextAttackDelay() {
-        if (this.energy <= 30) return 900 + Math.random() * 350;
-        if (this.energy <= 50) return 1350 + Math.random() * 550;
-        return 1900 + Math.random() * 750;
-    }
-
-/**
- * Chooses and starts an attack (dash or jump-slam) based on distance to the character and RNG.
- */
-    triggerAttack() {
-        if (this.dead || this.isAttacking) return;
-
-        const w = this.getWorld();
-        const c = w?.character;
-
-        let dist = 999999;
-        if (c) dist = Math.abs((c.x + c.width / 2) - (this.x + this.width / 2));
-
-        const near = dist < 260;
-        const far = dist > 520;
-
-        let slamChance = this.energy <= 30 ? 0.55 : this.energy <= 50 ? 0.4 : 0.25;
-        if (near) slamChance += 0.15;
-        if (far) slamChance -= 0.1;
-        slamChance = Math.max(0.1, Math.min(0.8, slamChance));
-
-        if (Math.random() < slamChance) {
-            this.startJumpSlamAttack();
-        } else {
-            this.startDashAttack();
+            this.moveTowardsDelta(dx);
         }
-    }
 
-/**
- * Starts a dash-style attack with a windup followed by dash movement.
- */
-    startDashAttack() {
-        if (this.dead) return;
-
-        this.isAttacking = true;
-        this.isJumpSlamming = false;
-
-        this.isDashing = false;
-        this.dashProgress = 0;
-
-        this.clearTimeoutSafe('windupTimeout');
-        this.clearTimeoutSafe('attackTimeout');
-
-        const windup = this.getWindupMs();
-
-        this.windupTimeout = setTimeout(() => {
-            if (this.dead) return;
-            this.startDash();
-        }, windup);
-
-        const totalAttackMs = windup + this.getDashTimeMs() + 260;
-        this.attackTimeout = setTimeout(() => this.endAttack(), totalAttackMs);
-    }
-
-/**
- * Starts a jump-slam attack: lifts up, slams down, applies area damage, then ends the attack.
- */
-    startJumpSlamAttack() {
-        if (this.dead) return;
-
-        this.isAttacking = true;
-        this.isDashing = false;
-        this.dashProgress = 0;
-
-        this.isJumpSlamming = true;
-        this.clearTimeoutSafe('windupTimeout');
-        this.clearTimeoutSafe('attackTimeout');
-        this.clearTimeoutSafe('slamTimeout');
-
-        const windup = Math.max(160, this.getWindupMs() - 140);
-
-        this.windupTimeout = setTimeout(() => {
-            if (this.dead) return;
-
-            this.y = this.baseY - this.slamLift;
-
-            this.slamTimeout = setTimeout(() => {
-                if (this.dead) return;
-
-                this.y = this.baseY;
-                this.applySlamDamage();
-                this.endAttack();
-            }, this.energy <= 30 ? 310 : 400);
-        }, windup);
-
-        this.attackTimeout = setTimeout(() => this.endAttack(), windup + 900);
-    }
-
-/**
- * Applies slam damage to the character if within slam radius and not invincible.
- * Also updates the world's health status bar if available.
- */
-    applySlamDamage() {
-        const w = this.getWorld();
-        const c = w?.character;
-        if (!c) return;
-
-        const bossCenter = this.x + this.width / 2;
-        const charCenter = c.x + c.width / 2;
-        const dist = Math.abs(charCenter - bossCenter);
-
-        if (dist > this.slamRadius) return;
-
-        if (typeof c.isInvincible === 'function' && c.isInvincible()) return;
-
-        if (typeof c.hit === 'function') c.hit();
-        if (typeof c.grantInvincibility === 'function') c.grantInvincibility(1200);
-
-        if (w?.statusBarHealth?.setPercentage) {
-            w.statusBarHealth.setPercentage(c.energy);
+    shouldFollowCharacter(active, character) {
+            if (!active) return false;
+            if (this.dead) return false;
+            if (typeof isPaused !== 'undefined' && isPaused) return false;
+            return !!character;
         }
-    }
 
-/**
- * Moves the boss towards the given character while not attacking or hurt.
- * Boss will stop when within a small distance threshold.
- * @param {object} character The player character to follow (expects x/width properties).
- * @param {object} [options] Behavior options.
- * @param {boolean} [options.active=true] Whether following is active this tick.
- */
-    followCharacter(character, { active = true } = {}) {
-        if (!active) return;
-        if (this.dead) return;
-        if (typeof isPaused !== 'undefined' && isPaused) return;
-        if (!character) return;
+        getDirectionDeltaTo(character) {
+            const bossCenter = this.x + this.width / 2;
+            const charCenter = character.x + character.width / 2;
+            return (charCenter - bossCenter) * this.DIR;
+        }
 
-        const bossCenter = this.x + this.width / 2;
-        const charCenter = character.x + character.width / 2;
-
-        const dx = (charCenter - bossCenter) * this.DIR;
-
-        if (this.isAttacking || this.isHurt) {
+        updateFacingFromDelta(dx) {
             this.otherDirection = dx < 0;
-            return;
         }
 
-        this.otherDirection = dx < 0;
+        isWithinFollowStopDistance(dx) {
+            const stopDistance = 90;
+            return Math.abs(dx) <= stopDistance;
+        }
 
-        const stopDistance = 90;
-        if (Math.abs(dx) <= stopDistance) return;
-
-        this.x += Math.sign(dx) * this.followSpeed * this.DIR;
-    }
+        moveTowardsDelta(dx) {
+            this.x += Math.sign(dx) * this.followSpeed * this.DIR;
+        }
 
 /**
  * Estimates the time (ms) the dash movement will take based on dash distance and speed.
  * @returns {number} Dash time in milliseconds.
  */
-    getDashTimeMs() {
-        const steps = Math.ceil(this.dashDistance / this.dashSpeed);
-        return steps * 140;
-    }
 
-/**
- * Ends the current attack and resets attack-related state and timers.
- */
-    endAttack() {
-        this.isAttacking = false;
-        this.isDashing = false;
-        this.isJumpSlamming = false;
-        this.dashProgress = 0;
-        this.dashChainRemaining = 0;
-
-        this.y = this.baseY;
-
-        this.clearTimeoutSafe('windupTimeout');
-        this.clearTimeoutSafe('slamTimeout');
-
-        this.attackTimeout = null;
-    }
-
-/**
- * Returns the pre-attack windup duration (ms) based on remaining energy.
- * @returns {number} Windup duration in milliseconds.
- */
-    getWindupMs() {
-        if (this.energy <= 30) return 180;
-        if (this.energy <= 50) return 260;
-        return 420;
-    }
-
-/**
- * Initializes dash direction towards the character (if present) and enables dashing.
- * May enable chained dashes when enraged.
- */
-    startDash() {
-        const w = this.getWorld?.();
-        const c = w?.character;
-
-        if (c) {
-            const bossCenter = this.x + this.width / 2;
-            const charCenter = c.x + c.width / 2;
-
-            const dx = (charCenter - bossCenter) * this.DIR;
-
-            this.dashDir = (dx < 0 ? -1 : 1) * this.DIR;
-            this.otherDirection = dx < 0;
-        } else {
-            this.dashDir = -1 * this.DIR;
-        }
-
-        this.isDashing = true;
-        this.dashProgress = 0;
-
-        if (this.isEnraged && Math.random() < 0.35) {
-            this.dashChainRemaining = 1 + (Math.random() < 0.25 ? 1 : 0);
-        } else {
-            this.dashChainRemaining = 0;
-        }
-    }
-
-/**
- * Advances the dash movement by one animation tick, handling chained dashes if enabled.
- */
-    performDash() {
-        const effectiveDistance = this.dashChainRemaining > 0
-            ? Math.max(110, Math.floor(this.dashDistance * 0.55))
-            : this.dashDistance;
-
-        if (this.dashProgress >= effectiveDistance) {
-            if (this.dashChainRemaining > 0) {
-                this.dashChainRemaining--;
-                this.dashProgress = 0;
-                this.clearTimeoutSafe('windupTimeout');
-                this.windupTimeout = setTimeout(() => {
-                    if (!this.dead && this.isAttacking) {
-                        this.isDashing = true;
-                        this.dashProgress = 0;
-                    }
-                }, this.energy <= 30 ? 130 : 170);
-                this.isDashing = false;
-                return;
-            }
-
-            this.isDashing = false;
-            return;
-        }
-
-        this.x += this.dashDir * this.dashSpeed;
-        this.dashProgress += this.dashSpeed;
-    }
-
-/**
- * Marks the boss as dead, stops all timers, resets state and plays death animation frames.
- */
     die() {
         this.dead = true;
         this.stopTimers();
@@ -469,11 +250,11 @@ class Endboss extends movableObject {
  * Plays the death animation frames once and then stops.
  */
     playDeathFrames() {
-        let i = 0;
-        const id = setInterval(() => {
-            this.img = this.imageCache[this.IMAGES_DEAD[i]];
-            i++;
-            if (i >= this.IMAGES_DEAD.length) clearInterval(id);
+        let frameIndex = 0;
+        const intervalId = setInterval(() => {
+            this.img = this.imageCache[this.IMAGES_DEAD[frameIndex]];
+            frameIndex++;
+            if (frameIndex >= this.IMAGES_DEAD.length) clearInterval(intervalId);
         }, 200);
     }
 
@@ -482,8 +263,8 @@ class Endboss extends movableObject {
  * @param {string} prop The property name holding a timeout id.
  */
     clearTimeoutSafe(prop) {
-        const t = this[prop];
-        if (t) clearTimeout(t);
+        const timeoutId = this[prop];
+        if (timeoutId) clearTimeout(timeoutId);
         this[prop] = null;
     }
 
@@ -492,8 +273,8 @@ class Endboss extends movableObject {
  * @param {string} prop The property name holding an interval id.
  */
     clearIntervalSafe(prop) {
-        const t = this[prop];
-        if (t) clearInterval(t);
+        const intervalId = this[prop];
+        if (intervalId) clearInterval(intervalId);
         this[prop] = null;
     }
 }
