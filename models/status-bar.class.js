@@ -14,10 +14,6 @@
  */
 class StatusBar extends DrawableObject {
 
-    /**
-     * Currently active image set for this status bar.
-     * @type {string[]}
-     */
     images = [];
 
     /**

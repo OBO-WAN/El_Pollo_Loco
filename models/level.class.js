@@ -13,50 +13,11 @@
  * @class Level
  */
 class Level {
-
-    /**
-     * Array of enemy objects in the level.
-     *
-     * @type {Array<movableObject>}
-     */
     enemies;
-
-    /**
-     * Array of cloud background objects.
-     *
-     * @type {Cloud[]}
-     */
     clouds;
-
-    /**
-     * Array of parallax background objects.
-     *
-     * @type {BackgroundObject[]}
-     */
     backgroundObjects;
-
-    /**
-     * Array of collectible coins.
-     *
-     * @type {Coin[]}
-     */
     coins;
-
-    /**
-     * Array of collectible bottles.
-     *
-     * @type {Bottle[]}
-     */
     bottles;
-
-    /**
-     * X-coordinate marking the end of the level.
-     * When the player reaches this position,
-     * the level is considered complete.
-     *
-     * @type {number}
-     * @default 2500
-     */
     level_end_x = 2500;
 
     /**

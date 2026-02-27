@@ -13,40 +13,9 @@
  */
 class Keyboard {
 
-    /**
-     * Indicates whether the LEFT key is pressed.
-     * @type {boolean}
-     * @default false
-     */
     LEFT = false;
-
-    /**
-     * Indicates whether the RIGHT key is pressed.
-     * @type {boolean}
-     * @default false
-     */
     RIGHT = false;
-
-    /**
-     * Indicates whether the UP key is pressed.
-     * @type {boolean}
-     * @default false
-     */
     UP = false;
-
-    /**
-     * Indicates whether the DOWN key is pressed.
-     * @type {boolean}
-     * @default false
-     */
     DOWN = false;
-
-    /**
-     * Indicates whether the SPACE key is pressed.
-     * Typically used for actions such as throwing.
-     *
-     * @type {boolean}
-     * @default false
-     */
-    SPACE = false; // throw
+    SPACE = false;
 }

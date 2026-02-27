@@ -11,39 +11,10 @@
  */
 class Chicken extends movableObject {
 
-    /**
-     * Indicates whether the chicken is dead.
-     * @type {boolean}
-     * @default false
-     */
     dead = false;
-
-    /**
-     * The height of the chicken.
-     * @type {number}
-     * @default 80
-     */
     height = 80;
-
-    /**
-     * The width of the chicken.
-     * @type {number}
-     * @default 80
-     */
     width = 80;
-
-    /**
-     * Default horizontal position.
-     * (Overwritten in constructor)
-     * @type {number}
-     */
     x = 120;
-
-    /**
-     * Vertical ground position.
-     * @type {number}
-     * @default 340
-     */
     y = 340;
 
     /**
@@ -68,12 +39,7 @@ class Chicken extends movableObject {
      * @default 0
      */
     currentImage = 0;
-
-    /**
-     * Reference to the animation interval.
-     * @type {number|null}
-     * @default null
-     */
+  
     animationInterval = null;
 
     /**
@@ -90,19 +56,9 @@ class Chicken extends movableObject {
         this.loadImage(this.animatedChickens[0]);
         this.loadImages(this.animatedChickens);
         this.loadImage(this.IMAGE_DEAD);
-
-        /**
-         * Horizontal position of the chicken.
-         * @type {number}
-         */
+ 
         this.x = (x !== null) ? x : (600 + Math.random() * 1200);
-
-        /**
-         * Movement speed of the chicken.
-         * Randomized for variation between instances.
-         *
-         * @type {number}
-         */
+    
         this.speed = 0.15 + Math.random() * 0.5;
 
         this.animate();

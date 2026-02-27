@@ -14,63 +14,13 @@
  */
 class DrawableObject {
 
-    /**
-     * Horizontal position.
-     * @type {number}
-     * @default 120
-     */
     x = 120;
-
-    /**
-     * Vertical position.
-     * @type {number}
-     * @default 360
-     */
     y = 360;
-
-    /**
-     * Height of the object.
-     * @type {number}
-     * @default 100
-     */
     height = 100;
-
-    /**
-     * Width of the object.
-     * @type {number}
-     * @default 50
-     */
     width = 50;
-
-    /**
-     * The currently loaded image.
-     * @type {HTMLImageElement|undefined}
-     */
     img;
-
-    /**
-     * Indicates whether the object is a background element.
-     * Used to slightly adjust rendering width to avoid visual gaps.
-     *
-     * @type {boolean}
-     * @default true
-     */
     isBackground = true;
-
-    /**
-     * Cache for preloaded images.
-     * Used for animations to prevent repeated loading.
-     *
-     * @type {{ [key: string]: HTMLImageElement }}
-     */
     imageCache = {};
-
-    /**
-     * Index of the current animation frame.
-     *
-     * @type {number}
-     * @default 0
-     */
     currentImage = 0;
 
     /**
@@ -100,7 +50,7 @@ class DrawableObject {
         let width = this.width;
 
         if (this.isBackground) {
-            width += 1; // Prevents pixel gaps in scrolling backgrounds
+            width += 1; 
         }
 
         ctx.drawImage(this.img, this.x, this.y, width, this.height);

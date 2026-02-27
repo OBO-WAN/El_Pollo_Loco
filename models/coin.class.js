@@ -9,12 +9,6 @@
  */
 class Coin extends movableObject {
 
-  /**
-   * Collision offset values.
-   * These values adjust the hitbox relative to the visual sprite.
-   *
-   * @type {{top: number, right: number, bottom: number, left: number}}
-   */
   offset = {
     top: 15,
     right: 30,
@@ -34,29 +28,9 @@ class Coin extends movableObject {
    */
   constructor(x, y) {
     super();
-
-    /**
-     * Horizontal position of the coin.
-     * @type {number}
-     */
     this.x = x;
-
-    /**
-     * Vertical position of the coin.
-     * @type {number}
-     */
     this.y = y;
-
-    /**
-     * Width of the coin.
-     * @type {number}
-     */
     this.width = 80;
-
-    /**
-     * Height of the coin.
-     * @type {number}
-     */
     this.height = 80;
 
     this.loadImage('assets/img/8_coin/coin_1.png');

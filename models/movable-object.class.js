@@ -12,47 +12,11 @@
  * @extends DrawableObject
  */
 class movableObject extends DrawableObject {
-
-    /**
-     * Horizontal movement speed.
-     * @type {number}
-     * @default 0.15
-     */
     speed = 0.15;
-
-    /**
-     * Indicates whether the object is facing the opposite direction.
-     * @type {boolean}
-     * @default false
-     */
     otherDirection = false;
-
-    /**
-     * Vertical movement speed (used for jumping & gravity).
-     * @type {number}
-     * @default 0
-     */
     speedY = 0;
-
-    /**
-     * Downward acceleration (gravity strength).
-     * @type {number}
-     * @default 2.0
-     */
     acceleration = 2.0;
-
-    /**
-     * Current health/energy of the object.
-     * @type {number}
-     * @default 100
-     */
     energy = 100;
-
-    /**
-     * Timestamp of the last hit taken.
-     * @type {number}
-     * @default 0
-     */
     lastHit = 0;
 
     /**
@@ -129,7 +93,6 @@ class movableObject extends DrawableObject {
         if (typeof this.isInvincible === 'function' && this.isInvincible()) {
             return;
         }
-
         this.energy -= 5;
 
         if (this.energy < 0) {

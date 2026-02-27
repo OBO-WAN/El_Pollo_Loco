@@ -13,18 +13,7 @@
  */
 class BackgroundObject extends movableObject {
 
-    /**
-     * The width of the background object.
-     * @type {number}
-     * @default 720
-     */
     width = 720;
-
-    /**
-     * The height of the background object.
-     * @type {number}
-     * @default 480
-     */
     height = 480;
 
     /**
@@ -35,38 +24,10 @@ class BackgroundObject extends movableObject {
      */
     constructor(imagePath, x) {
         super().loadImage(imagePath);
-
-        /**
-         * The horizontal position of the background object.
-         * @type {number}
-         */
         this.x = x;
-
-        /**
-         * The vertical position of the background object.
-         * @type {number}
-         */
         this.y = 0;
-
-        /**
-         * The width of the background object.
-         * @type {number}
-         */
         this.width = 720;
-
-        /**
-         * The height of the background object.
-         * @type {number}
-         */
         this.height = 480;
-
-        /**
-         * The parallax movement factor.
-         * Lower values move slower (farther background),
-         * higher values move faster (closer foreground).
-         *
-         * @type {number}
-         */
         this.parallaxFactor = this.getParallaxFactor(imagePath);
     }
 

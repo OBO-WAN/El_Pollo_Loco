@@ -11,18 +11,7 @@
  */
 class Cloud extends movableObject {
 
-    /**
-     * Vertical position of the cloud.
-     * @type {number}
-     * @default 20
-     */
     y = 20;
-
-    /**
-     * Height of the cloud.
-     * @type {number}
-     * @default 250
-     */
     height = 250;
 
     /**
@@ -35,18 +24,7 @@ class Cloud extends movableObject {
      */
     constructor() {
         super().loadImage('assets/img/5_background/layers/4_clouds/1.png');
-
-        /**
-         * Horizontal position of the cloud.
-         * Randomized for variation.
-         * @type {number}
-         */
         this.x = Math.random() * 500;
-
-        /**
-         * Width of the cloud.
-         * @type {number}
-         */
         this.width = 490;
 
         this.animateClouds();

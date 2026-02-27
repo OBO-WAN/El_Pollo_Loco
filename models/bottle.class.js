@@ -11,12 +11,7 @@
  */
 class Bottle extends movableObject {
 
-  /**
-   * Array of image paths used for the bottle animation.
-   * These images are alternated to create a simple idle animation.
-   *
-   * @type {string[]}
-   */
+
   IMAGES_BOTTLE = [
     'assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
     'assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png',
@@ -30,39 +25,11 @@ class Bottle extends movableObject {
    */
   constructor(x, y) {
     super();
-
-    /**
-     * The horizontal position of the bottle.
-     * @type {number}
-     */
     this.x = x;
-
-    /**
-     * The vertical position of the bottle.
-     * @type {number}
-     */
     this.y = y;
-
-    /**
-     * The width of the bottle.
-     * @type {number}
-     */
     this.width = 60;
-
-    /**
-     * The height of the bottle.
-     * @type {number}
-     */
     this.height = 80;
-
-    /**
-     * Stores the animation interval reference.
-     * Used to repeatedly trigger the animation.
-     *
-     * @type {number|undefined}
-     */
     this.animationInterval = undefined;
-
     this.loadImage(this.IMAGES_BOTTLE[0]);
     this.loadImages(this.IMAGES_BOTTLE);
 

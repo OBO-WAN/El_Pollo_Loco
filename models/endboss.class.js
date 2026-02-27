@@ -1,3 +1,7 @@
+/**
+ * Endboss enemy AI and animation controller.
+ * Handles following behavior, dash and jump-slam attacks, damage/enrage logic and death sequence.
+ */
 class Endboss extends movableObject {
     offset = { top: 70, right: 55, bottom: 25, left: 55 };
     followSpeed = 2.2;
@@ -61,6 +65,9 @@ class Endboss extends movableObject {
         'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
+/**
+ * Creates an Endboss enemy, preloads animation frames and starts the animation loop.
+ */
     constructor() {
         super();
         this.loadImage(this.IMAGES_WALKING[0]);
@@ -73,6 +80,10 @@ class Endboss extends movableObject {
         this.animate();
     }
 
+/**
+ * Runs the boss animation loop and drives attack/dash frame progression.
+ * Skips updates while dead or when the global pause flag is set.
+ */
     animate() {
         this.animationInterval = setInterval(() => {
             if (this.dead) return;
@@ -93,12 +104,21 @@ class Endboss extends movableObject {
         }, 140);
     }
 
+/**
+ * Resolves the current game world reference.
+ * Prefers an instance property (`this.world`) and falls back to a global `world` if present.
+ * @returns {object|null} The world instance or null if unavailable.
+ */
     getWorld() {
         if (this.world) return this.world;
         if (typeof world !== 'undefined' && world) return world;
         return null;
     }
 
+/**
+ * Applies damage to the boss, triggers hurt feedback and enrages the boss at low health.
+ * When health reaches 0, the boss dies.
+ */
     hit() {
         if (this.dead) return;
 
@@ -118,6 +138,9 @@ class Endboss extends movableObject {
         if (this.energy === 0) this.die();
     }
 
+/**
+ * Temporarily marks the boss as hurt, playing the hurt animation for a short duration.
+ */
     triggerHurtAnimation() {
         this.isHurt = true;
         this.clearTimeoutSafe('hurtTimeout');
@@ -126,6 +149,10 @@ class Endboss extends movableObject {
         }, 600);
     }
 
+/**
+ * Starts the repeating attack cycle with an initial delay.
+ * No-ops if an attack cycle is already scheduled or the boss is dead.
+ */
     startAttackCycle() {
         if (this.dead || this.attackStartTimeout || this.attackInterval) return;
 
@@ -137,6 +164,9 @@ class Endboss extends movableObject {
         }, 1500);
     }
 
+/**
+ * Schedules the next attack based on the current health-dependent delay.
+ */
     scheduleNextAttack() {
         if (this.dead) return;
 
@@ -148,12 +178,19 @@ class Endboss extends movableObject {
         }, delay);
     }
 
+/**
+ * Computes the delay (ms) until the next attack based on remaining energy.
+ * @returns {number} Delay in milliseconds.
+ */
     getNextAttackDelay() {
         if (this.energy <= 30) return 900 + Math.random() * 350;
         if (this.energy <= 50) return 1350 + Math.random() * 550;
         return 1900 + Math.random() * 750;
     }
 
+/**
+ * Chooses and starts an attack (dash or jump-slam) based on distance to the character and RNG.
+ */
     triggerAttack() {
         if (this.dead || this.isAttacking) return;
 
@@ -178,6 +215,9 @@ class Endboss extends movableObject {
         }
     }
 
+/**
+ * Starts a dash-style attack with a windup followed by dash movement.
+ */
     startDashAttack() {
         if (this.dead) return;
 
@@ -201,6 +241,9 @@ class Endboss extends movableObject {
         this.attackTimeout = setTimeout(() => this.endAttack(), totalAttackMs);
     }
 
+/**
+ * Starts a jump-slam attack: lifts up, slams down, applies area damage, then ends the attack.
+ */
     startJumpSlamAttack() {
         if (this.dead) return;
 
@@ -232,6 +275,10 @@ class Endboss extends movableObject {
         this.attackTimeout = setTimeout(() => this.endAttack(), windup + 900);
     }
 
+/**
+ * Applies slam damage to the character if within slam radius and not invincible.
+ * Also updates the world's health status bar if available.
+ */
     applySlamDamage() {
         const w = this.getWorld();
         const c = w?.character;
@@ -253,6 +300,13 @@ class Endboss extends movableObject {
         }
     }
 
+/**
+ * Moves the boss towards the given character while not attacking or hurt.
+ * Boss will stop when within a small distance threshold.
+ * @param {object} character The player character to follow (expects x/width properties).
+ * @param {object} [options] Behavior options.
+ * @param {boolean} [options.active=true] Whether following is active this tick.
+ */
     followCharacter(character, { active = true } = {}) {
         if (!active) return;
         if (this.dead) return;
@@ -277,11 +331,18 @@ class Endboss extends movableObject {
         this.x += Math.sign(dx) * this.followSpeed * this.DIR;
     }
 
+/**
+ * Estimates the time (ms) the dash movement will take based on dash distance and speed.
+ * @returns {number} Dash time in milliseconds.
+ */
     getDashTimeMs() {
         const steps = Math.ceil(this.dashDistance / this.dashSpeed);
         return steps * 140;
     }
 
+/**
+ * Ends the current attack and resets attack-related state and timers.
+ */
     endAttack() {
         this.isAttacking = false;
         this.isDashing = false;
@@ -297,12 +358,20 @@ class Endboss extends movableObject {
         this.attackTimeout = null;
     }
 
+/**
+ * Returns the pre-attack windup duration (ms) based on remaining energy.
+ * @returns {number} Windup duration in milliseconds.
+ */
     getWindupMs() {
         if (this.energy <= 30) return 180;
         if (this.energy <= 50) return 260;
         return 420;
     }
 
+/**
+ * Initializes dash direction towards the character (if present) and enables dashing.
+ * May enable chained dashes when enraged.
+ */
     startDash() {
         const w = this.getWorld?.();
         const c = w?.character;
@@ -329,6 +398,9 @@ class Endboss extends movableObject {
         }
     }
 
+/**
+ * Advances the dash movement by one animation tick, handling chained dashes if enabled.
+ */
     performDash() {
         const effectiveDistance = this.dashChainRemaining > 0
             ? Math.max(110, Math.floor(this.dashDistance * 0.55))
@@ -357,6 +429,9 @@ class Endboss extends movableObject {
         this.dashProgress += this.dashSpeed;
     }
 
+/**
+ * Marks the boss as dead, stops all timers, resets state and plays death animation frames.
+ */
     die() {
         this.dead = true;
         this.stopTimers();
@@ -364,6 +439,9 @@ class Endboss extends movableObject {
         this.playDeathFrames();
     }
 
+/**
+ * Stops all active intervals/timeouts used by the boss AI and animations.
+ */
     stopTimers() {
         this.clearIntervalSafe('animationInterval');
         this.clearTimeoutSafe('attackStartTimeout');
@@ -374,6 +452,9 @@ class Endboss extends movableObject {
         this.clearTimeoutSafe('slamTimeout');
     }
 
+/**
+ * Resets transient combat/animation state back to neutral values.
+ */
     resetState() {
         this.isAttacking = false;
         this.isDashing = false;
@@ -384,6 +465,9 @@ class Endboss extends movableObject {
         this.y = this.baseY;
     }
 
+/**
+ * Plays the death animation frames once and then stops.
+ */
     playDeathFrames() {
         let i = 0;
         const id = setInterval(() => {
@@ -393,12 +477,20 @@ class Endboss extends movableObject {
         }, 200);
     }
 
+/**
+ * Clears a timeout stored on this instance under the given property name.
+ * @param {string} prop The property name holding a timeout id.
+ */
     clearTimeoutSafe(prop) {
         const t = this[prop];
         if (t) clearTimeout(t);
         this[prop] = null;
     }
 
+/**
+ * Clears an interval stored on this instance under the given property name.
+ * @param {string} prop The property name holding an interval id.
+ */
     clearIntervalSafe(prop) {
         const t = this[prop];
         if (t) clearInterval(t);

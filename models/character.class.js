@@ -9,34 +9,14 @@
  */
 class Character extends movableObject {
 
-    /**
-     * Collision box offset values.
-     * @type {{top:number, right:number, bottom:number, left:number}}
-     */
     offset = { top: 20, right: 35, bottom: 10, left: 35 };
-
-    /** @type {number} Character height in pixels */
     height = 240;
-
-    /** @type {number} Character width in pixels */
     width = 140;
-
-    /** @type {number} Initial X position */
     x = 120;
-
-    /** @type {number} Initial Y position */
     y = 50;
-
-    /** @type {number} Y position of the ground */
     groundY = 180;
-
-    /** @type {number} Horizontal movement speed */
     speed = 10;
-
-    /** @type {boolean} Indicates if the character is currently jumping */
     isJumping = false;
-
-    /** @type {number} Timestamp (ms) until which the character is invincible */
     invincibleUntil = 0;
 
     /**
@@ -154,36 +134,54 @@ class Character extends movableObject {
     }
 
     /**
-     * Starts the animation loop.
-     * Handles state-based animation switching and jump triggering.
-     */
+ * Starts the animation loop.
+ * Handles state-based animation switching and jump triggering.
+ */
     animate() {
-        setInterval(() => {
-
-            if (this.isDead()) {
-                this.playAnimation(this.imagesDead);
-
-            } else if (this.isHurt()) {
-                this.playAnimation(this.imagesHurt);
-
-            } else if (this.isInAir()) {
-                this.playAnimation(this.imagesJumping);
-
-            } else if (this.world?.isCharacterSleeping) {
-                this.playAnimation(this.imagesSleep);
-
-            } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-                this.playAnimation(this.animatedCharachter);
-
-            } else {
-                this.playAnimation(this.imagesIdle);
-            }
-
-            if (this.world.keyboard.UP && !this.isInAir()) {
-                this.speedY = 28;
-            }
-
+        this.animationInterval = setInterval(() => {
+            this.handleAnimationTick();
+            this.handleJumpInput();
         }, 100);
+    }
+
+    /**
+     * Plays the correct animation for the current character state.
+     */
+    handleAnimationTick() {
+        const frames = this.getCurrentAnimationFrames();
+        this.playAnimation(frames);
+    }
+
+    /**
+     * Returns the animation frames that match the current priority-based state.
+     * Priority is preserved from your original implementation:
+     * dead > hurt > inAir > sleeping > walking > idle
+     *
+     * @returns {string[]} The selected animation frame list.
+     */
+    getCurrentAnimationFrames() {
+        if (this.isDead()) return this.imagesDead;
+        if (this.isHurt()) return this.imagesHurt;
+        if (this.isInAir()) return this.imagesJumping;
+        if (this.world?.isCharacterSleeping) return this.imagesSleep;
+
+        const keyboard = this.world?.keyboard;
+        const isWalking = !!(keyboard?.RIGHT || keyboard?.LEFT);
+        if (isWalking) return this.animatedCharachter;
+
+        return this.imagesIdle;
+    }
+
+    /**
+     * Handles jump input (UP) and triggers a jump if allowed.
+     */
+    handleJumpInput() {
+        const keyboard = this.world?.keyboard;
+        if (!keyboard) return;
+
+        if (keyboard.UP && !this.isInAir()) {
+            this.speedY = 28; 
+        }
     }
 
     /**
@@ -236,6 +234,6 @@ class Character extends movableObject {
         this.energy = Math.max(0, this.energy - damage);
         this.lastHit = Date.now();
 
-        this.grantInvincibility(invMs); 
+        this.grantInvincibility(invMs);
     }
 }
