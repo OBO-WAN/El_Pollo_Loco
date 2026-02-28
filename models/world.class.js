@@ -42,7 +42,6 @@ class World {
         this.setWorld();
         this.initHud();
         this.setHudPositions();
-
         this.start();
     }
 
@@ -140,7 +139,6 @@ class World {
             this.audio.gameOver();
             return;
         }
-
         if (this.isEndbossDefeated()) {
             this.scheduleWinOnce();
         }
@@ -229,11 +227,9 @@ class World {
             this.animationFrameId = null;
             return;
         }
-
         this.renderer.clearCanvas();
         this.update();
         this.renderer.render();
-
         this.animationFrameId = requestAnimationFrame(() => this.draw());
     }
 
@@ -242,7 +238,6 @@ class World {
      */
     update() {
         if (this.isPaused) return;
-
         this.updateBossPhase();
         this.updateCharacter();
         this.updateWorld();
@@ -264,7 +259,6 @@ class World {
         if (!this.endbossBarVisible) return;
         if (!this.endboss) return;
         if (this.endbossAttackStarted) return;
-
         this.endbossAttackStarted = true;
         this.endboss.startAttackCycle();
     }
@@ -331,7 +325,6 @@ class World {
      */
     checkEndbossBarTrigger() {
         if (!this.endboss || this.endbossBarVisible) return;
-
         const endbossTriggerDistance = 600;
         if (this.character.x >= this.endboss.x - endbossTriggerDistance) {
             this.endbossBarVisible = true;
@@ -344,7 +337,6 @@ class World {
     stopLoops() {
         if (this.collisionInterval) clearInterval(this.collisionInterval);
         this.collisionInterval = null;
-
         if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
     }
@@ -366,7 +358,6 @@ class World {
     resume() {
         if (!this.isPaused) return;
         this.isPaused = false;
-
         if (!this.animationFrameId) {
             this.draw();
         }
@@ -379,7 +370,6 @@ class World {
         const padding = 20;
         const viewportWidth = this.view?.logicalViewportW ?? 720;
         const coinBarY = this.statusBarCoins?.y ?? 60;
-
         if (this.statusBarEndboss) {
             this.statusBarEndboss.x = viewportWidth - padding - this.statusBarEndboss.width;
             this.statusBarEndboss.y = coinBarY;
@@ -395,13 +385,11 @@ class World {
         this.statusBarHealth.setPercentage(this.character.energy);
         this.statusBarHealth.x = 20;
         this.statusBarHealth.y = 10;
-
         // Coins
         this.statusBarCoins.setImages(this.statusBarCoins.COIN_BAR_IMAGES);
         this.statusBarCoins.setPercentage(0);
         this.statusBarCoins.x = 20;
         this.statusBarCoins.y = 60;
-
         // Bottles
         this.statusBarBottles.setImages(this.statusBarBottles.BOTTLE_BAR_IMAGES);
         this.statusBarBottles.setPercentage(0);

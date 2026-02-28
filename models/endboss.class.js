@@ -65,9 +65,9 @@ class Endboss extends movableObject {
         'assets/img/4_enemie_boss_chicken/5_dead/G26.png',
     ];
 
-/**
- * Creates an Endboss enemy, preloads animation frames and starts the animation loop.
- */
+    /**
+     * Creates an Endboss enemy, preloads animation frames and starts the animation loop.
+     */
     constructor() {
         super();
         this.attack = new EndbossAttackController(this);
@@ -81,10 +81,10 @@ class Endboss extends movableObject {
         this.animate();
     }
 
-/**
- * Runs the boss animation loop and drives attack/dash frame progression.
- * Skips updates while dead or when the global pause flag is set.
- */
+    /**
+     * Runs the boss animation loop and drives attack/dash frame progression.
+     * Skips updates while dead or when the global pause flag is set.
+     */
     animate() {
         this.animationInterval = setInterval(() => {
             if (this.dead) return;
@@ -105,21 +105,21 @@ class Endboss extends movableObject {
         }, 140);
     }
 
-/**
- * Resolves the current game world reference.
- * Prefers an instance property (`this.world`) and falls back to a global `world` if present.
- * @returns {object|null} The world instance or null if unavailable.
- */
+    /**
+     * Resolves the current game world reference.
+     * Prefers an instance property (`this.world`) and falls back to a global `world` if present.
+     * @returns {object|null} The world instance or null if unavailable.
+     */
     getWorld() {
         if (this.world) return this.world;
         if (typeof world !== 'undefined' && world) return world;
         return null;
     }
 
-/**
- * Applies damage to the boss, triggers hurt feedback and enrages the boss at low health.
- * When health reaches 0, the boss dies.
- */
+    /**
+     * Applies damage to the boss, triggers hurt feedback and enrages the boss at low health.
+     * When health reaches 0, the boss dies.
+     */
     hit() {
         if (this.dead) return;
 
@@ -139,24 +139,23 @@ class Endboss extends movableObject {
         if (this.energy === 0) this.die();
     }
 
-/**
- * Starts the repeating attack cycle (delegated to EndbossAttackController).
- */
+    /**
+     * Starts the repeating attack cycle (delegated to EndbossAttackController).
+     */
     startAttackCycle() {
         this.attack.startAttackCycle();
     }
 
-/**
- * Delegated: ends the current attack and resets attack-related state.
- */
+    /**
+     * Delegated: ends the current attack and resets attack-related state.
+     */
     endAttack() {
         this.attack.endAttack();
     }
 
-
-/**
- * Temporarily marks the boss as hurt, playing the hurt animation for a short duration.
- */
+    /**
+     * Temporarily marks the boss as hurt, playing the hurt animation for a short duration.
+     */
     triggerHurtAnimation() {
         this.isHurt = true;
         this.clearTimeoutSafe('hurtTimeout');
@@ -165,54 +164,76 @@ class Endboss extends movableObject {
         }, 600);
     }
 
-/**
- * Starts the repeating attack cycle with an initial delay.
- * No-ops if an attack cycle is already scheduled or the boss is dead.
- */
+    /**
+     * Starts the repeating attack cycle with an initial delay.
+     * No-ops if an attack cycle is already scheduled or the boss is dead.
+     */
+    followCharacter(character, { active = true } = {}) {
+        if (!this.shouldFollowCharacter(active, character)) return;
 
-followCharacter(character, { active = true } = {}) {
-            if (!this.shouldFollowCharacter(active, character)) return;
+        const dx = this.getDirectionDeltaTo(character);
+        this.updateFacingFromDelta(dx);
 
-            const dx = this.getDirectionDeltaTo(character);
-            this.updateFacingFromDelta(dx);
+        if (this.isAttacking || this.isHurt) return;
+        if (this.isWithinFollowStopDistance(dx)) return;
 
-            if (this.isAttacking || this.isHurt) return;
-            if (this.isWithinFollowStopDistance(dx)) return;
+        this.moveTowardsDelta(dx);
+    }
 
-            this.moveTowardsDelta(dx);
-        }
-
+    /**
+     * Checks whether the boss should follow the character right now.
+     * @param {object} character Target character instance.
+     * @param {boolean} active Whether following is enabled.
+     * @returns {boolean}
+     */
     shouldFollowCharacter(active, character) {
-            if (!active) return false;
-            if (this.dead) return false;
-            if (typeof isPaused !== 'undefined' && isPaused) return false;
-            return !!character;
-        }
+        if (!active) return false;
+        if (this.dead) return false;
+        if (typeof isPaused !== 'undefined' && isPaused) return false;
+        return !!character;
+    }
 
-        getDirectionDeltaTo(character) {
-            const bossCenter = this.x + this.width / 2;
-            const charCenter = character.x + character.width / 2;
-            return (charCenter - bossCenter) * this.DIR;
-        }
+    /**
+     * Calculates signed horizontal distance (boss→character) in boss facing space.
+     * @param {object} character Target character instance.
+     * @returns {number}
+     */
+    getDirectionDeltaTo(character) {
+        const bossCenter = this.x + this.width / 2;
+        const charCenter = character.x + character.width / 2;
+        return (charCenter - bossCenter) * this.DIR;
+    }
 
-        updateFacingFromDelta(dx) {
-            this.otherDirection = dx < 0;
-        }
+    /**
+     * Updates sprite facing direction based on horizontal delta.
+     * @param {number} dx Signed delta to the target in boss facing space.
+     */
+    updateFacingFromDelta(dx) {
+        this.otherDirection = dx < 0;
+    }
 
-        isWithinFollowStopDistance(dx) {
-            const stopDistance = 90;
-            return Math.abs(dx) <= stopDistance;
-        }
+    /**
+     * Checks whether the boss is close enough to stop following.
+     * @param {number} dx Signed delta to the target in boss facing space.
+     * @returns {boolean}
+     */
+    isWithinFollowStopDistance(dx) {
+        const stopDistance = 90;
+        return Math.abs(dx) <= stopDistance;
+    }
 
-        moveTowardsDelta(dx) {
-            this.x += Math.sign(dx) * this.followSpeed * this.DIR;
-        }
+    /**
+     * Moves the boss a step toward the target based on the given delta.
+     * @param {number} dx Signed delta to the target in boss facing space.
+     */
+    moveTowardsDelta(dx) {
+        this.x += Math.sign(dx) * this.followSpeed * this.DIR;
+    }
 
-/**
- * Estimates the time (ms) the dash movement will take based on dash distance and speed.
- * @returns {number} Dash time in milliseconds.
- */
-
+    /**
+     * Estimates the time (ms) the dash movement will take based on dash distance and speed.
+     * @returns {number} Dash time in milliseconds.
+     */
     die() {
         this.dead = true;
         this.stopTimers();
@@ -220,9 +241,9 @@ followCharacter(character, { active = true } = {}) {
         this.playDeathFrames();
     }
 
-/**
- * Stops all active intervals/timeouts used by the boss AI and animations.
- */
+    /**
+     * Stops all active intervals/timeouts used by the boss AI and animations.
+     */
     stopTimers() {
         this.clearIntervalSafe('animationInterval');
         this.clearTimeoutSafe('attackStartTimeout');
@@ -233,9 +254,9 @@ followCharacter(character, { active = true } = {}) {
         this.clearTimeoutSafe('slamTimeout');
     }
 
-/**
- * Resets transient combat/animation state back to neutral values.
- */
+    /**
+     * Resets transient combat/animation state back to neutral values.
+     */
     resetState() {
         this.isAttacking = false;
         this.isDashing = false;
@@ -246,9 +267,9 @@ followCharacter(character, { active = true } = {}) {
         this.y = this.baseY;
     }
 
-/**
- * Plays the death animation frames once and then stops.
- */
+    /**
+     * Plays the death animation frames once and then stops.
+     */
     playDeathFrames() {
         let frameIndex = 0;
         const intervalId = setInterval(() => {
@@ -258,20 +279,20 @@ followCharacter(character, { active = true } = {}) {
         }, 200);
     }
 
-/**
- * Clears a timeout stored on this instance under the given property name.
- * @param {string} prop The property name holding a timeout id.
- */
+    /**
+     * Clears a timeout stored on this instance under the given property name.
+     * @param {string} prop The property name holding a timeout id.
+     */
     clearTimeoutSafe(prop) {
         const timeoutId = this[prop];
         if (timeoutId) clearTimeout(timeoutId);
         this[prop] = null;
     }
 
-/**
- * Clears an interval stored on this instance under the given property name.
- * @param {string} prop The property name holding an interval id.
- */
+    /**
+     * Clears an interval stored on this instance under the given property name.
+     * @param {string} prop The property name holding an interval id.
+     */
     clearIntervalSafe(prop) {
         const intervalId = this[prop];
         if (intervalId) clearInterval(intervalId);
