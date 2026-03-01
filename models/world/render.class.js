@@ -7,7 +7,6 @@ class WorldRender {
      * @param {World} world Active world instance.
      */
     constructor(world) {
-        /** @type {World} */
         this.world = world;
     }
 
