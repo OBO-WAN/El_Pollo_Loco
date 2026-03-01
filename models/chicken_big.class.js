@@ -9,7 +9,7 @@
  * @class Chicken
  * @extends movableObject
  */
-class Chicken extends movableObject {
+class Chicken_Big extends movableObject {
     dead = false;
     height = 80;
     width = 80;

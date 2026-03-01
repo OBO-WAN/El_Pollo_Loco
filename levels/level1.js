@@ -46,14 +46,14 @@ function initLevel1() {
 
         /**
          * Enemies in the level.
-         * @type {(Chicken|Chicken2|Endboss)[]}
+         * @type {(Chicken_Big|Chicken_Little|Endboss)[]}
          */
         [
-            new Chicken(),
-            new Chicken2(),
-            new Chicken(),
-            new Chicken2(),
-            new Chicken(),
+            new Chicken_Big(),
+            new Chicken_Little(),
+            new Chicken_Big(),
+            new Chicken_Little(),
+            new Chicken_Big(),
             new Endboss(),
         ],
 

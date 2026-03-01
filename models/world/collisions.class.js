@@ -65,7 +65,7 @@ class WorldCollisions {
      * @returns {boolean}
      */
     isChicken(enemy) {
-        return enemy instanceof Chicken || enemy instanceof Chicken2;
+        return enemy instanceof Chicken_Big || enemy instanceof Chicken_Little;
     }
 
     /**
